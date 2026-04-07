@@ -224,7 +224,11 @@ Usado principalmente para invocaciones server-side o utilitarias.
 
 ### `src/lib/supabase-types.ts`
 @file Tipos de Database para Supabase Client (generics)
-Mapea las tablas para TypeScript autocomplete
+Mapea las tablas para TypeScript autocomplete.
+
+GenericTable exige { Row, Insert, Update, Relationships }.
+Sin Relationships, Database['public'] no extiende GenericSchema
+y Supabase cae a `any`, lo que hace que .insert()/.update() retornen `never`.
 **Exports:** Database
 
 ### `src/lib/supabase.ts`

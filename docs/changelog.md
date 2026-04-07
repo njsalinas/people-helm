@@ -3,6 +3,8 @@
 *Auto-generated — do not edit manually*
 
 ```
+3aaffcc fix: actualizar campo activo→canal_alerta_visual en API route notificaciones
+dff17c6 docs: auto-generated documentation [skip ci]
 f83e031 fix: corregir tipos en settings page (nombre_completo, evento, canal_alerta_visual)
 3d544b3 docs: auto-generated documentation [skip ci]
 51f43c6 fix: corregir addToast message→title en páginas restantes

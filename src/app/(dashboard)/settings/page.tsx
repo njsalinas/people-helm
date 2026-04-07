@@ -23,7 +23,7 @@ export default function SettingsPage() {
     try {
       await updateMutation.mutateAsync({ id, activo })
     } catch {
-      addToast({ type: 'error', message: 'Error al actualizar preferencia' })
+      addToast({ type: 'error', title: 'Error al actualizar preferencia' })
     }
   }
 

@@ -20,9 +20,9 @@ function SemaforoAbreviadoContent() {
   const handleSave = async (data: SemaforoAbreviadoData) => {
     try {
       await guardarMutation.mutateAsync(data)
-      addToast({ type: 'success', message: 'Semáforo abreviado guardado' })
+      addToast({ type: 'success', title: 'Semáforo abreviado guardado' })
     } catch (e: unknown) {
-      addToast({ type: 'error', message: e instanceof Error ? e.message : 'Error al guardar' })
+      addToast({ type: 'error', title: e instanceof Error ? e.message : 'Error al guardar' })
     }
   }
 

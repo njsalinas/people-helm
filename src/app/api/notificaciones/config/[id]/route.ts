@@ -9,7 +9,7 @@ import { getServerUser } from '@/lib/auth'
 import { z } from 'zod'
 
 const Schema = z.object({
-  activo: z.boolean(),
+  activo: z.boolean(), // mapea a canal_alerta_visual en DB
 })
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
@@ -27,7 +27,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
   // Solo puede editar sus propias configs
   const { data, error } = await supabase
     .from('notificaciones_config')
-    .update({ activo: result.data.activo })
+    .update({ canal_alerta_visual: result.data.activo })
     .eq('id', params.id)
     .eq('usuario_id', user.id)
     .select()

@@ -1,6 +1,6 @@
 /**
  * @component ProyectoForm
- * Modal de creación / edición de proyecto
+ * Modal de creación de proyecto
  *
  * @example
  * <ProyectoForm onClose={() => setOpen(false)} />
@@ -8,6 +8,7 @@
 
 'use client'
 
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CreateProjectSchema } from '@/lib/validations'
@@ -15,7 +16,7 @@ import type { CreateProjectInput } from '@/types/api'
 import { AREAS_RESPONSABLES, FOCOS_ESTRATEGICOS, CATEGORIAS_POR_AREA } from '@/types/domain'
 import { useCrearProyecto } from '@/hooks/useProjects'
 import { useUIStore } from '@/stores/uiStore'
-import { useState } from 'react'
+import type { DbUsuario } from '@/types/database'
 
 interface ProyectoFormProps {
   onClose: () => void
@@ -24,6 +25,14 @@ interface ProyectoFormProps {
 export function ProyectoForm({ onClose }: ProyectoFormProps) {
   const crearMutation = useCrearProyecto()
   const addToast = useUIStore((s) => s.addToast)
+  const [usuarios, setUsuarios] = useState<DbUsuario[]>([])
+
+  useEffect(() => {
+    fetch('/api/usuarios')
+      .then((r) => r.json())
+      .then((json) => setUsuarios(json.data ?? []))
+      .catch(() => {})
+  }, [])
 
   const {
     register,
@@ -33,9 +42,10 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
   } = useForm<CreateProjectInput>({
     resolver: zodResolver(CreateProjectSchema),
     defaultValues: {
-      foco_estrategico: 'Eficiencia',
-      area_responsable: 'Reclutamiento',
       tipo: 'Proyecto',
+      foco_estrategico: 'Desarrollo Organizacional',
+      area_responsable: 'DO',
+      prioridad: 3,
     },
   })
 
@@ -45,18 +55,18 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
   const onSubmit = async (data: CreateProjectInput) => {
     try {
       await crearMutation.mutateAsync(data)
-      addToast({ type: 'success', message: `Proyecto "${data.nombre}" creado` })
+      addToast({ type: 'success', title: `Proyecto "${data.nombre}" creado` })
       onClose()
     } catch (e: unknown) {
-      addToast({ type: 'error', message: e instanceof Error ? e.message : 'Error al crear' })
+      addToast({ type: 'error', title: 'Error al crear proyecto', description: e instanceof Error ? e.message : 'Error desconocido' })
     }
   }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 overflow-hidden max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
           <h2 className="text-lg font-bold text-gray-900">Nuevo Proyecto</h2>
           <button
             onClick={onClose}
@@ -67,7 +77,7 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-5 space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-5 space-y-4 overflow-y-auto">
           {/* Nombre */}
           <div>
             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
@@ -144,11 +154,29 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
                 {...register('tipo')}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                {['Proyecto', 'Proceso', 'Iniciativa'].map((t) => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
+                <option value="Proyecto">Proyecto</option>
+                <option value="Línea">Línea</option>
               </select>
             </div>
+          </div>
+
+          {/* Responsable */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+              Responsable *
+            </label>
+            <select
+              {...register('responsable_primario')}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Selecciona responsable...</option>
+              {usuarios.map((u) => (
+                <option key={u.id} value={u.id}>{u.nombre_completo}</option>
+              ))}
+            </select>
+            {errors.responsable_primario && (
+              <p className="text-xs text-red-500 mt-1">{errors.responsable_primario.message}</p>
+            )}
           </div>
 
           {/* Fechas */}
@@ -171,12 +199,12 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
                 Fecha fin *
               </label>
               <input
-                {...register('fecha_fin')}
+                {...register('fecha_fin_planificada')}
                 type="date"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              {errors.fecha_fin && (
-                <p className="text-xs text-red-500 mt-1">{errors.fecha_fin.message}</p>
+              {errors.fecha_fin_planificada && (
+                <p className="text-xs text-red-500 mt-1">{errors.fecha_fin_planificada.message}</p>
               )}
             </div>
           </div>
@@ -184,10 +212,10 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
           {/* Descripción */}
           <div>
             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Descripción
+              Descripción ejecutiva
             </label>
             <textarea
-              {...register('descripcion')}
+              {...register('descripcion_ejecutiva')}
               rows={3}
               placeholder="Describe el objetivo del proyecto..."
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"

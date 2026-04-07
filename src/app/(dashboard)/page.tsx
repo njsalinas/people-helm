@@ -8,21 +8,25 @@ import { Filtros } from '@/components/Dashboard/Filtros'
 import { useProyectos } from '@/hooks/useProjects'
 import { useUIStore } from '@/stores/uiStore'
 import { useAuth } from '@/hooks/useAuth'
+import { ProyectoForm } from '@/components/Proyectos/ProyectoForm'
 
 export default function HomePage() {
   const router = useRouter()
   const { user } = useAuth()
-  const { filtros, setFiltros, clearFiltros, openProyectoForm } = useUIStore((s) => ({
+  const { filtros, setFiltros, clearFiltros, openProyectoForm, isProyectoFormOpen, closeProyectoForm } = useUIStore((s) => ({
     filtros: s.filtros,
     setFiltros: s.setFiltros,
     clearFiltros: s.clearFiltros,
     openProyectoForm: s.openProyectoForm,
+    isProyectoFormOpen: s.isProyectoFormOpen,
+    closeProyectoForm: s.closeProyectoForm,
   }))
 
   const { data: proyectos = [], isLoading, error } = useProyectos(filtros)
 
   return (
     <div className="space-y-5">
+      {isProyectoFormOpen && <ProyectoForm onClose={closeProyectoForm} />}
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

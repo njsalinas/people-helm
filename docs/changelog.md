@@ -3,6 +3,8 @@
 *Auto-generated — do not edit manually*
 
 ```
+f83e031 fix: corregir tipos en settings page (nombre_completo, evento, canal_alerta_visual)
+3d544b3 docs: auto-generated documentation [skip ci]
 51f43c6 fix: corregir addToast message→title en páginas restantes
 54bd21d docs: auto-generated documentation [skip ci]
 32312ab fix: corregir errores ESLint que bloqueaban build en Vercel

@@ -12,41 +12,46 @@ import React from 'react'
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 
-// ─── MSW server ───────────────────────────────────────────────────────────────
+// ─── Supabase mock ────────────────────────────────────────────────────────────
+
+const mockProyecto = {
+  id: 'p1',
+  nombre: 'ATS Q2',
+  estado: 'En Curso',
+  color_semaforo: 'VERDE',
+  porcentaje_avance: 40,
+  bloqueos_activos: 0,
+  area_responsable: 'DO',
+  categoria: 'Desempeño',
+  foco_estrategico: 'Desarrollo Organizacional',
+  tipo: 'Proyecto',
+  fecha_inicio: '2026-01-01',
+  fecha_fin_planificada: '2026-12-31',
+  responsable_nombre: 'Test User',
+  responsable_email: null,
+  dias_bloqueo_max: 0,
+}
+
+const mockSupabaseChain = {
+  select: vi.fn().mockReturnThis(),
+  in: vi.fn().mockReturnThis(),
+  gt: vi.fn().mockReturnThis(),
+  not: vi.fn().mockReturnThis(),
+  eq: vi.fn().mockReturnThis(),
+  gte: vi.fn().mockReturnThis(),
+  lte: vi.fn().mockReturnThis(),
+  order: vi.fn().mockReturnThis(),
+}
+
+vi.mock('@/lib/supabase', () => ({
+  getSupabaseBrowserClient: vi.fn(() => ({
+    from: vi.fn(() => mockSupabaseChain),
+  })),
+}))
+
+// ─── MSW server (for non-Supabase HTTP calls) ─────────────────────────────────
 
 const handlers = [
-  http.get('/api/proyectos', () =>
-    HttpResponse.json({
-      data: [
-        {
-          id: 'p1',
-          nombre: 'ATS Q2',
-          estado: 'En Progreso',
-          color_semaforo: 'VERDE',
-          porcentaje_avance: 40,
-          bloqueos_activos: 0,
-          area_responsable: 'Reclutamiento',
-          categoria: 'Atracción',
-          foco_estrategico: 'Eficiencia',
-          tipo: 'Proyecto',
-          fecha_inicio: '2025-01-01',
-          fecha_fin: '2025-12-31',
-          responsable_nombre: null,
-          responsable_email: null,
-          dias_bloqueo_max: 0,
-        },
-      ],
-    })
-  ),
-
-  http.post('/api/proyectos', () =>
-    HttpResponse.json({ data: { id: 'p-new' }, mensaje: 'Proyecto creado' }, { status: 201 })
-  ),
-
-  http.get('/api/proyectos/:id/tareas', () =>
-    HttpResponse.json({ data: [] })
-  ),
-
   http.get('/api/reporteria/semaforo', () =>
     HttpResponse.json({ data: [] })
   ),
@@ -54,8 +59,12 @@ const handlers = [
 
 const server = setupServer(...handlers)
 
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
-afterEach(() => server.resetHandlers())
+beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }))
+afterEach(() => {
+  server.resetHandlers()
+  // Reset mock to default success state
+  mockSupabaseChain.order.mockReturnValue({ data: [mockProyecto], error: null })
+})
 afterAll(() => server.close())
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -72,6 +81,11 @@ function createWrapper() {
 
 describe('useProyectos', () => {
   it('fetches and returns project list', async () => {
+    // hook calls .order() twice; first returns chain, second returns data
+    mockSupabaseChain.order
+      .mockReturnValueOnce(mockSupabaseChain)
+      .mockReturnValueOnce({ data: [mockProyecto], error: null })
+
     const { useProyectos } = await import('@/hooks/useProjects')
     const { result } = renderHook(() => useProyectos({}), {
       wrapper: createWrapper(),
@@ -83,11 +97,9 @@ describe('useProyectos', () => {
   })
 
   it('handles API error gracefully', async () => {
-    server.use(
-      http.get('/api/proyectos', () =>
-        HttpResponse.json({ error: 'Server error' }, { status: 500 })
-      )
-    )
+    mockSupabaseChain.order
+      .mockReturnValueOnce(mockSupabaseChain)
+      .mockReturnValueOnce({ data: null, error: new Error('Server error') })
 
     const { useProyectos } = await import('@/hooks/useProjects')
     const { result } = renderHook(() => useProyectos({}), {

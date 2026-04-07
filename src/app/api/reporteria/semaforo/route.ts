@@ -46,23 +46,58 @@ export async function POST(request: NextRequest) {
   const mes = body.mes ?? now.getMonth() + 1
   const anio = body.anio ?? now.getFullYear()
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  const supabase = createServerSupabaseClient()
 
-  const response = await fetch(`${supabaseUrl}/functions/v1/generar-semaforo`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${anonKey}`,
-    },
-    body: JSON.stringify({ mes, anio }),
-  })
+  // Obtener proyectos desde la vista
+  const { data: proyectos, error: projError } = await supabase
+    .from('vista_semaforo_proyectos')
+    .select('*')
 
-  if (!response.ok) {
-    const err = await response.text()
-    return NextResponse.json({ error: err }, { status: response.status })
+  if (projError) return NextResponse.json({ error: projError.message }, { status: 500 })
+
+  const verde: typeof proyectos = []
+  const amarillo: typeof proyectos = []
+  const rojo: typeof proyectos = []
+
+  for (const p of proyectos ?? []) {
+    if (p.color_semaforo === 'VERDE') verde.push(p)
+    else if (p.color_semaforo === 'AMARILLO') amarillo.push(p)
+    else rojo.push(p)
   }
 
-  const data = await response.json()
-  return NextResponse.json({ data, mensaje: 'Semáforo generado' }, { status: 201 })
+  const toItem = (p: (typeof proyectos)[number], extra = '') => ({
+    id: p.id,
+    nombre: p.nombre,
+    area: p.area_responsable,
+    comentario: extra,
+  })
+
+  const contenido_automatico = {
+    verde: verde.map((p) => toItem(p, `Estado: ${p.estado} | Avance: ${p.porcentaje_avance}%`)),
+    amarillo: amarillo.map((p) => toItem(p, `Estado: ${p.estado} | Avance: ${p.porcentaje_avance}% | Bloqueos: ${p.bloqueos_activos}`)),
+    rojo: rojo.map((p) => toItem(p, `Estado: ${p.estado} | Bloqueos activos: ${p.bloqueos_activos}`)),
+  }
+
+  const { data, error } = await supabase
+    .from('semaforos')
+    .upsert([{
+      mes,
+      anio,
+      contenido_automatico,
+      comentario_ejecutivo_verde: `Proyectos en tiempo: ${verde.length}`,
+      comentario_ejecutivo_amarillo: `Proyectos en riesgo: ${amarillo.length}`,
+      comentario_ejecutivo_rojo: `Proyectos bloqueados: ${rojo.length}`,
+      estado: 'Borrador',
+      created_by: user.id,
+    }], { onConflict: 'mes,anio' })
+    .select()
+    .single()
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  return NextResponse.json({
+    data,
+    resumen: { verde: verde.length, amarillo: amarillo.length, rojo: rojo.length },
+    mensaje: 'Semáforo generado',
+  }, { status: 201 })
 }

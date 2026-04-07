@@ -11,17 +11,20 @@ import {
   LoginSchema,
 } from '@/lib/validations'
 
+const UUID = '00000000-0000-0000-0000-000000000001'
+
 // ─── CreateProjectSchema ──────────────────────────────────────────────────────
 
 describe('CreateProjectSchema', () => {
   const valid = {
     nombre: 'ATS Q2',
     tipo: 'Proyecto',
-    foco_estrategico: 'Eficiencia',
-    area_responsable: 'Reclutamiento',
-    categoria: 'Atracción',
-    fecha_inicio: '2025-01-01',
-    fecha_fin: '2025-06-30',
+    foco_estrategico: 'Desarrollo Organizacional',
+    area_responsable: 'DO',
+    categoria: 'Desempeño',
+    responsable_primario: UUID,
+    fecha_inicio: '2026-01-01',
+    fecha_fin_planificada: '2026-06-30',
   }
 
   it('acepta datos válidos', () => {
@@ -29,7 +32,7 @@ describe('CreateProjectSchema', () => {
   })
 
   it('rechaza cuando fecha_fin < fecha_inicio', () => {
-    const r = CreateProjectSchema.safeParse({ ...valid, fecha_fin: '2024-12-31' })
+    const r = CreateProjectSchema.safeParse({ ...valid, fecha_fin_planificada: '2025-12-31' })
     expect(r.success).toBe(false)
   })
 
@@ -53,10 +56,12 @@ describe('CreateProjectSchema', () => {
 
 describe('CreateTaskSchema', () => {
   const valid = {
-    proyecto_id: 'abc-123',
+    proyecto_id: UUID,
     nombre: 'Revisar candidatos',
-    estado: 'Pendiente',
-    prioridad: 'Media',
+    responsable_id: UUID,
+    fecha_inicio: '2026-01-01',
+    fecha_fin_planificada: '2026-06-30',
+    prioridad: 3,
   }
 
   it('acepta tarea mínima válida', () => {
@@ -68,8 +73,8 @@ describe('CreateTaskSchema', () => {
     expect(r.success).toBe(false)
   })
 
-  it('rechaza estado inválido', () => {
-    const r = CreateTaskSchema.safeParse({ ...valid, estado: 'Inventado' })
+  it('rechaza prioridad fuera de rango', () => {
+    const r = CreateTaskSchema.safeParse({ ...valid, prioridad: 6 })
     expect(r.success).toBe(false)
   })
 })
@@ -78,10 +83,10 @@ describe('CreateTaskSchema', () => {
 
 describe('CreateBloqueoSchema', () => {
   const valid = {
-    proyecto_id: 'p1',
-    tipo: 'Técnico',
-    descripcion: 'El sistema de ATS no responde',
-    accion_requerida: 'Escalar a TI',
+    proyecto_id: UUID,
+    tipo: 'Espera decisión',
+    descripcion: 'El sistema de ATS no responde desde ayer en producción',
+    accion_requerida: 'Decisión',
   }
 
   it('acepta bloqueo válido', () => {
@@ -103,8 +108,8 @@ describe('CreateBloqueoSchema', () => {
 
 describe('CreateRiesgoSchema', () => {
   const valid = {
-    proyecto_id: 'p1',
-    descripcion: 'Posible rotación del responsable',
+    proyecto_id: UUID,
+    descripcion: 'Posible rotación del responsable del proyecto',
     probabilidad: 'Media',
     impacto: 'Alto',
   }

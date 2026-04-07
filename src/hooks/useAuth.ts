@@ -16,44 +16,27 @@ export function useAuth() {
   const supabase = getSupabaseBrowserClient()
 
   useEffect(() => {
-    // Obtener sesión actual
-    supabase.auth.getUser().then(async ({ data: { user: authUser } }) => {
-      if (!authUser) {
-        clearUser()
-        return
-      }
-
-      const { data: perfil } = await supabase
-        .from('usuarios')
-        .select('id, email, nombre_completo, rol, area_responsable')
-        .eq('id', authUser.id)
-        .single()
-
-      if (perfil) {
-        setUser(perfil as SessionUser)
-      } else {
-        clearUser()
-      }
-    })
-
-    // Escuchar cambios de auth
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_OUT' || !session) {
+      if (!session || event === 'SIGNED_OUT') {
         clearUser()
-        router.push('/login')
+        if (event === 'SIGNED_OUT') router.push('/login')
         return
       }
 
-      if (event === 'SIGNED_IN' && session.user) {
-        const { data: perfil } = await supabase
-          .from('usuarios')
-          .select('id, email, nombre_completo, rol, area_responsable')
-          .eq('id', session.user.id)
-          .single()
-
-        if (perfil) setUser(perfil as SessionUser)
+      if (
+        event === 'INITIAL_SESSION' ||
+        event === 'SIGNED_IN' ||
+        event === 'TOKEN_REFRESHED'
+      ) {
+        const res = await fetch('/api/me')
+        if (res.ok) {
+          const json = await res.json()
+          setUser(json.data as SessionUser)
+        } else {
+          clearUser()
+        }
       }
     })
 

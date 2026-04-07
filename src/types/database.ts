@@ -231,8 +231,10 @@ export interface DbNotificacionConfig {
 
 export interface VistaSemaforoProyecto extends DbProyecto {
   responsable_nombre: string
+  responsable_email: string | null
   color_semaforo: ColorSemaforo
   bloqueos_activos: number
+  dias_bloqueo_max: number
   riesgos_activos: number
   dias_vencido: number | null
   dias_restantes: number

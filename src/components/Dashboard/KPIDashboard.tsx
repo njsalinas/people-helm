@@ -54,9 +54,9 @@ export function KPIDashboard({ proyectos, isLoading }: KPIDashboardProps) {
     },
     {
       label: 'Bloqueos Activos',
-      value: kpis.bloqueos_activos,
-      color: kpis.bloqueos_activos > 0 ? 'text-red-700' : 'text-gray-700',
-      bg: kpis.bloqueos_activos > 0 ? 'bg-red-50' : 'bg-white',
+      value: kpis.bloqueosActivos,
+      color: kpis.bloqueosActivos > 0 ? 'text-red-700' : 'text-gray-700',
+      bg: kpis.bloqueosActivos > 0 ? 'bg-red-50' : 'bg-white',
       icon: '⚠️',
     },
     {

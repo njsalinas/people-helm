@@ -24,12 +24,14 @@ import type { Tarea, TareaEstado, KanbanColumn as KanbanColumnType } from '@/typ
 import { KanbanColumn } from './KanbanColumn'
 import { TaskCard } from './TaskCard'
 import { TaskDetailModal } from './TaskDetailModal'
+import { TareaForm } from '../TareaForm'
 import { useActualizarTarea } from '@/hooks/useTareas'
 import { useUIStore } from '@/stores/uiStore'
 
 interface KanbanBoardProps {
   proyectoId: string
   tareas: Tarea[]
+  usuarios: { id: string; nombre_completo: string }[]
   isLoading?: boolean
   canEdit?: boolean
 }
@@ -48,13 +50,17 @@ function buildColumns(tareas: Tarea[]): KanbanColumnType[] {
   }))
 }
 
-export function KanbanBoard({ proyectoId, tareas, isLoading, canEdit = true }: KanbanBoardProps) {
+export function KanbanBoard({ proyectoId, tareas, usuarios, isLoading, canEdit = true }: KanbanBoardProps) {
   const [columns, setColumns] = useState<KanbanColumnType[]>(() => buildColumns(tareas))
   const [activeTask, setActiveTask] = useState<Tarea | null>(null)
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
 
   const actualizarTarea = useActualizarTarea(proyectoId)
-  const openProyectoForm = useUIStore((s) => s.openProyectoForm)
+  const { isTareaFormOpen, openTareaForm, closeTareaForm } = useUIStore((s) => ({
+    isTareaFormOpen: s.isTareaFormOpen,
+    openTareaForm: s.openTareaForm,
+    closeTareaForm: s.closeTareaForm,
+  }))
 
   // Rebuild columns when tareas change
   useState(() => {
@@ -146,7 +152,7 @@ export function KanbanBoard({ proyectoId, tareas, isLoading, canEdit = true }: K
               key={column.id}
               column={column}
               onTaskClick={(id) => setSelectedTaskId(id)}
-              onAddTask={canEdit ? () => openProyectoForm(proyectoId) : undefined}
+              onAddTask={canEdit ? () => openTareaForm(proyectoId) : undefined}
             />
           ))}
         </div>
@@ -164,6 +170,14 @@ export function KanbanBoard({ proyectoId, tareas, isLoading, canEdit = true }: K
           proyectoId={proyectoId}
           onClose={() => setSelectedTaskId(null)}
           canEdit={canEdit}
+        />
+      )}
+
+      {isTareaFormOpen && (
+        <TareaForm
+          proyectoId={proyectoId}
+          usuarios={usuarios}
+          onClose={closeTareaForm}
         />
       )}
     </>

@@ -21,9 +21,9 @@ export default function SemaforoPage() {
   const handleGenerar = async () => {
     try {
       await generarMutation.mutateAsync({ mes: now.getMonth() + 1, anio: now.getFullYear() })
-      addToast({ type: 'success', message: 'Semáforo generado correctamente' })
+      addToast({ type: 'success', title: 'Semáforo generado correctamente' })
     } catch (e: unknown) {
-      addToast({ type: 'error', message: e instanceof Error ? e.message : 'Error al generar' })
+      addToast({ type: 'error', title: e instanceof Error ? e.message : 'Error al generar' })
     }
   }
 
@@ -31,9 +31,9 @@ export default function SemaforoPage() {
     if (!selected) return
     try {
       await publicarMutation.mutateAsync(selected.id)
-      addToast({ type: 'success', message: 'Semáforo publicado' })
+      addToast({ type: 'success', title: 'Semáforo publicado' })
     } catch (e: unknown) {
-      addToast({ type: 'error', message: e instanceof Error ? e.message : 'Error al publicar' })
+      addToast({ type: 'error', title: e instanceof Error ? e.message : 'Error al publicar' })
     }
   }
 

@@ -1,13 +1,1 @@
-#!/bin/bash
-# .husky/pre-commit
-# Ejecutado antes de cada commit git
-
-echo "🔄 Pre-commit: Updating documentation..."
-
-# Generar docs y actualizar CLAUDE.md
-node .claude/hooks/beforeCommit.js
-
-# Agregar cambios de docs al staging
-git add docs/ CLAUDE.md
-
-exit 0
+npm test

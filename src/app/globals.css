@@ -7,9 +7,6 @@
     font-family: Inter, system-ui, sans-serif;
   }
 
-  * {
-    @apply border-border;
-  }
 }
 
 @layer utilities {

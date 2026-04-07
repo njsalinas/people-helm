@@ -29,7 +29,7 @@ export default function LoginPage() {
 
     try {
       await login(data.email, data.password)
-      router.push('/')
+      router.replace('/')
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error al iniciar sesión'
       if (message.includes('Invalid login credentials')) {
@@ -37,7 +37,6 @@ export default function LoginPage() {
       } else {
         setError(message)
       }
-    } finally {
       setIsSubmitting(false)
     }
   }

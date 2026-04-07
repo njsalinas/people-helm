@@ -3,7 +3,6 @@
  */
 
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import type { SessionUser } from '@/lib/auth'
 
 interface AuthState {
@@ -14,18 +13,10 @@ interface AuthState {
   clearUser: () => void
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      user: null,
-      isLoading: true,
-      setUser: (user) => set({ user, isLoading: false }),
-      setLoading: (isLoading) => set({ isLoading }),
-      clearUser: () => set({ user: null, isLoading: false }),
-    }),
-    {
-      name: 'people-helm-auth',
-      partialize: (state) => ({ user: state.user }),
-    }
-  )
-)
+export const useAuthStore = create<AuthState>()((set) => ({
+  user: null,
+  isLoading: true,
+  setUser: (user) => set({ user, isLoading: false }),
+  setLoading: (isLoading) => set({ isLoading }),
+  clearUser: () => set({ user: null, isLoading: false }),
+}))

@@ -3,7 +3,7 @@
  */
 
 import { createServerSupabaseClient } from './supabase-server'
-import type { DbUsuario, UserRole } from '@/types/database'
+import type { UserRole } from '@/types/database'
 
 export interface SessionUser {
   id: string
@@ -44,39 +44,3 @@ export async function getServerUser(): Promise<SessionUser | null> {
   }
 }
 
-/**
- * Verifica si un usuario tiene acceso a un recurso según su rol
- */
-export function canAccess(
-  userRol: UserRole,
-  accion: 'crear' | 'leer' | 'actualizar' | 'eliminar',
-  recurso: 'proyectos' | 'bloqueos' | 'riesgos' | 'semaforos' | 'usuarios'
-): boolean {
-  if (userRol === 'Gerente') return true
-  if (userRol === 'Espectador') return accion === 'leer'
-
-  // Líder Area
-  const permisos: Record<string, ('crear' | 'leer' | 'actualizar' | 'eliminar')[]> = {
-    proyectos: ['crear', 'leer', 'actualizar'],
-    bloqueos: ['crear', 'leer', 'actualizar'],
-    riesgos: ['crear', 'leer', 'actualizar'],
-    semaforos: ['leer'],
-    usuarios: ['leer'],
-  }
-
-  return permisos[recurso]?.includes(accion) ?? false
-}
-
-/**
- * Verifica si el usuario puede editar un proyecto específico
- * (Gerente puede todo, Líder solo los suyos)
- */
-export function canEditProject(
-  userId: string,
-  userRol: UserRole,
-  responsablePrimario: string
-): boolean {
-  if (userRol === 'Gerente') return true
-  if (userRol === 'Líder Area') return responsablePrimario === userId
-  return false
-}

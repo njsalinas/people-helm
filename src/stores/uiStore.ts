@@ -18,6 +18,7 @@ interface UIState {
   isBloqueoFormOpen: boolean
   isRiesgoFormOpen: boolean
   isTaskDetailOpen: boolean
+  isTareaFormOpen: boolean
   selectedProyectoId: string | null
   selectedTareaId: string | null
 
@@ -39,6 +40,8 @@ interface UIState {
   closeRiesgoForm: () => void
   openTaskDetail: (tareaId: string) => void
   closeTaskDetail: () => void
+  openTareaForm: (proyectoId: string) => void
+  closeTareaForm: () => void
   setFiltros: (filtros: Partial<ProyectosFilter>) => void
   clearFiltros: () => void
   addToast: (toast: Omit<Toast, 'id'>) => void
@@ -52,6 +55,7 @@ export const useUIStore = create<UIState>((set, get) => ({
   isBloqueoFormOpen: false,
   isRiesgoFormOpen: false,
   isTaskDetailOpen: false,
+  isTareaFormOpen: false,
   selectedProyectoId: null,
   selectedTareaId: null,
   filtros: {},
@@ -73,6 +77,8 @@ export const useUIStore = create<UIState>((set, get) => ({
 
   openTaskDetail: (tareaId) => set({ isTaskDetailOpen: true, selectedTareaId: tareaId }),
   closeTaskDetail: () => set({ isTaskDetailOpen: false, selectedTareaId: null }),
+  openTareaForm: (proyectoId) => set({ isTareaFormOpen: true, selectedProyectoId: proyectoId }),
+  closeTareaForm: () => set({ isTareaFormOpen: false }),
 
   setFiltros: (nuevos) => set((state) => ({ filtros: { ...state.filtros, ...nuevos } })),
   clearFiltros: () => set({ filtros: {} }),

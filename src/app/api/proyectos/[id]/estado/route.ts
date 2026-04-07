@@ -5,7 +5,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import { getServerUser, canEditProject } from '@/lib/auth'
+import { getServerUser } from '@/lib/auth'
+import { canEditProject } from '@/lib/utils'
 import { UpdateProjectStatusSchema } from '@/lib/validations'
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {

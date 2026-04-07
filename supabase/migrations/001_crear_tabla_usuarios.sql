@@ -39,15 +39,16 @@ CREATE TRIGGER usuarios_updated_at
 -- Row Level Security
 ALTER TABLE usuarios ENABLE ROW LEVEL SECURITY;
 
+-- Función auxiliar para obtener rol sin activar RLS (evita recursión infinita)
+CREATE OR REPLACE FUNCTION public.get_mi_rol()
+RETURNS TEXT AS $$
+  SELECT rol FROM public.usuarios WHERE id = auth.uid();
+$$ LANGUAGE sql SECURITY DEFINER STABLE;
+
 -- Gerentes ven todos los usuarios
 CREATE POLICY "gerentes_ven_todos" ON usuarios
   FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM usuarios u
-      WHERE u.id = auth.uid() AND u.rol = 'Gerente'
-    )
-  );
+  USING (public.get_mi_rol() = 'Gerente');
 
 -- Usuarios ven su propio perfil
 CREATE POLICY "usuarios_ven_propio" ON usuarios
@@ -57,12 +58,7 @@ CREATE POLICY "usuarios_ven_propio" ON usuarios
 -- Gerentes pueden actualizar cualquier usuario
 CREATE POLICY "gerentes_actualizan_usuarios" ON usuarios
   FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM usuarios u
-      WHERE u.id = auth.uid() AND u.rol = 'Gerente'
-    )
-  );
+  USING (public.get_mi_rol() = 'Gerente');
 
 -- Cualquier usuario autenticado puede actualizar su propio perfil
 CREATE POLICY "usuarios_actualizan_propio" ON usuarios
@@ -79,7 +75,8 @@ BEGIN
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'nombre_completo', split_part(NEW.email, '@', 1)),
     COALESCE(NEW.raw_user_meta_data->>'rol', 'Espectador')
-  );
+  )
+  ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

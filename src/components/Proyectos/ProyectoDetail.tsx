@@ -8,7 +8,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { Proyecto, ProyectoEstado } from '@/types'
 import { KanbanBoard } from './Kanban/KanbanBoard'
 import { TimelineChart } from './Timeline/TimelineChart'
@@ -16,8 +16,7 @@ import { TaskTable } from './Lista/TaskTable'
 import { useTareas } from '@/hooks/useTareas'
 import { useActualizarEstadoProyecto } from '@/hooks/useProjects'
 import { useAuth } from '@/hooks/useAuth'
-import { canEditProject } from '@/lib/auth'
-import { cn, formatDate, calcularDiasRestantes, formatPorcentaje, obtenerIniciales } from '@/lib/utils'
+import { cn, formatDate, calcularDiasRestantes, formatPorcentaje, obtenerIniciales, canEditProject } from '@/lib/utils'
 import { COLORES_ESTADO, ESTADOS_PROYECTO } from '@/types/domain'
 import { TaskDetailModal } from './Kanban/TaskDetailModal'
 
@@ -37,6 +36,14 @@ export function ProyectoDetail({ proyecto }: ProyectoDetailProps) {
   const { user } = useAuth()
   const { data: tareas = [], isLoading: tareasLoading } = useTareas(proyecto.id)
   const actualizarEstado = useActualizarEstadoProyecto()
+
+  const [usuarios, setUsuarios] = useState<{ id: string; nombre_completo: string }[]>([])
+  useEffect(() => {
+    fetch('/api/usuarios')
+      .then((r) => r.json())
+      .then((json) => { if (json.data) setUsuarios(json.data) })
+      .catch(() => {})
+  }, [])
 
   const canEdit = user
     ? canEditProject(user.id, user.rol, proyecto.responsable_primario)
@@ -171,6 +178,7 @@ export function ProyectoDetail({ proyecto }: ProyectoDetailProps) {
           <KanbanBoard
             proyectoId={proyecto.id}
             tareas={tareas}
+            usuarios={usuarios}
             isLoading={tareasLoading}
             canEdit={canEdit}
           />

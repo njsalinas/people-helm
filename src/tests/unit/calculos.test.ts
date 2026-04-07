@@ -12,19 +12,35 @@ function makeProyecto(overrides: Partial<VistaSemaforoProyecto>): VistaSemaforoP
   return {
     id: 'p1',
     nombre: 'Test',
-    estado: 'En Progreso',
+    estado: 'En Curso',
     porcentaje_avance: 50,
-    fecha_inicio: '2025-01-01',
-    fecha_fin: '2025-12-31',
-    area_responsable: 'Reclutamiento',
+    fecha_inicio: '2026-01-01',
+    fecha_fin_planificada: '2026-12-31',
+    area_responsable: 'DO',
     categoria: 'Atracción',
-    foco_estrategico: 'Eficiencia',
+    foco_estrategico: 'Desarrollo Organizacional',
     tipo: 'Proyecto',
-    responsable_nombre: null,
+    subtipo: null,
+    responsable_nombre: 'Test User',
     responsable_email: null,
     bloqueos_activos: 0,
     dias_bloqueo_max: 0,
+    riesgos_activos: 0,
+    dias_vencido: null,
+    dias_restantes: 270,
+    responsable_primario: '00000000-0000-0000-0000-000000000001',
+    descripcion_ejecutiva: null,
+    objetivo: null,
+    resultado_esperado: null,
+    fecha_fin_real: null,
+    prioridad: 3,
+    requiere_escalamiento: false,
+    proyecto_padre: null,
     color_semaforo: null,
+    created_at: '2026-01-01T00:00:00Z',
+    updated_at: '2026-01-01T00:00:00Z',
+    created_by: '00000000-0000-0000-0000-000000000001',
+    updated_by: '00000000-0000-0000-0000-000000000001',
     ...overrides,
   }
 }
@@ -32,12 +48,12 @@ function makeProyecto(overrides: Partial<VistaSemaforoProyecto>): VistaSemaforoP
 describe('calcularColorSemaforo', () => {
   it('devuelve VERDE para proyecto sin bloqueos y avance normal', () => {
     const p = makeProyecto({
-      estado: 'En Progreso',
+      estado: 'En Curso',
       bloqueos_activos: 0,
       dias_bloqueo_max: 0,
       porcentaje_avance: 60,
-      fecha_inicio: '2025-01-01',
-      fecha_fin: '2025-12-31',
+      fecha_inicio: '2026-01-01',
+      fecha_fin_planificada: '2026-12-31',
     })
     expect(calcularColorSemaforo(p)).toBe('VERDE')
   })
@@ -106,8 +122,8 @@ describe('calcularPrioridadRiesgo', () => {
 
 describe('calcularKPIs', () => {
   const proyectos = [
-    makeProyecto({ estado: 'En Progreso', color_semaforo: 'VERDE', bloqueos_activos: 0 }),
-    makeProyecto({ id: 'p2', estado: 'En Progreso', color_semaforo: 'AMARILLO', bloqueos_activos: 0 }),
+    makeProyecto({ estado: 'En Curso', color_semaforo: 'VERDE', bloqueos_activos: 0 }),
+    makeProyecto({ id: 'p2', estado: 'En Curso', color_semaforo: 'AMARILLO', bloqueos_activos: 0 }),
     makeProyecto({ id: 'p3', estado: 'Bloqueado', color_semaforo: 'ROJO', bloqueos_activos: 2 }),
     makeProyecto({ id: 'p4', estado: 'Finalizado', color_semaforo: 'VERDE', bloqueos_activos: 0 }),
   ]

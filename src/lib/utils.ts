@@ -7,6 +7,7 @@ import { twMerge } from 'tailwind-merge'
 import { differenceInDays, format, parseISO, isAfter, isBefore } from 'date-fns'
 import { es } from 'date-fns/locale'
 import type { ColorSemaforo, ProyectoGerencial, VistaSemaforoProyecto } from '@/types'
+import type { UserRole } from '@/types/database'
 import { DIAS_BLOQUEO_ROJO, DIAS_BLOQUEO_AMARILLO } from './constants'
 
 /**
@@ -19,11 +20,12 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Formatea una fecha ISO a formato legible en español
  */
-export function formatDate(dateStr: string, pattern = 'dd/MM/yyyy'): string {
+export function formatDate(dateStr: string | null | undefined, pattern = 'dd/MM/yyyy'): string {
+  if (dateStr == null) return '—'
   try {
     return format(parseISO(dateStr), pattern, { locale: es })
   } catch {
-    return dateStr
+    return '—'
   }
 }
 
@@ -63,36 +65,25 @@ export function calcularPorcentajeTiempo(fechaInicio: string, fechaFin: string):
 export function calcularColorSemaforo(
   proyecto: Pick<
     VistaSemaforoProyecto,
-    'estado' | 'porcentaje_avance' | 'bloqueos_activos' | 'fecha_inicio' | 'fecha_fin_planificada'
+    'estado' | 'porcentaje_avance' | 'bloqueos_activos' | 'dias_bloqueo_max' | 'fecha_inicio' | 'fecha_fin_planificada'
   >
 ): ColorSemaforo {
-  const { estado, porcentaje_avance, bloqueos_activos } = proyecto
+  const { estado, porcentaje_avance, bloqueos_activos, dias_bloqueo_max } = proyecto
 
   if (estado === 'Finalizado') return 'VERDE'
+  if (estado === 'Bloqueado') return 'ROJO'
+  if (estado === 'En Riesgo') return 'ROJO'
 
-  // Calcular máximo días bloqueado (simplificado en frontend, server calcula el real)
-  if (estado === 'Bloqueado' && bloqueos_activos > 0) return 'ROJO'
-  if (bloqueos_activos >= DIAS_BLOQUEO_ROJO) return 'ROJO'
-  if (estado === 'En Riesgo') return 'AMARILLO'
+  if (dias_bloqueo_max > DIAS_BLOQUEO_ROJO) return 'ROJO'
+  if (dias_bloqueo_max > DIAS_BLOQUEO_AMARILLO) return 'AMARILLO'
 
   const porcentajeTiempo = calcularPorcentajeTiempo(
     proyecto.fecha_inicio,
     proyecto.fecha_fin_planificada
   )
 
-  if (
-    estado === 'En Curso' &&
-    porcentaje_avance >= porcentajeTiempo &&
-    bloqueos_activos === 0
-  ) {
+  if (porcentaje_avance >= porcentajeTiempo && bloqueos_activos === 0) {
     return 'VERDE'
-  }
-
-  if (
-    estado === 'En Curso' &&
-    (porcentaje_avance < porcentajeTiempo || bloqueos_activos > 0)
-  ) {
-    return 'AMARILLO'
   }
 
   return 'AMARILLO'
@@ -104,23 +95,22 @@ export function calcularColorSemaforo(
 export function calcularPrioridadRiesgo(
   probabilidad: 'Alta' | 'Media' | 'Baja',
   impacto: 'Alto' | 'Medio' | 'Bajo'
-): number {
-  const matriz: Record<string, Record<string, number>> = {
-    Alta: { Alto: 1, Medio: 2, Bajo: 3 },
-    Media: { Alto: 2, Medio: 3, Bajo: 4 },
-    Baja: { Alto: 3, Medio: 4, Bajo: 5 },
+): 'Crítico' | 'Alta' | 'Media' | 'Baja' {
+  const matriz: Record<string, Record<string, 'Crítico' | 'Alta' | 'Media' | 'Baja'>> = {
+    Alta:  { Alto: 'Crítico', Medio: 'Alta',  Bajo: 'Media' },
+    Media: { Alto: 'Alta',    Medio: 'Media', Bajo: 'Baja'  },
+    Baja:  { Alto: 'Baja',    Medio: 'Baja',  Bajo: 'Baja'  },
   }
-  return matriz[probabilidad]?.[impacto] ?? 5
+  return matriz[probabilidad]?.[impacto] ?? 'Baja'
 }
 
 /**
  * Genera un color de badge para la prioridad de riesgo
  */
-export function colorPrioridadRiesgo(prioridad: number): string {
-  if (prioridad === 1) return 'bg-red-100 text-red-800'
-  if (prioridad === 2) return 'bg-orange-100 text-orange-800'
-  if (prioridad === 3) return 'bg-yellow-100 text-yellow-800'
-  if (prioridad === 4) return 'bg-blue-100 text-blue-800'
+export function colorPrioridadRiesgo(prioridad: 'Crítico' | 'Alta' | 'Media' | 'Baja'): string {
+  if (prioridad === 'Crítico') return 'bg-red-100 text-red-800'
+  if (prioridad === 'Alta') return 'bg-orange-100 text-orange-800'
+  if (prioridad === 'Media') return 'bg-yellow-100 text-yellow-800'
   return 'bg-gray-100 text-gray-800'
 }
 
@@ -151,7 +141,8 @@ export function truncate(text: string, maxLength: number): string {
 /**
  * Genera las iniciales de un nombre completo
  */
-export function obtenerIniciales(nombreCompleto: string): string {
+export function obtenerIniciales(nombreCompleto: string | null | undefined): string {
+  if (!nombreCompleto) return '??'
   return nombreCompleto
     .split(' ')
     .slice(0, 2)
@@ -168,7 +159,7 @@ export function calcularKPIs(proyectos: ProyectoGerencial[]) {
   const verde = proyectos.filter((p) => p.color_semaforo === 'VERDE').length
   const amarillo = proyectos.filter((p) => p.color_semaforo === 'AMARILLO').length
   const rojo = proyectos.filter((p) => p.color_semaforo === 'ROJO').length
-  const bloqueos_activos = proyectos.reduce((sum, p) => sum + p.bloqueos_activos, 0)
+  const bloqueosActivos = proyectos.reduce((sum, p) => sum + p.bloqueos_activos, 0)
   const acciones_pendientes = proyectos.filter(
     (p) =>
       p.bloqueos_activos > 0 &&
@@ -176,7 +167,40 @@ export function calcularKPIs(proyectos: ProyectoGerencial[]) {
       p.estado === 'Bloqueado'
   ).length
 
-  return { total, verde, amarillo, rojo, bloqueos_activos, acciones_pendientes }
+  return { total, verde, amarillo, rojo, bloqueosActivos, acciones_pendientes }
+}
+
+/**
+ * Verifica si un usuario tiene acceso a un recurso según su rol
+ */
+export function canAccess(
+  userRol: UserRole,
+  accion: 'crear' | 'leer' | 'actualizar' | 'eliminar',
+  recurso: 'proyectos' | 'bloqueos' | 'riesgos' | 'semaforos' | 'usuarios'
+): boolean {
+  if (userRol === 'Gerente') return true
+  if (userRol === 'Espectador') return accion === 'leer'
+  const permisos: Record<string, ('crear' | 'leer' | 'actualizar' | 'eliminar')[]> = {
+    proyectos: ['crear', 'leer', 'actualizar'],
+    bloqueos: ['crear', 'leer', 'actualizar'],
+    riesgos: ['crear', 'leer', 'actualizar'],
+    semaforos: ['leer'],
+    usuarios: ['leer'],
+  }
+  return permisos[recurso]?.includes(accion) ?? false
+}
+
+/**
+ * Verifica si el usuario puede editar un proyecto específico
+ */
+export function canEditProject(
+  userId: string,
+  userRol: UserRole,
+  responsablePrimario: string
+): boolean {
+  if (userRol === 'Gerente') return true
+  if (userRol === 'Líder Area') return responsablePrimario === userId
+  return false
 }
 
 /**

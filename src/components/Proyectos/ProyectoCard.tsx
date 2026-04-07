@@ -29,7 +29,7 @@ const COLOR_DOT: Record<string, string> = {
 }
 
 export function ProyectoCard({ proyecto }: ProyectoCardProps) {
-  const diasRestantes = calcularDiasRestantes(proyecto.fecha_fin)
+  const diasRestantes = calcularDiasRestantes(proyecto.fecha_fin_planificada)
   const color = proyecto.color_semaforo ?? 'VERDE'
 
   return (

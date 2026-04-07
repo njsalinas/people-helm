@@ -1,6 +1,6 @@
 # people-helm - Sistema de Dirección Operativa para Área de Personas
 
-**Last Updated:** 2026-04-07T04:08:51.112Z
+**Last Updated:** 2026-04-07T15:16:01.641Z
 **Status:** ✅ Development
 
 ---
@@ -51,6 +51,9 @@ SaaS para gestionar proyectos, bloqueos, tareas y generar reportería automátic
 ## 📋 Últimas 5 Actualizaciones
 
 ```
+9ad991c fix: ProyectoForm funcional y modal integrado en dashboard
+3e5e9eb feat: autenticación, semáforo, formulario de tareas y corrección de tests
+66aa586 docs: auto-generated documentation [skip ci]
 d9498b7 feat: initial comit
 ```
 
@@ -60,8 +63,8 @@ d9498b7 feat: initial comit
 
 | Métrica | Valor |
 |---------|-------|
-| **Archivos fuente** | 82 |
-| **Componentes React** | 21 |
+| **Archivos fuente** | 86 |
+| **Componentes React** | 22 |
 | **Hooks personalizados** | 7 |
 | **Tests** | 6 |
 
@@ -78,4 +81,4 @@ d9498b7 feat: initial comit
 ---
 
 *Generado automáticamente por pre-commit hook*
-*Última sincronización:* 2026-04-07T04:08:51.112Z
+*Última sincronización:* 2026-04-07T15:16:01.641Z

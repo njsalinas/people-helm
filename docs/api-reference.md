@@ -12,6 +12,9 @@ GET - Retorna el usuario autenticado actual
 @file API Route: /api/health
 GET - Health check del servidor
 
+### `/me`
+
+
 ### `/notificaciones/config/[id]`
 @file API Route: /api/notificaciones/config/[id]
 PATCH - Activar / desactivar una configuración de notificación
@@ -66,6 +69,9 @@ PATCH - Cambiar estado del riesgo a Mitigado o Cerrado
 ### `/tareas/[id]/estado`
 @file API Route: /api/tareas/[id]/estado
 PATCH - Actualizar estado/avance de una tarea
+
+### `/usuarios`
+
 
 ## Supabase Functions
 

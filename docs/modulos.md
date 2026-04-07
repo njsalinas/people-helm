@@ -112,11 +112,14 @@ Vista de detalle de un proyecto con 3 pestañas: Kanban, Timeline, Lista
 
 ### `src/components/Proyectos/ProyectoForm.tsx`
 @component ProyectoForm
-Modal de creación / edición de proyecto
+Modal de creación de proyecto
 
 @example
 <ProyectoForm onClose={() => setOpen(false)} />
 **Exports:** ProyectoForm
+
+### `src/components/Proyectos/TareaForm.tsx`
+**Exports:** TareaForm
 
 ### `src/components/Proyectos/Timeline/TaskProgressBar.tsx`
 @component TaskProgressBar
@@ -209,7 +212,7 @@ Usado principalmente para invocaciones server-side o utilitarias.
 
 ### `src/lib/auth.ts`
 @file Lógica de autenticación y sesiones
-**Exports:** SessionUser, getServerUser, canAccess, canEditProject
+**Exports:** SessionUser, getServerUser
 
 ### `src/lib/constants.ts`
 @file Constantes globales del sistema
@@ -230,7 +233,7 @@ Mapea las tablas para TypeScript autocomplete
 
 ### `src/lib/utils.ts`
 @file Utilidades compartidas del sistema
-**Exports:** cn, formatDate, calcularDiasRestantes, calcularPorcentajeTiempo, calcularColorSemaforo, calcularPrioridadRiesgo, colorPrioridadRiesgo, colorFilaBloqueo, formatPorcentaje, truncate, obtenerIniciales, calcularKPIs, nombreMes
+**Exports:** cn, formatDate, calcularDiasRestantes, calcularPorcentajeTiempo, calcularColorSemaforo, calcularPrioridadRiesgo, colorPrioridadRiesgo, colorFilaBloqueo, formatPorcentaje, truncate, obtenerIniciales, calcularKPIs, canAccess, canEditProject, nombreMes
 
 ### `src/lib/validations.ts`
 @file Schemas de validación Zod para inputs del sistema

@@ -55,7 +55,7 @@ export function useRealtimeAlertas(usuarioId: string | undefined) {
       .on('broadcast', { event: 'alerta' }, ({ payload }) => {
         addToast({
           type: payload.tipo === 'error' ? 'error' : 'info',
-          message: payload.mensaje ?? 'Nueva notificación',
+          title: payload.mensaje ?? 'Nueva notificación',
         })
       })
       .subscribe()

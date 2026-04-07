@@ -3,6 +3,8 @@
 *Auto-generated — do not edit manually*
 
 ```
+ca2cb98 fix: force-dynamic en root layout para evitar pre-render sin env vars
+a13aeeb docs: auto-generated documentation [skip ci]
 1770361 fix: resolver errores TypeScript que bloqueaban build en Vercel
 6e956b8 docs: auto-generated documentation [skip ci]
 3aaffcc fix: actualizar campo activo→canal_alerta_visual en API route notificaciones

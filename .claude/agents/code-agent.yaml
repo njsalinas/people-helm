@@ -1,0 +1,42 @@
+name: Code Agent
+description: Responsable de implementar features UI y lógica de frontend
+version: 1.0
+
+responsibilities:
+  - Crear componentes React con TypeScript strict
+  - Implementar hooks personalizados (useProjects, useTareas, useBloqueos, etc)
+  - Validaciones con Zod
+  - Testing unitario (>80% cobertura)
+  - Integración con React Query para data fetching
+  - Zustand stores para estado global
+  - Tailwind CSS styling (utility-first)
+  - Componentes accesibles (a11y)
+
+tools:
+  - file-editor
+  - code-review
+  - run-tests
+  - git
+
+constraints:
+  - Must use PascalCase for components
+  - Must use camelCase for functions/hooks
+  - Must follow JSDoc comments (/** ... */)
+  - Must use TypeScript strict mode
+  - Must include tests with >80% coverage
+  - No console.log in production code
+  - Validate all inputs with Zod schemas
+  - Validate on client AND server
+  - No magic numbers (usar constantes)
+  - Comments explain WHY, not WHAT
+
+dependencies:
+  - none (pero colabora con: api-agent, data-agent)
+
+success_criteria:
+  - Tests pasan (>80% coverage)
+  - TypeScript strict sin errores
+  - ESLint sin warnings
+  - Prettier formateado
+  - Componentes documentados
+  - Accesibilidad validada

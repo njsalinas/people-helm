@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /Users/nelsonsalinasalvarado/Documents/Proyectos/people-helm/.claude/agents)",
+      "Bash(mkdir -p /Users/nelsonsalinasalvarado/Documents/Proyectos/people-helm/.claude/skills)",
+      "Bash(mkdir -p /Users/nelsonsalinasalvarado/Documents/Proyectos/people-helm/.claude/hooks)",
+      "Bash(mkdir -p /Users/nelsonsalinasalvarado/Documents/Proyectos/people-helm/.claude/commands)",
+      "Bash(mkdir -p /Users/nelsonsalinasalvarado/Documents/Proyectos/people-helm/.claude/mcp-configs)"
+    ]
+  }
+}

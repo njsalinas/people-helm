@@ -1,0 +1,87 @@
+# PEOPLE HELM - REGLAS DE CODIFICACIÓN GLOBALES
+
+naming:
+  components: PascalCase
+  functions: camelCase
+  constants: UPPER_SNAKE_CASE
+  types: PascalCase
+  variables: camelCase
+  database: snake_case
+
+typescript:
+  mode: strict
+  noImplicitAny: true
+  strictNullChecks: true
+  strictFunctionTypes: true
+  noUnusedLocals: true
+  noUnusedParameters: true
+  noImplicitReturns: true
+
+documentation:
+  jsdoc: required for all public functions/exports
+  tsdoc: required for types and interfaces
+  comments: explain WHY not WHAT
+  examples: required for complex functions
+
+  jsdoc_template: |
+    /**
+     * Brief description of function
+     * @param {Type} paramName - Description
+     * @returns {Type} Description
+     * @throws {ErrorType} Description
+     * @example
+     * const result = myFunction(param);
+     */
+
+testing:
+  coverage: ">80%"
+  unit: src/tests/unit/
+  integration: src/tests/integration/
+  e2e: src/tests/e2e/
+  naming_pattern: "*.test.ts or *.spec.ts"
+
+validation:
+  zod: required for all inputs
+  client_validation: before sending data
+  server_validation: validate again on receive
+  error_handling: descriptive error messages
+  no_magic_strings: use constants
+
+security:
+  rbac: required for authenticated routes
+  roles:
+    - Gerente
+    - "Líder Area"
+    - Espectador
+  https: required in production
+  sanitize: XSS protection on outputs
+  rateLimit: "100 requests/minute per user"
+  secrets: never in code, use .env
+
+formatting:
+  max_line_length: 100
+  indent: 2 spaces
+  quotes: single
+  semicolons: always
+  trailing_commas: es5
+
+imports:
+  absolute_imports: true
+  path_aliases: "@/ maps to src/"
+  tree_shaking: named imports preferred
+
+git:
+  commit_convention: Conventional Commits
+  format: "type(scope): subject"
+  types:
+    - feat
+    - fix
+    - refactor
+    - test
+    - docs
+    - chore
+    - perf
+    - ci
+  branch_naming: "feature/, bugfix/, docs/"
+  pr_required: true
+  tests_required: must pass before merge

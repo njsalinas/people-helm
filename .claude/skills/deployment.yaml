@@ -1,0 +1,32 @@
+name: Deployment Skill
+description: Vercel, GitHub Actions, CI/CD, environments
+version: 1.0
+
+expertise:
+  - Vercel deployment (Next.js)
+  - GitHub Actions workflows
+  - Environment configuration (.env)
+  - Pre-commit hooks (Husky)
+  - Semantic versioning (SemVer)
+  - Automated testing
+  - Automated documentation
+  - Monitoring y logging
+  - Performance monitoring
+  - Error tracking
+
+tools:
+  - vercel-cli
+  - github-actions
+  - husky
+  - lint-staged
+  - sentry
+
+knowledge_base:
+  - GitHub Actions syntax
+  - Vercel deployment process
+  - CI/CD best practices
+  - Environment management
+  - SemVer conventions
+
+dependencies:
+  - deploy-agent

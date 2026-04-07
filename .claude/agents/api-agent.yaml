@@ -1,0 +1,43 @@
+name: API Agent
+description: Responsable de APIs y Supabase Functions
+version: 1.0
+
+responsibilities:
+  - Crear Supabase Functions (Deno serverless)
+  - Implementar Next.js API routes (proxy a functions)
+  - Validar entrada con Zod
+  - Manejo de errores (try-catch, logging)
+  - Invocación de funciones Supabase
+  - Integración con cliente Supabase
+  - Testing de APIs (integration tests)
+  - Monitoreo y alertas
+
+tools:
+  - file-editor
+  - deno-cli
+  - supabase-cli
+  - code-review
+  - bash
+
+constraints:
+  - All inputs must validate with Zod
+  - All functions must have JSDoc with @param @returns @throws
+  - All errors must be handled and logged
+  - All responses must be typed
+  - Database transactions where needed
+  - Connection pooling for performance
+  - Timeout handling (functions max 60s)
+  - No blocking operations
+  - Use async/await pattern
+
+dependencies:
+  - data-agent (para cambios BD)
+  - code-agent (para componentes que consumen las APIs)
+
+success_criteria:
+  - API routes responden correctamente
+  - Funciones Supabase testeadas
+  - Validaciones funcionales
+  - Errors propios y descriptivos
+  - Documentación JSDoc completa
+  - Tests de integración pasan

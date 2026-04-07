@@ -1,0 +1,53 @@
+name: Auto-Documentation
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'supabase/migrations/**'
+      - 'supabase/functions/**'
+
+jobs:
+  generate-docs:
+    name: Generate & Commit Documentation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate API reference
+        run: node .github/scripts/generate-api-docs.js
+
+      - name: Generate module docs
+        run: node .github/scripts/generate-module-docs.js
+
+      - name: Generate schema docs
+        run: node .github/scripts/generate-schema-docs.js
+
+      - name: Update CLAUDE.md context
+        run: node .github/scripts/update-claude-context.js
+
+      - name: Check for doc changes
+        id: changes
+        run: |
+          git diff --quiet docs/ CLAUDE.md || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit updated docs
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/ CLAUDE.md
+          git commit -m "docs: auto-generated documentation [skip ci]"
+          git push

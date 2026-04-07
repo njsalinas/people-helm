@@ -1,0 +1,31 @@
+name: Auth Skill
+description: Supabase Auth, RBAC, sessions, security
+version: 1.0
+
+expertise:
+  - Supabase Auth setup (Email/Contraseña MVP, Azure AD futuro)
+  - JWT tokens generation y validation
+  - RBAC (Role-Based Access Control)
+  - 3 roles: Gerente, Líder Area, Espectador
+  - Middleware RBAC validation
+  - Session management (expiration, refresh)
+  - Secure password handling
+  - OAuth flows (futuro)
+  - Security headers
+
+tools:
+  - supabase-auth
+  - jsonwebtoken
+  - next/middleware
+  - bcryptjs
+
+knowledge_base:
+  - Authentication best practices
+  - RBAC patterns
+  - JWT security
+  - OAuth 2.0 flows
+  - Session management
+
+dependencies:
+  - api-agent
+  - code-agent

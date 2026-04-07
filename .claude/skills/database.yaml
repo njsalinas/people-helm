@@ -1,0 +1,33 @@
+name: Database Skill
+description: PostgreSQL, Supabase, schema design, migrations
+version: 1.0
+
+expertise:
+  - PostgreSQL DDL (CREATE TABLE, ALTER, etc)
+  - PostgreSQL DML (INSERT, UPDATE, DELETE, SELECT)
+  - Schema design (normalization, 3NF)
+  - Foreign keys, constraints, checks
+  - Indexes (B-tree, unique, partial)
+  - Triggers (BEFORE/AFTER, FOR EACH ROW)
+  - Functions (PL/pgSQL)
+  - Row-Level Security (RLS)
+  - Query optimization
+  - EXPLAIN ANALYZE
+  - Seed data creation
+  - Migration strategies
+
+tools:
+  - postgresql
+  - supabase-cli
+  - sql-formatter
+  - pgAdmin (opcional)
+
+knowledge_base:
+  - PostgreSQL documentation
+  - Query optimization techniques
+  - Migration best practices
+  - RLS security patterns
+  - Normalization rules
+
+dependencies:
+  - data-agent

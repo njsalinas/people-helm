@@ -1,0 +1,13 @@
+/**
+ * @file API Route: /api/auth
+ * GET - Retorna el usuario autenticado actual
+ */
+
+import { NextResponse } from 'next/server'
+import { getServerUser } from '@/lib/auth'
+
+export async function GET() {
+  const user = await getServerUser()
+  if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
+  return NextResponse.json({ data: user })
+}

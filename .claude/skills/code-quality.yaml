@@ -1,0 +1,34 @@
+name: Code Quality Skill
+description: Linting, testing, coverage, best practices
+version: 1.0
+
+expertise:
+  - ESLint configuration y rules
+  - Prettier formatting
+  - Vitest unit testing
+  - Testing best practices
+  - Type safety (TypeScript strict)
+  - Code coverage analysis (>80% target)
+  - No console.log in production
+  - Zod schema validation
+  - Accessibility (a11y) standards
+  - Performance optimization
+
+tools:
+  - eslint
+  - prettier
+  - vitest
+  - "@vitest/coverage-v8"
+  - typescript
+  - "@testing-library/react"
+  - axe-accessibility
+
+knowledge_base:
+  - ESLint best practices
+  - Testing patterns
+  - Coverage targets
+  - Performance metrics
+  - a11y WCAG 2.1 AA
+
+dependencies:
+  - code-agent

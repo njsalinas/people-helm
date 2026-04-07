@@ -1,0 +1,58 @@
+name: DB Migrations
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**'
+  workflow_dispatch:
+    inputs:
+      reset:
+        description: 'Reset database (⚠️ DESTRUCTIVE)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  migrate:
+    name: Apply Supabase Migrations
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Validate migrations syntax
+        run: |
+          for f in supabase/migrations/*.sql; do
+            echo "Validating: $f"
+            # Basic SQL syntax check (no semicolon-free lines at end)
+            if ! grep -q ";" "$f"; then
+              echo "⚠️  Warning: $f may be missing terminating semicolon"
+            fi
+          done
+
+      - name: Apply migrations
+        run: |
+          if [ "${{ github.event.inputs.reset }}" = "true" ]; then
+            echo "⚠️  Resetting database..."
+            supabase db reset --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+          else
+            supabase db push --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+          fi
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Verify migration status
+        run: supabase db status --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "❌ Migration failed — check Supabase dashboard"

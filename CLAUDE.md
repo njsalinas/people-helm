@@ -1,6 +1,6 @@
 # people-helm - Sistema de Dirección Operativa para Área de Personas
 
-**Last Updated:** 2026-04-07T15:16:01.641Z
+**Last Updated:** 2026-04-07T15:30:51.764Z
 **Status:** ✅ Development
 
 ---
@@ -51,10 +51,11 @@ SaaS para gestionar proyectos, bloqueos, tareas y generar reportería automátic
 ## 📋 Últimas 5 Actualizaciones
 
 ```
+32312ab fix: corregir errores ESLint que bloqueaban build en Vercel
+276dd11 chore: trigger vercel rebuild from latest commit
+830b5b8 docs: auto-generated documentation [skip ci]
 9ad991c fix: ProyectoForm funcional y modal integrado en dashboard
 3e5e9eb feat: autenticación, semáforo, formulario de tareas y corrección de tests
-66aa586 docs: auto-generated documentation [skip ci]
-d9498b7 feat: initial comit
 ```
 
 ---
@@ -81,4 +82,4 @@ d9498b7 feat: initial comit
 ---
 
 *Generado automáticamente por pre-commit hook*
-*Última sincronización:* 2026-04-07T15:16:01.641Z
+*Última sincronización:* 2026-04-07T15:30:51.764Z

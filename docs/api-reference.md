@@ -1,136 +1,108 @@
-# API Reference — People Helm
+# API Reference
 
-Todos los endpoints requieren sesión autenticada (cookie `sb-*`). Las respuestas usan JSON.
+*Auto-generated — do not edit manually*
 
----
+## Next.js API Routes
 
-## Proyectos
+### `/auth`
+@file API Route: /api/auth
+GET - Retorna el usuario autenticado actual
 
-### `GET /api/proyectos`
-Lista proyectos desde `vista_semaforo_proyectos`.
+### `/health`
+@file API Route: /api/health
+GET - Health check del servidor
 
-**Query params:** `estado`, `area`, `foco`, `color_semaforo`
+### `/notificaciones/config/[id]`
+@file API Route: /api/notificaciones/config/[id]
+PATCH - Activar / desactivar una configuración de notificación
 
-**Response 200:**
-```json
-{ "data": [ VistaSemaforoProyecto ] }
-```
+### `/notificaciones/config`
+@file API Route: /api/notificaciones/config
+GET - Obtener configuración de notificaciones del usuario autenticado
 
----
+### `/proyectos/[id]/bloqueos`
+@file API Route: /api/proyectos/[id]/bloqueos
+POST - Registrar bloqueo en un proyecto
 
-### `POST /api/proyectos`
-Crea un nuevo proyecto.
+### `/proyectos/[id]/estado`
+@file API Route: /api/proyectos/[id]/estado
+PATCH - Actualizar estado de un proyecto
 
-**Rol requerido:** Gerente o Líder Area
+### `/proyectos/[id]/riesgos`
+@file API Route: /api/proyectos/[id]/riesgos
+GET  - Listar riesgos del proyecto
+POST - Registrar nuevo riesgo
 
-**Body:**
-```json
-{
-  "nombre": "string (3-100)",
-  "tipo": "Proyecto | Proceso | Iniciativa",
-  "foco_estrategico": "Eficiencia | ...",
-  "area_responsable": "Reclutamiento | ...",
-  "categoria": "string",
-  "fecha_inicio": "YYYY-MM-DD",
-  "fecha_fin": "YYYY-MM-DD",
-  "descripcion": "string (opcional)"
-}
-```
+### `/proyectos/[id]`
+@file API Route: /api/proyectos/[id]
+GET    - Obtener proyecto por ID con joins completos
+PATCH  - Actualizar campos del proyecto
+DELETE - Eliminar proyecto (solo Gerente)
 
-**Response 201:** `{ "data": DbProyecto, "mensaje": "Proyecto creado" }`  
-**Response 409:** `{ "error": "Ya existe un proyecto con ese nombre en el área" }`
+### `/proyectos/[id]/tareas`
+@file API Route: /api/proyectos/[id]/tareas
+GET  - Listar tareas del proyecto
+POST - Crear tarea
 
----
+### `/proyectos`
+@file API Route: /api/proyectos
+GET  - Listar proyectos
+POST - Crear proyecto (invoca Supabase Function)
 
-### `PATCH /api/proyectos/[id]/estado`
-Cambia el estado de un proyecto.
+### `/reporteria/semaforo/[id]`
+@file API Route: /api/reporteria/semaforo/[id]
+GET   - Obtener semáforo por ID
+PATCH - Actualizar comentarios / publicar semáforo
 
-**Rol requerido:** Gerente o Líder Area
+### `/reporteria/semaforo`
+@file API Route: /api/reporteria/semaforo
+GET  - Listar semáforos (con paginación)
+POST - Generar semáforo del mes actual (invoca Supabase Function)
 
-**Body:**
-```json
-{
-  "estado": "En Progreso | Bloqueado | En Riesgo | Finalizado | Cancelado",
-  "comentario": "string (mín. 10 chars)"
-}
-```
+### `/riesgos/[id]/resolver`
+@file API Route: /api/riesgos/[id]/resolver
+PATCH - Cambiar estado del riesgo a Mitigado o Cerrado
 
-**Restricción:** No se puede pasar a `Finalizado` si hay bloqueos activos.
+### `/tareas/[id]/estado`
+@file API Route: /api/tareas/[id]/estado
+PATCH - Actualizar estado/avance de una tarea
 
----
+## Supabase Functions
 
-## Tareas
+### `actualizar-estado`
+Supabase Function: actualizar-estado
+PATCH - Actualiza estado de un proyecto con validaciones y notificaciones
 
-### `GET /api/proyectos/[id]/tareas`
-Lista tareas del proyecto con responsable + bloqueos.
+### `actualizar-tarea-estado`
+Supabase Function: actualizar-tarea-estado
+PATCH - Actualiza estado y/o avance de una tarea
 
-### `POST /api/proyectos/[id]/tareas`
-Crea tarea. **Body:** `{ nombre, estado, prioridad, responsable_id?, fecha_inicio?, fecha_fin? }`
+### `crear-proyecto`
+Supabase Function: crear-proyecto
+POST - Crea un nuevo proyecto con validaciones y notificaciones
 
-### `PATCH /api/tareas/[id]/estado`
-Actualiza estado de tarea. Registra `fecha_fin_real` si nuevo estado es `Finalizado`.
+### `crear-tarea`
+Supabase Function: crear-tarea
+POST - Crea una nueva tarea y notifica al responsable
 
----
+### `enviar-notificacion`
+Supabase Function: enviar-notificacion
+POST - Envía notificaciones (alerta visual via Realtime + email via Resend)
 
-## Bloqueos
+### `exportar-pdf`
+Supabase Function: exportar-pdf
+POST - Genera y exporta un PDF del semáforo o detalle de proyecto
 
-### `POST /api/proyectos/[id]/bloqueos`
-Registra bloqueo. Automáticamente pone el proyecto en estado `Bloqueado` (trigger SQL).
+### `generar-semaforo`
+Supabase Function: generar-semaforo
+POST - Genera el semáforo mensual automático
+Ejecutada vía cron el 1º de cada mes a las 22:00 UTC, o on-demand
 
-**Body:** `{ tipo, descripcion (mín. 10), accion_requerida (mín. 5) }`
+### `recalcular-avance-proyecto`
+Supabase Function: recalcular-avance-proyecto
+POST - Recalcula el % avance del proyecto basado en promedio de tareas
 
----
+### `registrar-bloqueo`
+Supabase Function: registrar-bloqueo
+POST - Registra un bloqueo en un proyecto y notifica al gerente
 
-## Riesgos
-
-### `GET /api/proyectos/[id]/riesgos`
-### `POST /api/proyectos/[id]/riesgos`
-
-**Body:** `{ descripcion, probabilidad: Baja|Media|Alta, impacto: Bajo|Medio|Alto }`
-
-La prioridad (`Baja|Media|Alta|Crítico`) se calcula automáticamente por trigger SQL.
-
----
-
-## Reportería — Semáforo
-
-### `GET /api/reporteria/semaforo`
-Lista semáforos. **Query:** `anio`, `limit` (default 12).
-
-### `POST /api/reporteria/semaforo`
-Genera semáforo del mes. **Rol:** Gerente. Invoca la Supabase Function `generar-semaforo`.
-
-**Body (opcional):** `{ mes: number, anio: number }`
-
-### `GET /api/reporteria/semaforo/[id]`
-Obtiene un semáforo por ID.
-
-### `PATCH /api/reporteria/semaforo/[id]`
-Actualiza comentarios ejecutivos o publica el semáforo.
-
-**Body:** `{ comentario_ejecutivo_verde?, comentario_ejecutivo_amarillo?, comentario_ejecutivo_rojo?, contenido_manual?, estado? }`
-
----
-
-## Notificaciones
-
-### `GET /api/notificaciones/config`
-Configuración de notificaciones del usuario autenticado.
-
-### `PATCH /api/notificaciones/config/[id]`
-Activa o desactiva una preferencia.
-
-**Body:** `{ activo: boolean }`
-
----
-
-## Códigos de error comunes
-
-| Código | Significado |
-|--------|------------|
-| 400 | Datos inválidos (Zod parse failed) |
-| 401 | No autenticado |
-| 403 | Sin permisos (rol insuficiente) |
-| 404 | Recurso no encontrado |
-| 409 | Conflicto (nombre duplicado) |
-| 500 | Error interno / Supabase error |

@@ -1,73 +1,81 @@
-# People Helm — CLAUDE.md
+# people-helm - Sistema de Dirección Operativa para Área de Personas
 
-Contexto del proyecto para Claude Code.
+**Last Updated:** 2026-04-07T04:08:51.112Z
+**Status:** ✅ Development
 
-## Stack
-- Next.js 14 App Router + TypeScript strict
-- Tailwind CSS — no styled-components, no CSS modules
-- @tanstack/react-query para estado servidor; Zustand para estado cliente
-- Supabase (PostgreSQL + Auth + Realtime + Storage + Deno Functions)
-- Zod para validación en cliente y servidor
-- react-hook-form + @hookform/resolvers/zod para formularios
-- Vitest para unit/integration tests; Playwright para E2E
+---
 
-## Convenciones
+## 🎯 Descripción
 
-### Componentes
-- Siempre `'use client'` en componentes con hooks; sin directiva en Server Components
-- Props tipadas con interface, no type
-- Nombres de archivos: PascalCase para componentes, camelCase para hooks y utils
+SaaS para gestionar proyectos, bloqueos, tareas y generar reportería automática en el área de Personas. Sistema híbrido con vista Kanban + Timeline + Lista para máxima flexibilidad.
 
-### API Routes
-- Siempre verificar autenticación con `getServerUser()` primero
-- Verificar rol antes de mutaciones (Espectador no puede escribir)
-- Validar body con Zod antes de usar datos
-- Retornar `{ data }` en éxito, `{ error }` en fallo
+---
 
-### Hooks
-- Un hook por entidad (`useProyectos`, `useTareas`, `useBloqueos`, etc.)
-- Mutations invalidan queries relacionadas con `queryClient.invalidateQueries`
-- Errores de mutación se muestran con `useUIStore().addToast`
+## 🏗️ Stack Tecnológico
 
-### Base de datos
-- Nunca consultar tablas directamente desde el frontend — siempre vía API routes o hooks
-- Usar `vista_semaforo_proyectos` y `vista_bloqueos_activos` para lecturas frecuentes
-- RLS activo en todas las tablas — no usar service role en el cliente
+- **Frontend:** Next.js 14 + TypeScript + Tailwind CSS
+- **State Management:** Zustand + React Query
+- **Backend:** Supabase PostgreSQL + Deno Functions (Serverless)
+- **Auth:** Supabase Auth (Email/Contraseña MVP)
+- **Testing:** Vitest + Playwright
+- **Deploy:** Vercel (Frontend) + Supabase (Backend)
+- **CI/CD:** GitHub Actions
+- **Documentation:** Auto-generated (pre-commit hooks)
 
-### Semáforo
-- La lógica de color está duplicada intencionalmente:
-  - SQL: `calcular_color_semaforo()` en `010_crear_indices_y_triggers.sql`
-  - TypeScript: `calcularColorSemaforo()` en `src/lib/utils.ts`
-- Ambas deben mantenerse sincronizadas
+---
 
-## Estructura rápida
+## 📚 Documentación
+
+- [Arquitectura](./docs/arquitectura.md) — Diagrama y componentes principales
+- [Módulos](./docs/modulos.md) — Componentes, hooks, utilidades
+- [API Reference](./docs/api-reference.md) — APIs y Supabase Functions
+- [Onboarding](./docs/onboarding.md) — Guía para nuevos developers
+- [Database Schema](./docs/database/schema.md) — Estructura PostgreSQL
+- [Decisiones Técnicas](./docs/decisions.md) — Architecture Decision Records
+- [PRD Completo](./Req/02_PRD_COMPLETO.md) — Requisitos funcionales
+- [TDD Completo](./Req/03_TDD_COMPLETO.md) — Diseño técnico
+
+---
+
+## 🤖 Agentes Disponibles
+
+| Agente | Responsabilidad | Status |
+|--------|-----------------|--------|
+| **code-agent** | Features UI + Frontend logic | ✅ Activo |
+| **api-agent** | APIs + Supabase Functions | ✅ Activo |
+| **data-agent** | BD + Migraciones SQL | ✅ Activo |
+| **deploy-agent** | Deployments + CI/CD | ✅ Activo |
+
+---
+
+## 📋 Últimas 5 Actualizaciones
+
 ```
-src/app/(dashboard)/     — páginas autenticadas
-src/app/api/             — route handlers
-src/components/          — UI components por dominio
-src/hooks/               — React Query hooks
-src/lib/                 — utils, validations, auth, supabase clients
-src/stores/              — Zustand stores
-src/tests/               — unit/, integration/, e2e/
-src/types/               — database.ts, domain.ts, api.ts
-supabase/
-  migrations/            — SQL migrations numeradas 001-010
-  functions/             — Deno serverless functions
-  seed/                  — seed.sql con datos de prueba
-docs/                    — arquitectura, api-reference, onboarding
+d9498b7 feat: initial comit
 ```
 
-## Roles de usuario
-- `Gerente` — acceso completo incluyendo /admin y generar semáforo
-- `Líder Area` — puede crear/editar proyectos y tareas de su área
-- `Espectador` — solo lectura
+---
 
-## Comandos útiles
-```bash
-npm run dev          # desarrollo
-npm test             # tests unitarios + integración
-npm run test:e2e     # tests Playwright
-npm run test:coverage # cobertura (umbral 80%)
-npx tsc --noEmit     # type check
-npm run lint         # ESLint
-```
+## 📈 Métricas del Proyecto
+
+| Métrica | Valor |
+|---------|-------|
+| **Archivos fuente** | 82 |
+| **Componentes React** | 21 |
+| **Hooks personalizados** | 7 |
+| **Tests** | 6 |
+
+---
+
+## 🔐 Seguridad
+
+- ✅ Supabase Auth (Email/Contraseña)
+- ✅ RBAC: Gerente / Líder Area / Espectador
+- ✅ RLS en todas las tablas
+- ✅ Zod en cliente y servidor
+- ✅ Middleware de protección de rutas
+
+---
+
+*Generado automáticamente por pre-commit hook*
+*Última sincronización:* 2026-04-07T04:08:51.112Z

@@ -1,160 +1,253 @@
 # Módulos y Componentes
 
-*Auto-generado por pre-commit hook — ver `scripts/docs-generator.js` para regenerar*
-
----
+*Auto-generated — do not edit manually*
 
 ## Componentes React
 
-### `src/components/Common/Navbar.tsx`
-Barra de navegación lateral fija con links activos y avatar de usuario.
-**Exports:** `Navbar`
+### `src/components/Bloqueos/BloqueosForm.tsx`
+@component BloqueosForm
+Modal formulario para registrar un nuevo bloqueo
 
-### `src/components/Common/ToastProvider.tsx`
-Stack de notificaciones toast en posición fija. Se alimenta desde `uiStore`.
-**Exports:** `ToastProvider`
-
-### `src/components/Dashboard/KPIDashboard.tsx`
-6 tarjetas KPI: total proyectos, verde/amarillo/rojo (%), bloqueos activos, acciones pendientes.
-**Exports:** `KPIDashboard`
-
-### `src/components/Dashboard/Filtros.tsx`
-Sidebar de filtros: área, foco estratégico, estado, color semáforo.
-**Exports:** `Filtros`
-
-### `src/components/Dashboard/VistaGerencial.tsx`
-Tabla principal de proyectos con semáforo, avance, responsable y días restantes.
-**Exports:** `VistaGerencial`
-
-### `src/components/Proyectos/ProyectoDetail.tsx`
-Header del proyecto con selector de estado + tabs: Kanban / Timeline / Lista.
-**Exports:** `ProyectoDetail`
-
-### `src/components/Proyectos/ProyectoForm.tsx`
-Modal de creación de proyecto con validación Zod.
-**Exports:** `ProyectoForm`
-
-### `src/components/Proyectos/Kanban/KanbanBoard.tsx`
-Tablero DnD con DndContext, PointerSensor y DragOverlay.
-**Exports:** `KanbanBoard`
-
-### `src/components/Proyectos/Kanban/KanbanColumn.tsx`
-Columna droppable con SortableContext y botón de agregar tarea.
-**Exports:** `KanbanColumn`
-
-### `src/components/Proyectos/Kanban/TaskCard.tsx`
-Tarjeta sortable de tarea con indicadores de bloqueo, avance y responsable.
-**Exports:** `TaskCard`
-
-### `src/components/Proyectos/Kanban/TaskDetailModal.tsx`
-Modal de detalle de tarea: estado, avance, bloqueos activos.
-**Exports:** `TaskDetailModal`
-
-### `src/components/Proyectos/Timeline/TimelineChart.tsx`
-Diagrama de Gantt simplificado con barras proporcionales por tarea.
-**Exports:** `TimelineChart`
-
-### `src/components/Proyectos/Timeline/TaskProgressBar.tsx`
-Barra individual con marcador de tiempo actual y color por estado.
-**Exports:** `TaskProgressBar`
-
-### `src/components/Proyectos/Lista/TaskTable.tsx`
-Tabla ordenable de tareas con indicador de actividad reciente.
-**Exports:** `TaskTable`
+@example
+<BloqueosForm proyectoId={id} onClose={() => setOpen(false)} />
+**Exports:** BloqueosForm
 
 ### `src/components/Bloqueos/BloqueosTable.tsx`
-Tabla transversal de bloqueos filtrable con color por días activos.
-**Exports:** `BloqueosTable`
+@component BloqueosTable
+Tabla transversal de todos los bloqueos activos del sistema
 
-### `src/components/Bloqueos/BloqueosForm.tsx`
-Modal de registro de bloqueo con validación Zod.
-**Exports:** `BloqueosForm`
+@example
+<BloqueosTable bloqueos={bloqueos} />
+**Exports:** BloqueosTable
 
-### `src/components/Reporteria/SemaforoCompleto.tsx`
-Vista completa del semáforo mensual auto-generado por sección de color.
-**Exports:** `SemaforoCompleto`
+### `src/components/Common/Navbar.tsx`
+@component Navbar
+Barra de navegación lateral del dashboard
+**Exports:** Navbar
+
+### `src/components/Common/ToastProvider.tsx`
+@component ToastProvider
+Sistema de notificaciones toast (alertas visuales)
+**Exports:** ToastProvider
+
+### `src/components/Dashboard/Filtros.tsx`
+@component Filtros
+Panel lateral de filtros para la Vista Gerencial
+
+@example
+<Filtros filtros={filtros} onChange={setFiltros} onClear={clearFiltros} />
+**Exports:** Filtros
+
+### `src/components/Dashboard/KPIDashboard.tsx`
+@component KPIDashboard
+Panel de KPIs resumidos en la parte superior del dashboard
+
+@example
+<KPIDashboard proyectos={proyectos} />
+**Exports:** KPIDashboard
+
+### `src/components/Dashboard/VistaGerencial.tsx`
+@component VistaGerencial
+Tabla dinámica principal con todos los proyectos y su estado
+
+@example
+<VistaGerencial proyectos={proyectos} onSelectProject={(id) => router.push(`/proyectos/${id}`)} />
+**Exports:** VistaGerencial
+
+### `src/components/Proyectos/Kanban/KanbanBoard.tsx`
+@component KanbanBoard
+Tablero Kanban principal con drag & drop entre columnas
+
+@example
+<KanbanBoard proyectoId={id} tareas={tareas} />
+**Exports:** KanbanBoard
+
+### `src/components/Proyectos/Kanban/KanbanColumn.tsx`
+@component KanbanColumn
+Columna del tablero Kanban (Pendiente | En Curso | Finalizado)
+
+@example
+<KanbanColumn column={column} onTaskClick={(id) => openDetail(id)} />
+**Exports:** KanbanColumn
+
+### `src/components/Proyectos/Kanban/TaskCard.tsx`
+@component TaskCard
+Tarjeta individual de tarea en el tablero Kanban
+
+@example
+<TaskCard tarea={tarea} onClick={() => openModal(tarea.id)} />
+**Exports:** TaskCard
+
+### `src/components/Proyectos/Kanban/TaskDetailModal.tsx`
+@component TaskDetailModal
+Modal con detalle completo de una tarea, bloqueos y comentarios
+
+@example
+<TaskDetailModal tareaId={id} proyectoId={proyId} onClose={() => setOpen(false)} />
+**Exports:** TaskDetailModal
+
+### `src/components/Proyectos/Lista/TaskTable.tsx`
+@component TaskTable
+Vista de lista con todas las tareas de un proyecto en tabla
+
+@example
+<TaskTable tareas={tareas} onTaskClick={(id) => openDetail(id)} />
+**Exports:** TaskTable
+
+### `src/components/Proyectos/ProyectoCard.tsx`
+@component ProyectoCard
+Tarjeta compacta de proyecto para vistas de grid.
+
+@example
+<ProyectoCard proyecto={proyecto} />
+**Exports:** ProyectoCard
+
+### `src/components/Proyectos/ProyectoDetail.tsx`
+@component ProyectoDetail
+Vista de detalle de un proyecto con 3 pestañas: Kanban, Timeline, Lista
+
+@example
+<ProyectoDetail proyectoId={id} />
+**Exports:** ProyectoDetail
+
+### `src/components/Proyectos/ProyectoForm.tsx`
+@component ProyectoForm
+Modal de creación / edición de proyecto
+
+@example
+<ProyectoForm onClose={() => setOpen(false)} />
+**Exports:** ProyectoForm
+
+### `src/components/Proyectos/Timeline/TaskProgressBar.tsx`
+@component TaskProgressBar
+Barra de progreso individual para la vista Timeline
+
+@example
+<TaskProgressBar tarea={tarea} />
+**Exports:** TaskProgressBar
+
+### `src/components/Proyectos/Timeline/TimelineChart.tsx`
+@component TimelineChart
+Vista tipo Gantt simplificada con barras de progreso por tarea
+
+@example
+<TimelineChart tareas={tareas} />
+**Exports:** TimelineChart
+
+### `src/components/Proyectos/Timeline/TimelineScaleSelector.tsx`
+@component TimelineScaleSelector
+Selector de escala temporal para el Timeline: 1 día / 1 semana / 1 mes.
+
+@example
+<TimelineScaleSelector value="semana" onChange={setScale} />
+**Exports:** TimelineScale, TimelineScaleSelector
 
 ### `src/components/Reporteria/SemaforoAbreviado.tsx`
-Editor interactivo del semáforo abreviado (top 3 por color, comentarios ejecutivos).
-**Exports:** `SemaforoAbreviado`, `SemaforoAbreviadoData`
+@component SemaforoAbreviado
+Editor interactivo del semáforo abreviado (top 3 por color, editable)
+
+@example
+<SemaforoAbreviado semaforo={semaforo} proyectos={proyectos} onSave={handleSave} />
+**Exports:** SemaforoAbreviadoData, SemaforoAbreviado
+
+### `src/components/Reporteria/SemaforoCompleto.tsx`
+@component SemaforoCompleto
+Vista del semáforo mensual completo auto-generado
+
+@example
+<SemaforoCompleto semaforo={semaforo} onExport={handleExport} />
+**Exports:** SemaforoCompleto
 
 ### `src/components/Reporteria/TablaEditable.tsx`
-Tabla con columna Detalle editable inline (click-to-edit, contador de caracteres).
-**Exports:** `TablaEditable`, `TablaEditableItem`
+@component TablaEditable
+Tabla editable para el semáforo abreviado (campo Detalle editable inline)
 
----
+@example
+<TablaEditable items={items} color="verde" onChange={handleChange} />
+**Exports:** TablaEditableItem, TablaEditable
 
 ## Hooks Personalizados
 
 ### `src/hooks/useAuth.ts`
-Suscribe a `onAuthStateChange` de Supabase. Expone `login`, `logout`, `isGerente`, `isLiderArea`.
-**Exports:** `useAuth`
-
-### `src/hooks/useProjects.ts`
-`useProyectos(filtros)` — lista desde `vista_semaforo_proyectos`.
-`useProyecto(id)` — detalle con joins.
-`useCrearProyecto()` — mutation.
-`useActualizarEstadoProyecto()` — mutation.
-**Exports:** `useProyectos`, `useProyecto`, `useCrearProyecto`, `useActualizarEstadoProyecto`
-
-### `src/hooks/useTareas.ts`
-CRUD de tareas por proyecto. Invalida `['tareas', proyectoId]` en cada mutation.
-**Exports:** `useTareas`, `useCrearTarea`, `useActualizarTarea`
+@file Hook de autenticación con Supabase
+**Exports:** useAuth
 
 ### `src/hooks/useBloqueos.ts`
-`useBloqueoActivos()` desde vista, `useRegistrarBloqueo()`, `useResolverBloqueo()`.
-**Exports:** `useBloqueoActivos`, `useRegistrarBloqueo`, `useResolverBloqueo`
-
-### `src/hooks/useRiesgos.ts`
-CRUD de riesgos por proyecto.
-**Exports:** `useRiesgos`, `useRegistrarRiesgo`, `useResolverRiesgo`
-
-### `src/hooks/useSemaforo.ts`
-`useSemaforos(anio)`, `useSemaforo(id)`, `useGenerarSemaforo()`, `useGuardarAbreviado()`, `usePublicarSemaforo()`.
-**Exports:** `useSemaforos`, `useSemaforo`, `useGenerarSemaforo`, `useGuardarAbreviado`, `usePublicarSemaforo`
+@file React Query hooks para gestión de bloqueos
+**Exports:** useBloqueoActivos, useRegistrarBloqueo, useResolverBloqueo
 
 ### `src/hooks/useNotificaciones.ts`
-`useNotificacionesConfig()`, `useUpdateNotificacionConfig()`, `useRealtimeAlertas(usuarioId)`.
-**Exports:** `useNotificacionesConfig`, `useUpdateNotificacionConfig`, `useRealtimeAlertas`
+@file useNotificaciones
+Hooks para configuración y recepción de notificaciones en tiempo real
+**Exports:** useNotificacionesConfig, useUpdateNotificacionConfig, useRealtimeAlertas
 
----
+### `src/hooks/useProjects.ts`
+@file React Query hooks para gestión de proyectos
+**Exports:** useProyectos, useProyecto, useCrearProyecto, useActualizarEstadoProyecto
 
-## Utilidades (`src/lib/`)
+### `src/hooks/useRiesgos.ts`
+@file useRiesgos
+Hooks para riesgos de proyectos
+**Exports:** useRiesgos, useRegistrarRiesgo, useResolverRiesgo
 
-### `src/lib/utils.ts`
-Funciones puras utilitarias.
+### `src/hooks/useSemaforo.ts`
+@file useSemaforo
+Hooks para semáforos (reportería)
+**Exports:** useSemaforos, useSemaforo, useGenerarSemaforo, useGuardarAbreviado, usePublicarSemaforo
 
-| Función | Descripción |
-|---------|-------------|
-| `cn(...classes)` | Merge de clases Tailwind con clsx + tailwind-merge |
-| `formatDate(date)` | ISO → DD/MM/YYYY |
-| `calcularDiasRestantes(fecha)` | Días hasta fecha_fin |
-| `calcularPorcentajeTiempo(inicio, fin)` | % tiempo transcurrido |
-| `calcularColorSemaforo(proyecto)` | VERDE/AMARILLO/ROJO |
-| `calcularPrioridadRiesgo(prob, impacto)` | Baja/Media/Alta/Crítico |
-| `calcularKPIs(proyectos)` | Total, por color, bloqueos |
-| `colorFilaBloqueo(dias)` | Color CSS por antigüedad |
-| `obtenerIniciales(nombre)` | "María González" → "MG" |
-| `nombreMes(num)` | 1 → "Enero" |
+### `src/hooks/useTareas.ts`
+@file React Query hooks para gestión de tareas
+**Exports:** useTareas, useCrearTarea, useActualizarTarea
 
-### `src/lib/validations.ts`
-Schemas Zod: `CreateProjectSchema`, `CreateTaskSchema`, `CreateBloqueoSchema`, `CreateRiesgoSchema`, `LoginSchema`, `SemaforoAbreviadoSchema`.
+## Utilidades
 
-### `src/lib/constants.ts`
-`DIAS_BLOQUEO_AMARILLO = 3`, `DIAS_BLOQUEO_ROJO = 5`, límites de campos de texto.
+### `src/lib/api-client.ts`
+@file api-client.ts
+Cliente HTTP centralizado para llamadas a las API routes de Next.js.
+Usado principalmente para invocaciones server-side o utilitarias.
+**Exports:** apiClient
 
 ### `src/lib/auth.ts`
-`getServerUser()`, `canAccess(user, rol)`, `canEditProject(user, proyecto)`.
+@file Lógica de autenticación y sesiones
+**Exports:** SessionUser, getServerUser, canAccess, canEditProject
 
----
+### `src/lib/constants.ts`
+@file Constantes globales del sistema
+**Exports:** APP_NAME, APP_VERSION, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, SESSION_DURATION_HOURS, DIAS_BLOQUEO_AMARILLO, DIAS_BLOQUEO_ROJO, NOMBRE_PROYECTO_MIN, NOMBRE_PROYECTO_MAX, DESCRIPCION_BLOQUEO_MIN, DESCRIPCION_BLOQUEO_MAX, COMENTARIO_ESTADO_MIN, COMENTARIO_ESTADO_MAX, DETALLE_SEMAFORO_MAX, COMENTARIO_EJECUTIVO_MAX, TOAST_DURATION_MS, SEMAFORO_ITEMS_POR_COLOR
+
+### `src/lib/supabase-server.ts`
+@file Cliente Supabase para Server Components y API routes
+**Exports:** createServerSupabaseClient, createServiceRoleClient
+
+### `src/lib/supabase-types.ts`
+@file Tipos de Database para Supabase Client (generics)
+Mapea las tablas para TypeScript autocomplete
+**Exports:** Database
+
+### `src/lib/supabase.ts`
+@file Clientes Supabase para browser y server
+**Exports:** createClient, getSupabaseBrowserClient
+
+### `src/lib/utils.ts`
+@file Utilidades compartidas del sistema
+**Exports:** cn, formatDate, calcularDiasRestantes, calcularPorcentajeTiempo, calcularColorSemaforo, calcularPrioridadRiesgo, colorPrioridadRiesgo, colorFilaBloqueo, formatPorcentaje, truncate, obtenerIniciales, calcularKPIs, nombreMes
+
+### `src/lib/validations.ts`
+@file Schemas de validación Zod para inputs del sistema
+**Exports:** CreateProjectSchema, CreateProjectInput, UpdateProjectStatusSchema, UpdateProjectStatusInput, CreateTaskSchema, CreateTaskInput, UpdateTaskStatusSchema, UpdateTaskStatusInput, CreateBloqueoSchema, CreateBloqueoInput, ResolveBloqueoSchema, ResolveBloqueoInput, CreateRiesgoSchema, CreateRiesgoInput, CreateComentarioSchema, CreateComentarioInput, LoginSchema, LoginInput, SemaforoItemManualSchema, SemaforoAbreviadoSchema, SemaforoAbreviadoInput
 
 ## Stores Zustand
 
 ### `src/stores/authStore.ts`
-`{ user, isLoading, setUser, clearUser, setLoading }` — persisted en localStorage.
-
-### `src/stores/uiStore.ts`
-`{ modals, filtros, toasts, sidebarOpen }` — toasts auto-eliminados a los 5s.
+@file Zustand store para estado de autenticación
+**Exports:** useAuthStore
 
 ### `src/stores/projectStore.ts`
-Cache Map de proyectos para optimistic updates.
+@file Zustand store para cache de proyectos
+React Query maneja el fetching; este store maneja optimistic updates
+**Exports:** useProjectStore
+
+### `src/stores/uiStore.ts`
+@file Zustand store para estado de UI (modales, filtros, etc.)
+**Exports:** useUIStore
+

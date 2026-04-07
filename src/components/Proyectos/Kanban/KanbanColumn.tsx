@@ -10,7 +10,7 @@
 
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import type { KanbanColumn as KanbanColumnType, Tarea } from '@/types'
+import type { KanbanColumn as KanbanColumnType } from '@/types'
 import { TaskCard } from './TaskCard'
 import { cn } from '@/lib/utils'
 

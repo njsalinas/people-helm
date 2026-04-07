@@ -8,7 +8,6 @@
 
 'use client'
 
-import type { Tarea } from '@/types'
 import type { TimelineTask } from '@/types/domain'
 import { cn, formatPorcentaje } from '@/lib/utils'
 

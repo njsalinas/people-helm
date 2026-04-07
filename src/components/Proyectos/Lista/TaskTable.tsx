@@ -9,7 +9,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { Tarea, TareaEstado } from '@/types'
+import type { Tarea } from '@/types'
 import { cn, formatDate, calcularDiasRestantes, formatPorcentaje, obtenerIniciales } from '@/lib/utils'
 import { COLORES_ESTADO } from '@/types/domain'
 
@@ -21,7 +21,7 @@ interface TaskTableProps {
 
 type SortKey = 'nombre' | 'estado' | 'porcentaje_avance' | 'fecha_fin_planificada'
 
-export function TaskTable({ tareas, onTaskClick, canEdit = true }: TaskTableProps) {
+export function TaskTable({ tareas, onTaskClick, canEdit: _canEdit = true }: TaskTableProps) {
   const [sortKey, setSortKey] = useState<SortKey>('fecha_fin_planificada')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
 

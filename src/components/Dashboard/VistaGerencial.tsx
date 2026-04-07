@@ -12,7 +12,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { ProyectoGerencial, ProyectoEstado, ColorSemaforo } from '@/types'
 import { cn, formatDate, calcularDiasRestantes, formatPorcentaje, obtenerIniciales } from '@/lib/utils'
-import { COLORES_ESTADO, COLORES_SEMAFORO } from '@/types/domain'
+import { COLORES_ESTADO } from '@/types/domain'
 
 interface VistaGerencialProps {
   proyectos: ProyectoGerencial[]

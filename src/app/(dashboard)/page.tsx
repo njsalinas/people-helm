@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { KPIDashboard } from '@/components/Dashboard/KPIDashboard'
 import { VistaGerencial } from '@/components/Dashboard/VistaGerencial'

@@ -9,7 +9,7 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getServerUser } from '@/lib/auth'
 import { CreateProjectSchema } from '@/lib/validations'
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   const user = await getServerUser()
   if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
 

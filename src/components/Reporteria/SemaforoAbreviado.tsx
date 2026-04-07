@@ -8,11 +8,11 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { DbSemaforo } from '@/types/database'
 import type { ProyectoGerencial } from '@/types'
 import { TablaEditable, type TablaEditableItem } from './TablaEditable'
-import { cn, nombreMes } from '@/lib/utils'
+import { nombreMes } from '@/lib/utils'
 import { COMENTARIO_EJECUTIVO_MAX } from '@/lib/constants'
 
 interface SemaforoAbreviadoProps {

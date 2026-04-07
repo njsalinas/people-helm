@@ -9,7 +9,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import { differenceInDays, parseISO, isAfter, isBefore } from 'date-fns'
+import { differenceInDays, parseISO, isAfter } from 'date-fns'
 import type { Tarea } from '@/types'
 import type { TimelineTask } from '@/types/domain'
 import { TaskProgressBar } from './TaskProgressBar'

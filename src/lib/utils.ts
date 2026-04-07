@@ -21,7 +21,7 @@ export function cn(...inputs: ClassValue[]) {
  * Formatea una fecha ISO a formato legible en español
  */
 export function formatDate(dateStr: string | null | undefined, pattern = 'dd/MM/yyyy'): string {
-  if (dateStr == null) return '—'
+  if (dateStr === null || dateStr === undefined) return '—'
   try {
     return format(parseISO(dateStr), pattern, { locale: es })
   } catch {

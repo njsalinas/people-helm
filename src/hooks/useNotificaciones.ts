@@ -5,8 +5,8 @@
 
 'use client'
 
-import { useQuery, useMutation, useQueryClient, useEffect } from '@tanstack/react-query'
-import { useEffect as useReactEffect } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useUIStore } from '@/stores/uiStore'
 import type { DbNotificacionConfig } from '@/types/database'
@@ -46,7 +46,7 @@ export function useUpdateNotificacionConfig() {
 export function useRealtimeAlertas(usuarioId: string | undefined) {
   const addToast = useUIStore((s) => s.addToast)
 
-  useReactEffect(() => {
+  useEffect(() => {
     if (!usuarioId) return
 
     const supabase = createClient()

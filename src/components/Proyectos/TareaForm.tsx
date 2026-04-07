@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CreateTaskSchema, type CreateTaskInput } from '@/lib/validations'
 import { useCrearTarea } from '@/hooks/useTareas'
-import { useUIStore } from '@/stores/uiStore'
 import { useAuth } from '@/hooks/useAuth'
 
 interface TareaFormProps {

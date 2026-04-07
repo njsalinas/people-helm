@@ -12,7 +12,6 @@ import { useState } from 'react'
 import {
   DndContext,
   DragEndEvent,
-  DragOverEvent,
   DragOverlay,
   DragStartEvent,
   PointerSensor,

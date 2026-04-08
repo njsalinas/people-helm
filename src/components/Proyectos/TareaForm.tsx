@@ -30,8 +30,15 @@ export function TareaForm({ proyectoId, usuarios, onClose }: TareaFormProps) {
   })
 
   const onSubmit = async (data: CreateTaskInput) => {
-    await crearTarea.mutateAsync(data)
-    onClose()
+    try {
+      await crearTarea.mutateAsync(data)
+      // Agregar un pequeño delay para asegurar que la query se refetch
+      await new Promise(resolve => setTimeout(resolve, 500))
+      onClose()
+    } catch (error) {
+      // El error ya se muestra en el toast del hook
+      console.error('Error creating task:', error)
+    }
   }
 
   return (

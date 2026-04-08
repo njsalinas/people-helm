@@ -14,6 +14,7 @@ import { APP_NAME } from '@/lib/constants'
 const navItems = [
   { href: '/', label: 'Vista Gerencial', icon: '📊' },
   { href: '/focos', label: 'Por Foco', icon: '🎯' },
+  { href: '/kanban-global', label: 'Kanban Global', icon: '📌' },
   { href: '/bloqueos', label: 'Bloqueos', icon: '🔒' },
   { href: '/reporteria/semaforo', label: 'Semáforo', icon: '🚦' },
   { href: '/reporteria/semaforo-abreviado', label: 'Semáforo Abreviado', icon: '📋' },

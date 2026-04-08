@@ -11,7 +11,7 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getSupabaseBrowserClient } from '@/lib/supabase'
-import type { Tarea } from '@/types'
+import type { Tarea, Usuario } from '@/types'
 import { cn, formatDate, calcularDiasRestantes, formatPorcentaje } from '@/lib/utils'
 import { useActualizarTarea } from '@/hooks/useTareas'
 import { ESTADOS_TAREA } from '@/types/domain'
@@ -21,12 +21,15 @@ interface TaskDetailModalProps {
   proyectoId: string
   onClose: () => void
   canEdit?: boolean
+  usuarios?: Usuario[]
 }
 
-export function TaskDetailModal({ tareaId, proyectoId, onClose, canEdit = true }: TaskDetailModalProps) {
+export function TaskDetailModal({ tareaId, proyectoId, onClose, canEdit = true, usuarios = [] }: TaskDetailModalProps) {
   const supabase = getSupabaseBrowserClient()
   const [editandoAvance, setEditandoAvance] = useState(false)
   const [nuevoAvance, setNuevoAvance] = useState(0)
+  const [editandoResponsable, setEditandoResponsable] = useState(false)
+  const [nuevoResponsableId, setNuevoResponsableId] = useState<string | null>(null)
   const actualizarTarea = useActualizarTarea(proyectoId)
 
   const { data: tarea, isLoading } = useQuery({
@@ -45,6 +48,39 @@ export function TaskDetailModal({ tareaId, proyectoId, onClose, canEdit = true }
       if (error) throw error
       return data as unknown as Tarea
     },
+  })
+
+  // Fetch historial de desbloqueos
+  const { data: desbloqueos = [] } = useQuery({
+    queryKey: ['tareas', tareaId, 'desbloqueos'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('historial_cambios')
+        .select(
+          `
+          id,
+          campo_afectado,
+          valor_anterior,
+          valor_nuevo,
+          comentario,
+          created_at,
+          created_by,
+          usuario:usuarios!created_by(id, nombre_completo, email)
+        `
+        )
+        .eq('entidad_id', tareaId)
+        .eq('entidad_tipo', 'Tarea')
+        .eq('campo_afectado', 'estado')
+        .eq('valor_anterior', 'Bloqueado')
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        console.error('Error fetching desbloqueos:', error)
+        return []
+      }
+      return data || []
+    },
+    enabled: !!tareaId,
   })
 
   const handleEstadoChange = async (estado: string) => {
@@ -163,9 +199,40 @@ export function TaskDetailModal({ tareaId, proyectoId, onClose, canEdit = true }
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-xs text-gray-400 mb-1">Responsable</p>
-                  <p className="font-medium text-gray-700">
-                    {tarea.responsable?.nombre_completo ?? '—'}
-                  </p>
+                  {editandoResponsable && canEdit ? (
+                    <div className="flex gap-2">
+                      <select
+                        value={nuevoResponsableId || tarea.responsable_id || ''}
+                        onChange={(e) => setNuevoResponsableId(e.target.value)}
+                        className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      >
+                        <option value="">Selecciona responsable</option>
+                        {usuarios.map((u) => (
+                          <option key={u.id} value={u.id}>
+                            {u.nombre_completo}
+                          </option>
+                        ))}
+                      </select>
+                      <button onClick={() => setEditandoResponsable(false)} className="text-xs text-gray-500">
+                        Cancelar
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setNuevoResponsableId(tarea.responsable_id)
+                        setEditandoResponsable(true)
+                      }}
+                      disabled={!canEdit}
+                      className={cn(
+                        'text-sm font-medium text-gray-700',
+                        canEdit && 'hover:text-blue-600 cursor-pointer'
+                      )}
+                    >
+                      {tarea.responsable?.nombre_completo ?? '—'}
+                      {canEdit && <span className="text-gray-400 text-xs ml-2">✎</span>}
+                    </button>
+                  )}
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 mb-1">Plazo</p>
@@ -205,6 +272,34 @@ export function TaskDetailModal({ tareaId, proyectoId, onClose, canEdit = true }
                           </p>
                         </div>
                       ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Historial de Desbloqueos */}
+              {desbloqueos && desbloqueos.length > 0 && (
+                <div>
+                  <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Historial de Desbloqueos</p>
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {desbloqueos.map((d: any) => (
+                      <div key={d.id} className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="font-medium text-green-800">
+                              {d.valor_anterior} → {d.valor_nuevo}
+                            </p>
+                            <p className="text-xs text-green-600 mt-1">
+                              {d.usuario?.nombre_completo || 'Desconocido'} · {formatDate(d.created_at)}
+                            </p>
+                          </div>
+                        </div>
+                        {d.comentario && (
+                          <p className="text-xs text-gray-700 mt-2 bg-white rounded px-2 py-1">
+                            {d.comentario}
+                          </p>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}

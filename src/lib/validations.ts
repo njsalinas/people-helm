@@ -80,6 +80,22 @@ export const UpdateProjectStatusSchema = z.object({
 
 export type UpdateProjectStatusInput = z.infer<typeof UpdateProjectStatusSchema>
 
+export const UpdateProjectSchema = z.object({
+  nombre: z
+    .string()
+    .min(NOMBRE_PROYECTO_MIN, `Mínimo ${NOMBRE_PROYECTO_MIN} caracteres`)
+    .max(NOMBRE_PROYECTO_MAX, `Máximo ${NOMBRE_PROYECTO_MAX} caracteres`)
+    .optional(),
+  descripcion_ejecutiva: z.string().max(2000).optional(),
+  objetivo: z.string().max(1000).optional(),
+  resultado_esperado: z.string().max(1000).optional(),
+  responsable_primario: z.string().uuid('ID de responsable inválido').optional(),
+  prioridad: z.number().int().min(1).max(5).optional(),
+  estado: z.enum(ESTADOS_PROYECTO).optional(),
+})
+
+export type UpdateProjectInput = z.infer<typeof UpdateProjectSchema>
+
 // ============================================================
 // Tareas
 // ============================================================
@@ -89,7 +105,7 @@ export const CreateTaskSchema = z
     proyecto_id: z.string().uuid(),
     nombre: z.string().min(3, 'Mínimo 3 caracteres').max(200),
     descripcion: z.string().max(2000).optional(),
-    responsable_id: z.string().uuid(),
+    responsable_id: z.string().uuid().optional(),
     fecha_inicio: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     fecha_fin_planificada: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     prioridad: z.number().int().min(1).max(5).default(3),
@@ -110,6 +126,16 @@ export const UpdateTaskStatusSchema = z.object({
 })
 
 export type UpdateTaskStatusInput = z.infer<typeof UpdateTaskStatusSchema>
+
+export const DesbloquearTareaSchema = z.object({
+  nuevo_estado: z.enum(['Pendiente', 'En Curso', 'Finalizado']),
+  desbloqueado_razon: z
+    .string()
+    .min(10, 'Mínimo 10 caracteres')
+    .max(500, 'Máximo 500 caracteres'),
+})
+
+export type DesbloquearTareaInput = z.infer<typeof DesbloquearTareaSchema>
 
 // ============================================================
 // Bloqueos

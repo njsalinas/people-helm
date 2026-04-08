@@ -9,7 +9,8 @@ Guía completa para configurar el proyecto desde cero: Supabase, GitHub, Vercel,
 1. [Prerequisitos](#1-prerequisitos)
 2. [Configuración Supabase](#2-configuración-supabase)
 3. [Configuración GitHub](#3-configuración-github)
-4. [Configuración Vercel](#4-configuración-vercel)
+4. [Configuración Vercel](#4
+-configuración-vercel)
 5. [Configuración Resend (Email)](#5-configuración-resend-email)
 6. [Variables de Entorno](#6-variables-de-entorno)
 7. [Primer Deploy](#7-primer-deploy)

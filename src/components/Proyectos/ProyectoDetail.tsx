@@ -32,6 +32,8 @@ export function ProyectoDetail({ proyecto }: ProyectoDetailProps) {
   const [showEstadoModal, setShowEstadoModal] = useState(false)
   const [comentarioEstado, setComentarioEstado] = useState('')
   const [nuevoEstado, setNuevoEstado] = useState<ProyectoEstado>(proyecto.estado as ProyectoEstado)
+  const [editandoNombre, setEditandoNombre] = useState(false)
+  const [nuevoNombre, setNuevoNombre] = useState(proyecto.nombre)
 
   const { user } = useAuth()
   const { data: tareas = [], isLoading: tareasLoading } = useTareas(proyecto.id)
@@ -64,6 +66,29 @@ export function ProyectoDetail({ proyecto }: ProyectoDetailProps) {
     setComentarioEstado('')
   }
 
+  const handleActualizarNombre = async () => {
+    if (!nuevoNombre.trim() || nuevoNombre === proyecto.nombre) {
+      setEditandoNombre(false)
+      setNuevoNombre(proyecto.nombre)
+      return
+    }
+    try {
+      const response = await fetch(`/api/proyectos/${proyecto.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre: nuevoNombre }),
+      })
+      if (response.ok) {
+        setEditandoNombre(false)
+        // Refresh page or update state
+        window.location.reload()
+      }
+    } catch (error) {
+      console.error('Error updating nombre:', error)
+      setNuevoNombre(proyecto.nombre)
+    }
+  }
+
   const tabs: { id: Tab; label: string; icon: string }[] = [
     { id: 'kanban', label: 'Kanban', icon: '📌' },
     { id: 'timeline', label: 'Timeline', icon: '📅' },
@@ -81,7 +106,43 @@ export function ProyectoDetail({ proyecto }: ProyectoDetailProps) {
                 {proyecto.area_responsable} · {proyecto.categoria}
               </span>
             </div>
-            <h1 className="text-xl font-bold text-gray-900">{proyecto.nombre}</h1>
+            {editandoNombre && canEdit ? (
+              <div className="flex gap-2 mt-2">
+                <input
+                  type="text"
+                  value={nuevoNombre}
+                  onChange={(e) => setNuevoNombre(e.target.value)}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  autoFocus
+                />
+                <button
+                  onClick={handleActualizarNombre}
+                  className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
+                >
+                  Guardar
+                </button>
+                <button
+                  onClick={() => {
+                    setEditandoNombre(false)
+                    setNuevoNombre(proyecto.nombre)
+                  }}
+                  className="px-3 py-2 text-gray-500 text-sm hover:text-gray-700"
+                >
+                  Cancelar
+                </button>
+              </div>
+            ) : (
+              <h1
+                onClick={() => canEdit && setEditandoNombre(true)}
+                className={cn(
+                  'text-xl font-bold text-gray-900',
+                  canEdit && 'cursor-pointer hover:text-blue-600'
+                )}
+              >
+                {proyecto.nombre}
+                {canEdit && <span className="text-gray-400 text-lg ml-2">✎</span>}
+              </h1>
+            )}
             {proyecto.descripcion_ejecutiva && (
               <p className="text-sm text-gray-500 mt-1">{proyecto.descripcion_ejecutiva}</p>
             )}

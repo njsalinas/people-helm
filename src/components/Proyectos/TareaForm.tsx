@@ -22,7 +22,7 @@ export function TareaForm({ proyectoId, usuarios, onClose }: TareaFormProps) {
       proyecto_id: proyectoId,
       nombre: '',
       descripcion: '',
-      responsable_id: user?.id ?? '',
+      responsable_id: undefined, // Será asignado automáticamente al creador
       fecha_inicio: new Date().toISOString().split('T')[0],
       fecha_fin_planificada: '',
       prioridad: 3,
@@ -70,12 +70,14 @@ export function TareaForm({ proyectoId, usuarios, onClose }: TareaFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Responsable *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Responsable <span className="text-gray-400 font-normal">(Opcional - Se asigna al creador si está vacío)</span>
+            </label>
             <select
               {...form.register('responsable_id')}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Seleccionar responsable</option>
+              <option value="">No asignar (se asignará automáticamente)</option>
               {usuarios.map((u) => (
                 <option key={u.id} value={u.id}>{u.nombre_completo}</option>
               ))}

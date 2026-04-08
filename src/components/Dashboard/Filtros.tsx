@@ -10,18 +10,23 @@
 
 import { AREAS_RESPONSABLES, FOCOS_ESTRATEGICOS, ESTADOS_PROYECTO } from '@/types/domain'
 import type { ProyectosFilter } from '@/types/api'
+import type { Usuario } from '@/types'
 import { cn } from '@/lib/utils'
 
 interface FiltrosProps {
   filtros: ProyectosFilter
   onChange: (filtros: Partial<ProyectosFilter>) => void
   onClear: () => void
+  user?: Usuario | null
 }
 
-export function Filtros({ filtros, onChange, onClear }: FiltrosProps) {
+export function Filtros({ filtros, onChange, onClear, user }: FiltrosProps) {
   const hasFilters = Object.keys(filtros).some(
     (k) => filtros[k as keyof ProyectosFilter] !== undefined
   )
+
+  // Solo mostrar filtro de Área para Gerentes
+  const mostrarFiltroArea = user?.rol === 'Gerente'
 
   return (
     <aside className="w-60 flex-shrink-0 bg-white border border-gray-200 rounded-xl p-4 space-y-5 h-fit">
@@ -37,22 +42,24 @@ export function Filtros({ filtros, onChange, onClear }: FiltrosProps) {
         )}
       </div>
 
-      {/* Por Área */}
-      <FilterSection title="Área">
-        {AREAS_RESPONSABLES.map((area) => (
-          <CheckboxItem
-            key={area}
-            label={area}
-            checked={filtros.areas?.includes(area) ?? false}
-            onChange={(checked) => {
-              const current = filtros.areas ?? []
-              onChange({
-                areas: checked ? [...current, area] : current.filter((a) => a !== area),
-              })
-            }}
-          />
-        ))}
-      </FilterSection>
+      {/* Por Área - Solo para Gerentes */}
+      {mostrarFiltroArea && (
+        <FilterSection title="Área">
+          {AREAS_RESPONSABLES.map((area) => (
+            <CheckboxItem
+              key={area}
+              label={area}
+              checked={filtros.areas?.includes(area) ?? false}
+              onChange={(checked) => {
+                const current = filtros.areas ?? []
+                onChange({
+                  areas: checked ? [...current, area] : current.filter((a) => a !== area),
+                })
+              }}
+            />
+          ))}
+        </FilterSection>
+      )}
 
       {/* Por Foco */}
       <FilterSection title="Foco Estratégico">

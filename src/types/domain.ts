@@ -117,10 +117,9 @@ export const CATEGORIAS_POR_AREA: Record<string, string[]> = {
 }
 
 export const FOCOS_ESTRATEGICOS = [
-  'Desarrollo Organizacional',
-  'Gestión de Personas',
-  'Cultura de Seguridad',
-  'Comunicaciones',
+  'Alta prioridad (estratégico)',
+  'Prioridad media (habilitadores)',
+  'Prioridad operacional',
 ] as const
 
 export const AREAS_RESPONSABLES = [

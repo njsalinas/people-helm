@@ -19,7 +19,7 @@ describe('CreateProjectSchema', () => {
   const valid = {
     nombre: 'ATS Q2',
     tipo: 'Proyecto',
-    foco_estrategico: 'Desarrollo Organizacional',
+    foco_estrategico: 'Alta prioridad (estratégico)',
     area_responsable: 'DO',
     categoria: 'Desempeño',
     responsable_primario: UUID,

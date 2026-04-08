@@ -5,7 +5,11 @@
       "Bash(mkdir -p /Users/nelsonsalinasalvarado/Documents/Proyectos/people-helm/.claude/skills)",
       "Bash(mkdir -p /Users/nelsonsalinasalvarado/Documents/Proyectos/people-helm/.claude/hooks)",
       "Bash(mkdir -p /Users/nelsonsalinasalvarado/Documents/Proyectos/people-helm/.claude/commands)",
-      "Bash(mkdir -p /Users/nelsonsalinasalvarado/Documents/Proyectos/people-helm/.claude/mcp-configs)"
+      "Bash(mkdir -p /Users/nelsonsalinasalvarado/Documents/Proyectos/people-helm/.claude/mcp-configs)",
+      "Bash(npm test:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

@@ -9,10 +9,9 @@ export type ProyectoTipo = 'Proyecto' | 'Línea'
 export type ProyectoSubtipo = 'Operativo' | 'Campaña' | 'Estratégico'
 export type ProyectoEstado = 'Pendiente' | 'En Curso' | 'En Riesgo' | 'Bloqueado' | 'Finalizado'
 export type FocoEstrategico =
-  | 'Desarrollo Organizacional'
-  | 'Gestión de Personas'
-  | 'Cultura de Seguridad'
-  | 'Comunicaciones'
+  | 'Alta prioridad (estratégico)'
+  | 'Prioridad media (habilitadores)'
+  | 'Prioridad operacional'
 export type AreaResponsable = 'DO' | 'Gestión de Personas' | 'SSO' | 'Comunicaciones'
 
 export type TareaEstado = 'Pendiente' | 'En Curso' | 'Finalizado' | 'Bloqueado'
@@ -95,12 +94,16 @@ export interface DbTarea {
   descripcion: string | null
   estado: TareaEstado
   porcentaje_avance: number
-  responsable_id: string
+  responsable_id: string | null
   fecha_inicio: string
   fecha_fin_planificada: string
   fecha_fin_real: string | null
   prioridad: number
   tarea_padre: string | null
+  bloqueado_razon: string | null
+  desbloqueado_razon: string | null
+  desbloqueado_por: string | null
+  fecha_desbloqueado: string | null
   created_at: string
   updated_at: string
   created_by: string

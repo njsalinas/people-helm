@@ -38,11 +38,12 @@ interface KanbanBoardProps {
 const COLUMN_LABELS: Record<string, string> = {
   Pendiente: 'Pendiente',
   'En Curso': 'En Curso',
+  Bloqueado: 'Bloqueado',
   Finalizado: 'Finalizado',
 }
 
 function buildColumns(tareas: Tarea[]): KanbanColumnType[] {
-  return (['Pendiente', 'En Curso', 'Finalizado'] as const).map((estado) => ({
+  return (['Pendiente', 'En Curso', 'Bloqueado', 'Finalizado'] as const).map((estado) => ({
     id: estado,
     label: COLUMN_LABELS[estado],
     tareas: tareas.filter((t) => t.estado === estado),

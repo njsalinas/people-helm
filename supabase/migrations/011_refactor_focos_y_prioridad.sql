@@ -6,7 +6,14 @@
 -- ============================================================
 
 -- ============================================================
--- SECCIÓN 1: Migrar datos existentes: mapeo automático 4 focos → 3 focos
+-- SECCIÓN 1: Actualizar constraint de foco_estrategico (PRIMERO)
+-- ============================================================
+
+ALTER TABLE proyectos
+DROP CONSTRAINT IF EXISTS proyectos_foco_estrategico_check;
+
+-- ============================================================
+-- SECCIÓN 1B: Migrar datos existentes: mapeo automático 4 focos → 3 focos
 -- ============================================================
 -- Mapeo definido:
 --   'Desarrollo Organizacional' → 'Alta prioridad (estratégico)'
@@ -21,20 +28,11 @@ SET foco_estrategico = CASE
   WHEN foco_estrategico = 'Cultura de Seguridad' THEN 'Prioridad media (habilitadores)'
   WHEN foco_estrategico = 'Comunicaciones' THEN 'Prioridad media (habilitadores)'
   ELSE 'Prioridad operacional'
-END
-WHERE foco_estrategico IN (
-  'Desarrollo Organizacional',
-  'Gestión de Personas',
-  'Cultura de Seguridad',
-  'Comunicaciones'
-);
+END;
 
 -- ============================================================
--- SECCIÓN 1B: Actualizar constraint de foco_estrategico
+-- SECCIÓN 1C: Agregar nuevo constraint
 -- ============================================================
-
-ALTER TABLE proyectos
-DROP CONSTRAINT proyectos_foco_estrategico_check;
 
 ALTER TABLE proyectos
 ADD CONSTRAINT proyectos_foco_estrategico_check

@@ -3,6 +3,8 @@
 *Auto-generated — do not edit manually*
 
 ```
+c358f43 fix: eliminar useUIStore no utilizado en SubproyectoForm
+18e25ea docs: auto-generated documentation [skip ci]
 101ca03 fix: eliminar variables no usadas y errores de lint
 ce832da docs: auto-generated documentation [skip ci]
 dbf0184 feat: Mejoras V2 y fix errores
@@ -21,6 +23,4 @@ f83e031 fix: corregir tipos en settings page (nombre_completo, evento, canal_ale
 51f43c6 fix: corregir addToast message→title en páginas restantes
 54bd21d docs: auto-generated documentation [skip ci]
 32312ab fix: corregir errores ESLint que bloqueaban build en Vercel
-276dd11 chore: trigger vercel rebuild from latest commit
-830b5b8 docs: auto-generated documentation [skip ci]
 ```

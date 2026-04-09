@@ -1,6 +1,6 @@
 # people-helm - Sistema de Dirección Operativa para Área de Personas
 
-**Last Updated:** 2026-04-09T02:56:22.012Z
+**Last Updated:** 2026-04-09T03:07:33.270Z
 **Status:** ✅ Development
 
 ---
@@ -51,11 +51,11 @@ SaaS para gestionar proyectos, bloqueos, tareas y generar reportería automátic
 ## 📋 Últimas 5 Actualizaciones
 
 ```
+ea46f33 fix: bypass ts error for proyecto_padre in patch route
+14d0edd docs: auto-generated documentation [skip ci]
 c358f43 fix: eliminar useUIStore no utilizado en SubproyectoForm
 18e25ea docs: auto-generated documentation [skip ci]
 101ca03 fix: eliminar variables no usadas y errores de lint
-ce832da docs: auto-generated documentation [skip ci]
-dbf0184 feat: Mejoras V2 y fix errores
 ```
 
 ---
@@ -82,4 +82,4 @@ dbf0184 feat: Mejoras V2 y fix errores
 ---
 
 *Generado automáticamente por pre-commit hook*
-*Última sincronización:* 2026-04-09T02:56:22.012Z
+*Última sincronización:* 2026-04-09T03:07:33.270Z

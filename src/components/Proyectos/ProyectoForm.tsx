@@ -43,7 +43,7 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
     resolver: zodResolver(CreateProjectSchema),
     defaultValues: {
       tipo: 'Proyecto',
-      foco_estrategico: 'Desarrollo Organizacional',
+      foco_estrategico: 'Alta prioridad (estratégico)',
       area_responsable: 'DO',
       prioridad: 3,
     },

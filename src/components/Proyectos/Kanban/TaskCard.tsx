@@ -28,15 +28,15 @@ export function TaskCard({ tarea, onClick }: TaskCardProps) {
     transition,
   }
 
-  const bloqueoActivo = tarea.bloqueos?.find((b) => b.estado === 'Activo')
+  const estaBloqueada = tarea.estado === 'Bloqueado'
   const diasRestantes = calcularDiasRestantes(tarea.fecha_fin_planificada)
   const estaVencida = diasRestantes < 0
 
   const cardColor = cn(
     'bg-white border rounded-xl p-3 cursor-pointer shadow-sm transition-all hover:shadow-md',
-    bloqueoActivo && 'border-red-300 bg-red-50',
-    !bloqueoActivo && estaVencida && 'border-orange-300 bg-orange-50',
-    !bloqueoActivo && !estaVencida && 'border-gray-200 hover:border-blue-300',
+    estaBloqueada && 'border-red-300 bg-red-50',
+    !estaBloqueada && estaVencida && 'border-orange-300 bg-orange-50',
+    !estaBloqueada && !estaVencida && 'border-gray-200 hover:border-blue-300',
     isDragging && 'opacity-50 shadow-lg rotate-2'
   )
 
@@ -54,7 +54,7 @@ export function TaskCard({ tarea, onClick }: TaskCardProps) {
       <div className="flex items-start justify-between gap-2">
         <p className="text-sm font-medium text-gray-900 leading-tight line-clamp-2">{tarea.nombre}</p>
         <div className="flex items-center gap-1 flex-shrink-0">
-          {bloqueoActivo && (
+          {estaBloqueada && (
             <span className="text-red-500 text-base" title="Tarea bloqueada">
               🔴
             </span>
@@ -80,8 +80,8 @@ export function TaskCard({ tarea, onClick }: TaskCardProps) {
             className={cn(
               'h-1.5 rounded-full transition-all',
               tarea.porcentaje_avance === 100 && 'bg-green-500',
-              tarea.porcentaje_avance < 100 && !bloqueoActivo && 'bg-blue-500',
-              bloqueoActivo && 'bg-red-400'
+              tarea.porcentaje_avance < 100 && !estaBloqueada && 'bg-blue-500',
+              estaBloqueada && 'bg-red-400'
             )}
             style={{ width: `${tarea.porcentaje_avance}%` }}
           />
@@ -116,9 +116,9 @@ export function TaskCard({ tarea, onClick }: TaskCardProps) {
       </div>
 
       {/* Bloqueo badge */}
-      {bloqueoActivo && (
+      {estaBloqueada && (
         <div className="mt-2 bg-red-100 text-red-700 text-xs rounded-lg px-2 py-1">
-          🔴 {bloqueoActivo.accion_requerida}: {bloqueoActivo.tipo}
+          🔴 Tarea bloqueada
         </div>
       )}
     </div>

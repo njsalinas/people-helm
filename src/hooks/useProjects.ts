@@ -72,7 +72,7 @@ export function useProyectos(filtros: ProyectosFilter = {}) {
 }
 
 /**
- * Hook para obtener detalle de un proyecto específico
+ * Hook para obtener detalle de un proyecto específico (con subproyectos)
  */
 export function useProyecto(id: string) {
   const supabase = getSupabaseBrowserClient()
@@ -84,7 +84,23 @@ export function useProyecto(id: string) {
         .from('proyectos')
         .select(`
           *,
-          responsable:usuarios!responsable_primario(id, nombre_completo, email, rol, area_responsable, activo, created_at, updated_at)
+          responsable:usuarios!responsable_primario(id, nombre_completo, email, rol, area_responsable, activo, created_at, updated_at),
+          subproyectos:proyectos!proyecto_padre(
+            id,
+            nombre,
+            descripcion_ejecutiva,
+            tipo,
+            subtipo,
+            categoria,
+            foco_estrategico,
+            area_responsable,
+            estado,
+            porcentaje_avance,
+            prioridad,
+            fecha_inicio,
+            fecha_fin_planificada,
+            responsable:usuarios!responsable_primario(id, nombre_completo, email)
+          )
         `)
         .eq('id', id)
         .single()
@@ -157,6 +173,38 @@ export function useActualizarEstadoProyecto() {
     },
     onError: (error: Error) => {
       addToast({ type: 'error', title: 'Error', description: error.message })
+    },
+  })
+}
+
+/**
+ * Hook para crear un subproyecto
+ */
+export function useCrearSubproyecto(proyectoPadreId: string) {
+  const queryClient = useQueryClient()
+  const addToast = useUIStore((s) => s.addToast)
+
+  return useMutation({
+    mutationFn: async (input: CreateProjectInput) => {
+      const response = await fetch(`/api/proyectos/${proyectoPadreId}/subproyectos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Error al crear subproyecto')
+      }
+
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.proyectoDetail(proyectoPadreId) })
+      addToast({ type: 'success', title: 'Subproyecto creado exitosamente' })
+    },
+    onError: (error: Error) => {
+      addToast({ type: 'error', title: 'Error al crear subproyecto', description: error.message })
     },
   })
 }

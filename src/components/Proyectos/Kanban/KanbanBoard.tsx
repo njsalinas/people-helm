@@ -8,7 +8,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   DndContext,
   DragEndEvent,
@@ -63,9 +63,9 @@ export function KanbanBoard({ proyectoId, tareas, usuarios, isLoading, canEdit =
   }))
 
   // Rebuild columns when tareas change
-  useState(() => {
+  useEffect(() => {
     setColumns(buildColumns(tareas))
-  })
+  }, [tareas])
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })

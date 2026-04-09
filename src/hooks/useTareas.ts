@@ -20,27 +20,48 @@ const QUERY_KEYS = {
  * Hook para obtener tareas de un proyecto
  */
 export function useTareas(proyectoId: string) {
-  const supabase = getSupabaseBrowserClient()
-
   return useQuery({
     queryKey: QUERY_KEYS.tareasByProject(proyectoId),
     queryFn: async (): Promise<Tarea[]> => {
-      const { data, error } = await supabase
-        .from('tareas')
-        .select(`
-          *,
-          responsable:usuarios!responsable_id(id, nombre_completo, email, rol, area_responsable, activo, created_at, updated_at),
-          bloqueos(id, descripcion, tipo, accion_requerida, estado, fecha_registro, created_by, created_at, updated_at, resolved_by, fecha_resolucion, comentario_resolucion, requiere_escalamiento)
-        `)
-        .eq('proyecto_id', proyectoId)
-        .is('tarea_padre', null)
-        .order('prioridad', { ascending: true })
-        .order('fecha_fin_planificada', { ascending: true })
+      const response = await fetch(`/api/tareas/proyecto?id=${proyectoId}`)
 
-      if (error) throw error
+      if (!response.ok) {
+        const err = await response.json()
+        throw new Error(err.error || 'Error fetching tareas')
+      }
+
+      const { data } = await response.json()
       return (data ?? []) as unknown as Tarea[]
     },
     enabled: !!proyectoId,
+  })
+}
+
+/**
+ * Hook para obtener todas las tareas de todos los proyectos (Kanban Global)
+ */
+interface TareaGlobal extends Omit<Tarea, 'bloqueos'> {
+  proyecto?: {
+    id: string
+    nombre: string
+    area_responsable: string
+  }
+}
+
+export function useTareasGlobal() {
+  return useQuery({
+    queryKey: ['tareas', 'global'] as const,
+    queryFn: async (): Promise<TareaGlobal[]> => {
+      const response = await fetch('/api/tareas')
+
+      if (!response.ok) {
+        const err = await response.json()
+        throw new Error(err.error || 'Error fetching tareas')
+      }
+
+      const { data } = await response.json()
+      return (data ?? []) as unknown as TareaGlobal[]
+    },
   })
 }
 

@@ -18,14 +18,14 @@ interface TaskProgressBarProps {
 
 export function TaskProgressBar({ timelineTask, onClick }: TaskProgressBarProps) {
   const { tarea, porcentaje_tiempo_transcurrido, dias_totales, dias_transcurridos, esta_vencida } = timelineTask
-  const bloqueoActivo = tarea.bloqueos?.find((b) => b.estado === 'Activo')
+  const estaBloqueada = tarea.estado === 'Bloqueado'
 
   const barColor = cn(
     'h-full rounded-full transition-all',
     tarea.estado === 'Finalizado' && 'bg-green-500',
-    tarea.estado === 'En Curso' && !bloqueoActivo && !esta_vencida && 'bg-blue-500',
-    tarea.estado === 'En Curso' && esta_vencida && !bloqueoActivo && 'bg-orange-500',
-    bloqueoActivo && 'bg-red-500',
+    tarea.estado === 'En Curso' && !estaBloqueada && !esta_vencida && 'bg-blue-500',
+    tarea.estado === 'En Curso' && esta_vencida && !estaBloqueada && 'bg-orange-500',
+    estaBloqueada && 'bg-red-500',
     tarea.estado === 'Pendiente' && 'bg-gray-400',
   )
 
@@ -40,7 +40,7 @@ export function TaskProgressBar({ timelineTask, onClick }: TaskProgressBarProps)
       {/* Task name */}
       <div className="w-48 flex-shrink-0">
         <div className="flex items-center gap-1.5">
-          {bloqueoActivo && <span className="text-red-500 text-xs">🔴</span>}
+          {estaBloqueada && <span className="text-red-500 text-xs">🔴</span>}
           {tarea.estado === 'Finalizado' && <span className="text-green-500 text-xs">✓</span>}
           <p className="text-sm text-gray-700 truncate">{tarea.nombre}</p>
         </div>
@@ -78,7 +78,7 @@ export function TaskProgressBar({ timelineTask, onClick }: TaskProgressBarProps)
           <span>
             ({dias_transcurridos} de {dias_totales}d)
           </span>
-          {bloqueoActivo && <span className="text-red-600 font-medium">BLOQ</span>}
+          {estaBloqueada && <span className="text-red-600 font-medium">BLOQ</span>}
           {tarea.estado === 'Finalizado' && <span className="text-green-600 font-medium">✓</span>}
         </div>
       </div>

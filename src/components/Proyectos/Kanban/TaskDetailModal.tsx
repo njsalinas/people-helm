@@ -39,8 +39,7 @@ export function TaskDetailModal({ tareaId, proyectoId, onClose, canEdit = true, 
         .from('tareas')
         .select(`
           *,
-          responsable:usuarios!responsable_id(id, nombre_completo, email, rol, area_responsable, activo, created_at, updated_at),
-          bloqueos(*)
+          responsable:usuarios!responsable_id(id, nombre_completo, email, rol, area_responsable, activo, created_at, updated_at)
         `)
         .eq('id', tareaId)
         .single()
@@ -50,38 +49,9 @@ export function TaskDetailModal({ tareaId, proyectoId, onClose, canEdit = true, 
     },
   })
 
-  // Fetch historial de desbloqueos
-  const { data: desbloqueos = [] } = useQuery({
-    queryKey: ['tareas', tareaId, 'desbloqueos'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('historial_cambios')
-        .select(
-          `
-          id,
-          campo_afectado,
-          valor_anterior,
-          valor_nuevo,
-          comentario,
-          created_at,
-          created_by,
-          usuario:usuarios!created_by(id, nombre_completo, email)
-        `
-        )
-        .eq('entidad_id', tareaId)
-        .eq('entidad_tipo', 'Tarea')
-        .eq('campo_afectado', 'estado')
-        .eq('valor_anterior', 'Bloqueado')
-        .order('created_at', { ascending: false })
-
-      if (error) {
-        console.error('Error fetching desbloqueos:', error)
-        return []
-      }
-      return data || []
-    },
-    enabled: !!tareaId,
-  })
+  // Nota: El historial de desbloqueos a nivel de tarea requeriría una estructura diferente
+  // ya que historial_cambios está a nivel de proyecto, no de tarea
+  const desbloqueos: any[] = []
 
   const handleEstadoChange = async (estado: string) => {
     if (!tarea) return

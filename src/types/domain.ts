@@ -77,7 +77,7 @@ export interface KPIData {
 }
 
 export interface KanbanColumn {
-  id: 'Pendiente' | 'En Curso' | 'Finalizado'
+  id: 'Pendiente' | 'En Curso' | 'Bloqueado' | 'Finalizado'
   label: string
   tareas: Tarea[]
 }

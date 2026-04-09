@@ -6,17 +6,6 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { Textarea } from '@/components/ui/textarea'
 import type { Tarea } from '@/types'
 
 interface DesbloquearTareaModalProps {
@@ -56,31 +45,34 @@ export function DesbloquearTareaModal({
     }
   }
 
-  return (
-    <AlertDialog open={open} onOpenChange={onClose}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Registrar desbloqueo</AlertDialogTitle>
-          <AlertDialogDescription>
-            ¿Cómo se resolvió el bloqueo de &quot;<strong>{tarea.nombre}</strong>&quot;?
-          </AlertDialogDescription>
-        </AlertDialogHeader>
+  if (!open) return null
 
-        <div className="space-y-4">
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4">
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-900">Registrar desbloqueo</h2>
+          <p className="text-sm text-gray-600 mt-1">
+            ¿Cómo se resolvió el bloqueo de <strong>{tarea.nombre}</strong>?
+          </p>
+        </div>
+
+        {/* Content */}
+        <div className="px-6 py-4 space-y-4">
           <div className="text-sm">
-            <p className="text-gray-600 mb-2">
+            <p className="text-gray-600 mb-4">
               Nueva estado: <span className="font-semibold">{nuevoEstado}</span>
             </p>
             <label htmlFor="razon" className="block text-sm font-medium text-gray-700 mb-2">
               Razón del desbloqueo
             </label>
-            <Textarea
+            <textarea
               id="razon"
               value={razon}
-              onChange={(e) => setRazon(e.target.value)}
+              onChange={(e) => setRazon(e.target.value.slice(0, 500))}
               placeholder="Describe brevemente cómo se resolvió el bloqueo (mínimo 10 caracteres)"
-              className="w-full min-h-[100px]"
-              maxLength={500}
+              className="w-full min-h-[100px] px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
               disabled={isLoading}
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -89,17 +81,24 @@ export function DesbloquearTareaModal({
           </div>
         </div>
 
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Cancelar</AlertDialogCancel>
-          <AlertDialogAction
+        {/* Footer */}
+        <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-end gap-3">
+          <button
+            onClick={onClose}
+            disabled={isLoading}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Cancelar
+          </button>
+          <button
             onClick={handleConfirm}
             disabled={razon.length < 10 || isLoading}
-            className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400"
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             {isLoading ? 'Desbloqueando...' : 'Desbloquear'}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }

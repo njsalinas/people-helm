@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CreateTaskSchema, type CreateTaskInput } from '@/lib/validations'
 import { useCrearTarea } from '@/hooks/useTareas'
-import { useAuth } from '@/hooks/useAuth'
 
 interface TareaFormProps {
   proyectoId: string
@@ -13,7 +12,6 @@ interface TareaFormProps {
 }
 
 export function TareaForm({ proyectoId, usuarios, onClose }: TareaFormProps) {
-  const { user } = useAuth()
   const crearTarea = useCrearTarea()
 
   const form = useForm<CreateTaskInput>({
@@ -22,16 +20,15 @@ export function TareaForm({ proyectoId, usuarios, onClose }: TareaFormProps) {
       proyecto_id: proyectoId,
       nombre: '',
       descripcion: '',
-      responsable_id: undefined, // Será asignado automáticamente al creador
       fecha_inicio: new Date().toISOString().split('T')[0],
       fecha_fin_planificada: '',
       prioridad: 3,
-    },
+    } as CreateTaskInput,
   })
 
   const onSubmit = async (data: CreateTaskInput) => {
     try {
-      await crearTarea.mutateAsync(data)
+      await crearTarea.mutateAsync(data as any)
       // Agregar un pequeño delay para asegurar que la query se refetch
       await new Promise(resolve => setTimeout(resolve, 500))
       onClose()

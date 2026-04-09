@@ -9,7 +9,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getServerUser } from '@/lib/auth'
 import { UpdateProjectSchema } from '@/lib/validations'
-import { z } from 'zod'
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   const user = await getServerUser()
@@ -72,6 +71,31 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       { error: 'Datos inválidos', detalles: result.error.flatten() },
       { status: 400 }
     )
+  }
+
+  // Si intenta cambiar proyecto_padre, validar que no sea circular
+  if (result.data.proyecto_padre !== undefined && result.data.proyecto_padre !== null) {
+    // Validar: el nuevo padre no puede ser el proyecto actual
+    if (result.data.proyecto_padre === params.id) {
+      return NextResponse.json(
+        { error: 'Un proyecto no puede ser subproyecto de sí mismo' },
+        { status: 400 }
+      )
+    }
+
+    // Validar: el nuevo padre no puede ser un subproyecto del actual
+    // (evitar: A → B → C → A)
+    const { data: chain } = await supabase.rpc('validar_proyecto_circular', {
+      p_proyecto_id: params.id,
+      p_nuevo_padre_id: result.data.proyecto_padre,
+    })
+
+    if (chain && chain.es_circular) {
+      return NextResponse.json(
+        { error: 'Esta relación crearía una referencia circular entre proyectos' },
+        { status: 400 }
+      )
+    }
   }
 
   const { data, error } = await supabase

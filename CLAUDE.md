@@ -1,6 +1,6 @@
 # people-helm - Sistema de Dirección Operativa para Área de Personas
 
-**Last Updated:** 2026-04-09T02:39:19.134Z
+**Last Updated:** 2026-04-09T02:50:30.884Z
 **Status:** ✅ Development
 
 ---
@@ -51,11 +51,11 @@ SaaS para gestionar proyectos, bloqueos, tareas y generar reportería automátic
 ## 📋 Últimas 5 Actualizaciones
 
 ```
+101ca03 fix: eliminar variables no usadas y errores de lint
+ce832da docs: auto-generated documentation [skip ci]
 dbf0184 feat: Mejoras V2 y fix errores
 8179d7c fix: resolver 3 issues reportados
 4bdf4fb fix: corregir orden de ejecución en migración 011
-3e69b88 feat: implementar 15 mejoras People Helm v2
-507c062 docs: auto-generated documentation [skip ci]
 ```
 
 ---
@@ -82,4 +82,4 @@ dbf0184 feat: Mejoras V2 y fix errores
 ---
 
 *Generado automáticamente por pre-commit hook*
-*Última sincronización:* 2026-04-09T02:39:19.134Z
+*Última sincronización:* 2026-04-09T02:50:30.884Z

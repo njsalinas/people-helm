@@ -3,6 +3,8 @@
 *Auto-generated — do not edit manually*
 
 ```
+101ca03 fix: eliminar variables no usadas y errores de lint
+ce832da docs: auto-generated documentation [skip ci]
 dbf0184 feat: Mejoras V2 y fix errores
 8179d7c fix: resolver 3 issues reportados
 4bdf4fb fix: corregir orden de ejecución en migración 011
@@ -21,6 +23,4 @@ f83e031 fix: corregir tipos en settings page (nombre_completo, evento, canal_ale
 32312ab fix: corregir errores ESLint que bloqueaban build en Vercel
 276dd11 chore: trigger vercel rebuild from latest commit
 830b5b8 docs: auto-generated documentation [skip ci]
-9ad991c fix: ProyectoForm funcional y modal integrado en dashboard
-3e5e9eb feat: autenticación, semáforo, formulario de tareas y corrección de tests
 ```

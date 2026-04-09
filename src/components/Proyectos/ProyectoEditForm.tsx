@@ -10,7 +10,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import type { Proyecto } from '@/types'
-import { AREAS_RESPONSABLES, FOCOS_ESTRATEGICOS, CATEGORIAS_POR_AREA } from '@/types/domain'
+// import { AREAS_RESPONSABLES, FOCOS_ESTRATEGICOS, CATEGORIAS_POR_AREA } from '@/types/domain'
+import {  FOCOS_ESTRATEGICOS, CATEGORIAS_POR_AREA } from '@/types/domain'
 import { useUIStore } from '@/stores/uiStore'
 import type { DbUsuario } from '@/types/database'
 
@@ -50,7 +51,7 @@ export function ProyectoEditForm({ proyecto, onClose }: ProyectoEditFormProps) {
   const {
     register,
     handleSubmit,
-    watch,
+    /* watch, */
     formState: { errors },
   } = useForm<UpdateProjectInput>({
     resolver: zodResolver(UpdateProjectSchema),

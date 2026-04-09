@@ -37,7 +37,7 @@ interface SubproyectoFormProps {
 }
 
 export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps) {
-  const addToast = useUIStore((s) => s.addToast)
+  /* const addToast = useUIStore((s) => s.addToast) */
   const [usuarios, setUsuarios] = useState<DbUsuario[]>([])
   const crearSubproyecto = useCrearSubproyecto(proyectoPadre.id)
 

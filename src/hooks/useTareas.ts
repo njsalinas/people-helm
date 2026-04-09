@@ -5,7 +5,7 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getSupabaseBrowserClient } from '@/lib/supabase'
+/* import { getSupabaseBrowserClient } from '@/lib/supabase' */
 import { useUIStore } from '@/stores/uiStore'
 import type { Tarea } from '@/types'
 import type { CreateTaskInput, UpdateTaskStatusInput } from '@/types/api'

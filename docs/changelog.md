@@ -3,6 +3,11 @@
 *Auto-generated — do not edit manually*
 
 ```
+dbf0184 feat: Mejoras V2 y fix errores
+8179d7c fix: resolver 3 issues reportados
+4bdf4fb fix: corregir orden de ejecución en migración 011
+3e69b88 feat: implementar 15 mejoras People Helm v2
+507c062 docs: auto-generated documentation [skip ci]
 ca2cb98 fix: force-dynamic en root layout para evitar pre-render sin env vars
 a13aeeb docs: auto-generated documentation [skip ci]
 1770361 fix: resolver errores TypeScript que bloqueaban build en Vercel
@@ -18,6 +23,4 @@ f83e031 fix: corregir tipos en settings page (nombre_completo, evento, canal_ale
 830b5b8 docs: auto-generated documentation [skip ci]
 9ad991c fix: ProyectoForm funcional y modal integrado en dashboard
 3e5e9eb feat: autenticación, semáforo, formulario de tareas y corrección de tests
-66aa586 docs: auto-generated documentation [skip ci]
-d9498b7 feat: initial comit
 ```

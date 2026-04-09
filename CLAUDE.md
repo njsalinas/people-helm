@@ -1,6 +1,6 @@
 # people-helm - Sistema de Dirección Operativa para Área de Personas
 
-**Last Updated:** 2026-04-07T16:59:30.070Z
+**Last Updated:** 2026-04-09T02:39:19.134Z
 **Status:** ✅ Development
 
 ---
@@ -51,11 +51,11 @@ SaaS para gestionar proyectos, bloqueos, tareas y generar reportería automátic
 ## 📋 Últimas 5 Actualizaciones
 
 ```
-ca2cb98 fix: force-dynamic en root layout para evitar pre-render sin env vars
-a13aeeb docs: auto-generated documentation [skip ci]
-1770361 fix: resolver errores TypeScript que bloqueaban build en Vercel
-6e956b8 docs: auto-generated documentation [skip ci]
-3aaffcc fix: actualizar campo activo→canal_alerta_visual en API route notificaciones
+dbf0184 feat: Mejoras V2 y fix errores
+8179d7c fix: resolver 3 issues reportados
+4bdf4fb fix: corregir orden de ejecución en migración 011
+3e69b88 feat: implementar 15 mejoras People Helm v2
+507c062 docs: auto-generated documentation [skip ci]
 ```
 
 ---
@@ -64,8 +64,8 @@ a13aeeb docs: auto-generated documentation [skip ci]
 
 | Métrica | Valor |
 |---------|-------|
-| **Archivos fuente** | 86 |
-| **Componentes React** | 22 |
+| **Archivos fuente** | 100 |
+| **Componentes React** | 30 |
 | **Hooks personalizados** | 7 |
 | **Tests** | 6 |
 
@@ -82,4 +82,4 @@ a13aeeb docs: auto-generated documentation [skip ci]
 ---
 
 *Generado automáticamente por pre-commit hook*
-*Última sincronización:* 2026-04-07T16:59:30.070Z
+*Última sincronización:* 2026-04-09T02:39:19.134Z

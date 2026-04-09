@@ -39,8 +39,13 @@ POST - Registrar nuevo riesgo
 ### `/proyectos/[id]`
 @file API Route: /api/proyectos/[id]
 GET    - Obtener proyecto por ID con joins completos
-PATCH  - Actualizar campos del proyecto
+PATCH  - Actualizar campos del proyecto (edición inline)
 DELETE - Eliminar proyecto (solo Gerente)
+
+### `/proyectos/[id]/subproyectos`
+@file API Route: /api/proyectos/[id]/subproyectos
+POST - Crear subproyecto
+GET - Listar subproyectos (opcional)
 
 ### `/proyectos/[id]/tareas`
 @file API Route: /api/proyectos/[id]/tareas
@@ -66,9 +71,25 @@ POST - Generar semáforo del mes actual (invoca Supabase Function)
 @file API Route: /api/riesgos/[id]/resolver
 PATCH - Cambiar estado del riesgo a Mitigado o Cerrado
 
+### `/tareas/[id]/desbloquear`
+@file API Route: /api/tareas/[id]/desbloquear
+PATCH - Desbloquear tarea registrando razón y metadata
+
+### `/tareas/[id]/desbloqueos`
+@file API Route: /api/tareas/[id]/desbloqueos
+GET - Obtener historial de desbloqueos de una tarea
+
 ### `/tareas/[id]/estado`
 @file API Route: /api/tareas/[id]/estado
 PATCH - Actualizar estado/avance de una tarea
+
+### `/tareas/proyecto`
+@file API Route: /api/tareas/proyecto?id=xyz
+GET - Obtener tareas de un proyecto específico
+
+### `/tareas`
+@file API Route: /api/tareas
+GET - Obtener todas las tareas (para Kanban Global)
 
 ### `/usuarios`
 

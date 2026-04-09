@@ -54,6 +54,11 @@ Tabla dinámica principal con todos los proyectos y su estado
 <VistaGerencial proyectos={proyectos} onSelectProject={(id) => router.push(`/proyectos/${id}`)} />
 **Exports:** VistaGerencial
 
+### `src/components/Proyectos/Kanban/DesbloquearTareaModal.tsx`
+@component DesbloquearTareaModal
+Modal para registrar la razón de desbloqueo al mover una tarea desde estado Bloqueado
+**Exports:** DesbloquearTareaModal
+
 ### `src/components/Proyectos/Kanban/KanbanBoard.tsx`
 @component KanbanBoard
 Tablero Kanban principal con drag & drop entre columnas
@@ -86,6 +91,21 @@ Modal con detalle completo de una tarea, bloqueos y comentarios
 <TaskDetailModal tareaId={id} proyectoId={proyId} onClose={() => setOpen(false)} />
 **Exports:** TaskDetailModal
 
+### `src/components/Proyectos/KanbanGlobal/KanbanColumnGlobal.tsx`
+@component KanbanColumnGlobal
+Columna de un Kanban global mostrando tareas por estado
+**Exports:** KanbanColumnGlobal
+
+### `src/components/Proyectos/KanbanGlobal/KanbanGlobal.tsx`
+@component KanbanGlobal
+Kanban global con tareas organizadas por estado
+**Exports:** KanbanGlobal
+
+### `src/components/Proyectos/KanbanGlobal/TaskCardGlobal.tsx`
+@component TaskCardGlobal
+Tarjeta de tarea para el Kanban Global con color del proyecto
+**Exports:** TaskCardGlobal
+
 ### `src/components/Proyectos/Lista/TaskTable.tsx`
 @component TaskTable
 Vista de lista con todas las tareas de un proyecto en tabla
@@ -110,6 +130,11 @@ Vista de detalle de un proyecto con 3 pestañas: Kanban, Timeline, Lista
 <ProyectoDetail proyectoId={id} />
 **Exports:** ProyectoDetail
 
+### `src/components/Proyectos/ProyectoEditForm.tsx`
+@component ProyectoEditForm
+Formulario para editar un proyecto existente
+**Exports:** ProyectoEditForm
+
 ### `src/components/Proyectos/ProyectoForm.tsx`
 @component ProyectoForm
 Modal de creación de proyecto
@@ -117,6 +142,22 @@ Modal de creación de proyecto
 @example
 <ProyectoForm onClose={() => setOpen(false)} />
 **Exports:** ProyectoForm
+
+### `src/components/Proyectos/SubproyectoCard.tsx`
+@component SubproyectoCard
+Card component para mostrar un subproyecto en la lista
+**Exports:** SubproyectoCard
+
+### `src/components/Proyectos/SubproyectoForm.tsx`
+@component SubproyectoForm
+Formulario para crear un subproyecto
+Simplificado respecto a ProyectoForm: hereda area_responsable y foco_estrategico del padre
+**Exports:** SubproyectoForm
+
+### `src/components/Proyectos/SubproyectoList.tsx`
+@component SubproyectoList
+Sección para mostrar subproyectos en el detalle del proyecto
+**Exports:** SubproyectoList
 
 ### `src/components/Proyectos/TareaForm.tsx`
 **Exports:** TareaForm
@@ -186,7 +227,7 @@ Hooks para configuración y recepción de notificaciones en tiempo real
 
 ### `src/hooks/useProjects.ts`
 @file React Query hooks para gestión de proyectos
-**Exports:** useProyectos, useProyecto, useCrearProyecto, useActualizarEstadoProyecto
+**Exports:** useProyectos, useProyecto, useCrearProyecto, useActualizarEstadoProyecto, useCrearSubproyecto
 
 ### `src/hooks/useRiesgos.ts`
 @file useRiesgos
@@ -200,7 +241,7 @@ Hooks para semáforos (reportería)
 
 ### `src/hooks/useTareas.ts`
 @file React Query hooks para gestión de tareas
-**Exports:** useTareas, useCrearTarea, useActualizarTarea
+**Exports:** useTareas, useTareasGlobal, useCrearTarea, useActualizarTarea
 
 ## Utilidades
 
@@ -241,7 +282,7 @@ y Supabase cae a `any`, lo que hace que .insert()/.update() retornen `never`.
 
 ### `src/lib/validations.ts`
 @file Schemas de validación Zod para inputs del sistema
-**Exports:** CreateProjectSchema, CreateProjectInput, UpdateProjectStatusSchema, UpdateProjectStatusInput, CreateTaskSchema, CreateTaskInput, UpdateTaskStatusSchema, UpdateTaskStatusInput, CreateBloqueoSchema, CreateBloqueoInput, ResolveBloqueoSchema, ResolveBloqueoInput, CreateRiesgoSchema, CreateRiesgoInput, CreateComentarioSchema, CreateComentarioInput, LoginSchema, LoginInput, SemaforoItemManualSchema, SemaforoAbreviadoSchema, SemaforoAbreviadoInput
+**Exports:** CreateProjectSchema, CreateProjectInput, UpdateProjectStatusSchema, UpdateProjectStatusInput, UpdateProjectSchema, UpdateProjectInput, CreateTaskSchema, CreateTaskInput, UpdateTaskStatusSchema, UpdateTaskStatusInput, DesbloquearTareaSchema, DesbloquearTareaInput, CreateBloqueoSchema, CreateBloqueoInput, ResolveBloqueoSchema, ResolveBloqueoInput, CreateRiesgoSchema, CreateRiesgoInput, CreateComentarioSchema, CreateComentarioInput, LoginSchema, LoginInput, SemaforoItemManualSchema, SemaforoAbreviadoSchema, SemaforoAbreviadoInput
 
 ## Stores Zustand
 

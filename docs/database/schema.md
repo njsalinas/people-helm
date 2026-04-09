@@ -971,3 +971,253 @@ CREATE INDEX IF NOT EXISTS idx_historial_reciente
   ON historial_cambios(created_at DESC, proyecto_id);
 ```
 
+### 011_refactor_focos_y_prioridad
+
+```sql
+-- ============================================================
+-- Migration 011: Refactorizar focos estratégicos (4 → 3)
+--                Responsable opcional en tareas
+--                Campos de bloqueo en tareas
+-- Depende de: 010_crear_indices_y_triggers.sql
+-- ============================================================
+
+-- ============================================================
+-- SECCIÓN 1: Actualizar constraint de foco_estrategico (PRIMERO)
+-- ============================================================
+
+ALTER TABLE proyectos
+DROP CONSTRAINT IF EXISTS proyectos_foco_estrategico_check;
+
+-- ============================================================
+-- SECCIÓN 1B: Migrar datos existentes: mapeo automático 4 focos → 3 focos
+-- ============================================================
+-- Mapeo definido:
+--   'Desarrollo Organizacional' → 'Alta prioridad (estratégico)'
+--   'Gestión de Personas'       → 'Alta prioridad (estratégico)'
+--   'Cultura de Seguridad'      → 'Prioridad media (habilitadores)'
+--   'Comunicaciones'            → 'Prioridad media (habilitadores)'
+
+UPDATE proyectos
+SET foco_estrategico = CASE
+  WHEN foco_estrategico = 'Desarrollo Organizacional' THEN 'Alta prioridad (estratégico)'
+  WHEN foco_estrategico = 'Gestión de Personas' THEN 'Alta prioridad (estratégico)'
+  WHEN foco_estrategico = 'Cultura de Seguridad' THEN 'Prioridad media (habilitadores)'
+  WHEN foco_estrategico = 'Comunicaciones' THEN 'Prioridad media (habilitadores)'
+  ELSE 'Prioridad operacional'
+END;
+
+-- ============================================================
+-- SECCIÓN 1C: Agregar nuevo constraint
+-- ============================================================
+
+ALTER TABLE proyectos
+ADD CONSTRAINT proyectos_foco_estrategico_check
+CHECK (foco_estrategico IN (
+  'Alta prioridad (estratégico)',
+  'Prioridad media (habilitadores)',
+  'Prioridad operacional'
+));
+
+-- ============================================================
+-- SECCIÓN 1C: Agregar índice para queries de filtrado de prioridad
+-- ============================================================
+
+CREATE INDEX IF NOT EXISTS idx_proyectos_prioridad ON proyectos(prioridad);
+
+-- ============================================================
+-- SECCIÓN 2: Permitir responsable_id NULL en tareas (mejora #15)
+-- ============================================================
+
+-- Primero, eliminar constraint existente
+ALTER TABLE tareas
+DROP CONSTRAINT tareas_responsable_id_fkey;
+
+-- Hacer responsable_id nullable
+ALTER TABLE tareas
+ALTER COLUMN responsable_id DROP NOT NULL;
+
+-- Re-crear constraint con ON DELETE SET NULL
+ALTER TABLE tareas
+ADD CONSTRAINT tareas_responsable_id_fkey
+FOREIGN KEY (responsable_id) REFERENCES usuarios(id) ON DELETE SET NULL;
+
+-- ============================================================
+-- SECCIÓN 2B: Trigger para asignar responsable automáticamente
+-- ============================================================
+
+CREATE OR REPLACE FUNCTION asignar_responsable_tarea_auto()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.responsable_id IS NULL THEN
+    NEW.responsable_id := NEW.created_by;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Eliminar trigger anterior si existe
+DROP TRIGGER IF EXISTS tareas_asignar_responsable_auto ON tareas;
+
+CREATE TRIGGER tareas_asignar_responsable_auto
+  BEFORE INSERT ON tareas
+  FOR EACH ROW EXECUTE FUNCTION asignar_responsable_tarea_auto();
+
+-- ============================================================
+-- SECCIÓN 2C: Actualizar tareas existentes sin responsable
+-- ============================================================
+
+UPDATE tareas
+SET responsable_id = created_by
+WHERE responsable_id IS NULL;
+
+-- ============================================================
+-- SECCIÓN 3: Agregar campos de bloqueo a nivel tarea
+-- ============================================================
+
+-- Almacena: ¿por qué estaba bloqueado?
+ALTER TABLE tareas
+ADD COLUMN IF NOT EXISTS bloqueado_razon TEXT;
+
+-- Almacena: ¿cómo se desbloqueó? (comentario de desbloqueo)
+ALTER TABLE tareas
+ADD COLUMN IF NOT EXISTS desbloqueado_razon TEXT;
+
+-- Quién lo desbloqueó
+ALTER TABLE tareas
+ADD COLUMN IF NOT EXISTS desbloqueado_por UUID REFERENCES usuarios(id) ON DELETE SET NULL;
+
+-- Cuándo se desbloqueó
+ALTER TABLE tareas
+ADD COLUMN IF NOT EXISTS fecha_desbloqueado TIMESTAMPTZ;
+```
+
+### 012_agregar_validacion_subproyectos
+
+```sql
+-- ============================================================
+-- Migration 012: Validación de subproyectos
+-- Función RPC para validar relaciones circulares
+-- Trigger para evitar circular references en proyectos
+-- ============================================================
+
+-- ============================================================
+-- SECCIÓN 1: Función para detectar relaciones circulares
+-- ============================================================
+
+CREATE OR REPLACE FUNCTION validar_proyecto_circular(
+  p_proyecto_id UUID,
+  p_nuevo_padre_id UUID
+)
+RETURNS TABLE (es_circular BOOLEAN) AS $$
+BEGIN
+  -- Buscar si nuevo_padre está en la cadena ascendente de proyecto_id
+  -- Si lo está, sería circular: A → B → A
+  RETURN QUERY
+  WITH RECURSIVE ancestors AS (
+    SELECT id, proyecto_padre
+    FROM proyectos
+    WHERE id = p_nuevo_padre_id
+
+    UNION ALL
+
+    SELECT p.id, p.proyecto_padre
+    FROM proyectos p
+    INNER JOIN ancestors a ON a.proyecto_padre = p.id
+    WHERE p.proyecto_padre IS NOT NULL
+  )
+  SELECT EXISTS (
+    SELECT 1 FROM ancestors WHERE id = p_proyecto_id
+  ) AS es_circular;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+-- ============================================================
+-- SECCIÓN 2: Trigger para validar en INSERT
+-- ============================================================
+
+CREATE OR REPLACE FUNCTION validar_proyecto_padre_insert()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_es_circular BOOLEAN;
+BEGIN
+  IF NEW.proyecto_padre IS NOT NULL THEN
+    -- Validar que no sea circular
+    SELECT validar_proyecto_circular(NEW.id, NEW.proyecto_padre).es_circular
+    INTO v_es_circular;
+
+    IF v_es_circular THEN
+      RAISE EXCEPTION 'Relación circular detectada: un proyecto no puede ser ancestro de sí mismo';
+    END IF;
+
+    -- Validar que hereda el area_responsable del padre
+    PERFORM 1
+    FROM proyectos
+    WHERE id = NEW.proyecto_padre
+      AND area_responsable = NEW.area_responsable;
+
+    IF NOT FOUND THEN
+      RAISE EXCEPTION 'El subproyecto debe estar en la misma área que el proyecto padre';
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS validar_proyecto_padre_insert_trigger ON proyectos;
+CREATE TRIGGER validar_proyecto_padre_insert_trigger
+  BEFORE INSERT ON proyectos
+  FOR EACH ROW
+  EXECUTE FUNCTION validar_proyecto_padre_insert();
+
+-- ============================================================
+-- SECCIÓN 3: Trigger para validar en UPDATE
+-- ============================================================
+
+CREATE OR REPLACE FUNCTION validar_proyecto_padre_update()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_es_circular BOOLEAN;
+BEGIN
+  -- Solo validar si proyecto_padre cambió
+  IF (OLD.proyecto_padre IS DISTINCT FROM NEW.proyecto_padre) THEN
+    IF NEW.proyecto_padre IS NOT NULL THEN
+      -- Validar que no sea circular
+      SELECT validar_proyecto_circular(NEW.id, NEW.proyecto_padre).es_circular
+      INTO v_es_circular;
+
+      IF v_es_circular THEN
+        RAISE EXCEPTION 'Relación circular detectada: un proyecto no puede ser ancestro de sí mismo';
+      END IF;
+
+      -- Validar que hereda el area_responsable del padre
+      PERFORM 1
+      FROM proyectos
+      WHERE id = NEW.proyecto_padre
+        AND area_responsable = NEW.area_responsable;
+
+      IF NOT FOUND THEN
+        RAISE EXCEPTION 'El subproyecto debe estar en la misma área que el proyecto padre';
+      END IF;
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS validar_proyecto_padre_update_trigger ON proyectos;
+CREATE TRIGGER validar_proyecto_padre_update_trigger
+  BEFORE UPDATE ON proyectos
+  FOR EACH ROW
+  EXECUTE FUNCTION validar_proyecto_padre_update();
+
+-- ============================================================
+-- SECCIÓN 4: Índice para mejorar performance en recursión
+-- ============================================================
+
+CREATE INDEX IF NOT EXISTS idx_proyectos_padre_no_null
+  ON proyectos(proyecto_padre)
+  WHERE proyecto_padre IS NOT NULL;
+```
+

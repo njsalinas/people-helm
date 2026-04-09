@@ -12,7 +12,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import type { Proyecto } from '@/types'
 import { CATEGORIAS_POR_AREA } from '@/types/domain'
-import { useUIStore } from '@/stores/uiStore'
+/* import { useUIStore } from '@/stores/uiStore' */
 import type { DbUsuario } from '@/types/database'
 import { useCrearSubproyecto } from '@/hooks/useProjects'
 

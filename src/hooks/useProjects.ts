@@ -208,3 +208,33 @@ export function useCrearSubproyecto(proyectoPadreId: string) {
     },
   })
 }
+
+/**
+ * Hook para eliminar un subproyecto
+ */
+export function useEliminarSubproyecto(proyectoPadreId: string) {
+  const queryClient = useQueryClient()
+  const addToast = useUIStore((s) => s.addToast)
+
+  return useMutation({
+    mutationFn: async (subproyectoId: string) => {
+      const response = await fetch(`/api/proyectos/${subproyectoId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Error al eliminar subproyecto')
+      }
+
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.proyectoDetail(proyectoPadreId) })
+      addToast({ type: 'success', title: 'Subproyecto eliminado exitosamente' })
+    },
+    onError: (error: Error) => {
+      addToast({ type: 'error', title: 'Error al eliminar subproyecto', description: error.message })
+    },
+  })
+}

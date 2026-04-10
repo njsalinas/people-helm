@@ -9,6 +9,7 @@ import { useState } from 'react'
 import type { Proyecto } from '@/types'
 import { SubproyectoCard } from './SubproyectoCard'
 import { SubproyectoForm } from './SubproyectoForm'
+import { useEliminarSubproyecto } from '@/hooks/useProjects'
 
 interface SubproyectoListProps {
   proyecto: Proyecto
@@ -22,6 +23,8 @@ export function SubproyectoList({
   canEdit = false,
 }: SubproyectoListProps) {
   const [showForm, setShowForm] = useState(false)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const eliminarSubproyecto = useEliminarSubproyecto(proyecto.id)
 
   return (
     <div className="space-y-4">
@@ -55,12 +58,11 @@ export function SubproyectoList({
                 window.location.href = `/proyectos/${sub.id}`
               }}
               onEdit={canEdit ? () => {
-                // Aquí se puede agregar funcionalidad de edición
+                // Navegar al detalle del subproyecto para editar
                 window.location.href = `/proyectos/${sub.id}`
               } : undefined}
               onDelete={canEdit ? () => {
-                // Aquí se puede agregar funcionalidad de eliminación
-                console.log('Delete subproyecto:', sub.id)
+                setDeletingId(sub.id)
               } : undefined}
             />
           ))}
@@ -85,6 +87,38 @@ export function SubproyectoList({
           proyectoPadre={proyecto}
           onClose={() => setShowForm(false)}
         />
+      )}
+
+      {/* Confirmación eliminar modal */}
+      {deletingId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-black/40" onClick={() => setDeletingId(null)} />
+          <div className="relative bg-white rounded-xl shadow-xl p-6 w-full max-w-sm z-10 mx-4">
+            <h3 className="font-bold text-gray-900 mb-2">Eliminar Subproyecto</h3>
+            <p className="text-sm text-gray-600 mb-6">
+              ¿Está seguro que desea eliminar este subproyecto? Esta acción no se puede deshacer.
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setDeletingId(null)}
+                className="flex-1 py-2 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  eliminarSubproyecto.mutate(deletingId, {
+                    onSuccess: () => setDeletingId(null),
+                  })
+                }}
+                disabled={eliminarSubproyecto.isPending}
+                className="flex-1 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 disabled:opacity-60"
+              >
+                {eliminarSubproyecto.isPending ? 'Eliminando...' : 'Eliminar'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

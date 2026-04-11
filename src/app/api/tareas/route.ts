@@ -14,9 +14,16 @@ export async function GET(_request: NextRequest) {
   const supabase = createServerSupabaseClient()
 
   // Primero: tareas básicas sin JOINs
-  const { data: basicTareas, error: basicError } = await supabase
+  let basicQuery = supabase
     .from('tareas')
     .select('*')
+
+  // RBAC: Líderes de área ven solo sus tareas en Kanban Global
+  if (user.rol === 'Líder Area') {
+    basicQuery = basicQuery.eq('responsable_id', user.id)
+  }
+
+  const { data: basicTareas, error: basicError } = await basicQuery
     .order('prioridad', { ascending: true })
     .order('fecha_fin_planificada', { ascending: true })
 
@@ -26,13 +33,20 @@ export async function GET(_request: NextRequest) {
 
   // Si hay tareas, obtener con JOINs (sin bloqueos, que están vinculados a proyectos)
   if ((basicTareas ?? []).length > 0) {
-    const { data, error } = await supabase
+    let detailQuery = supabase
       .from('tareas')
       .select(`
         *,
         responsable:usuarios!responsable_id(id, nombre_completo, email, rol, area_responsable, activo, created_at, updated_at),
         proyecto:proyectos(id, nombre, area_responsable)
       `)
+
+    // RBAC: Líderes de área ven solo sus tareas en Kanban Global
+    if (user.rol === 'Líder Area') {
+      detailQuery = detailQuery.eq('responsable_id', user.id)
+    }
+
+    const { data, error } = await detailQuery
       .order('prioridad', { ascending: true })
       .order('fecha_fin_planificada', { ascending: true })
 

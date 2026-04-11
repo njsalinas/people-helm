@@ -20,21 +20,8 @@ export async function GET(request: NextRequest) {
 
   // RBAC: Filtrar por rol del usuario
   if (user.rol === 'Líder Area') {
-    // Líder Area ve:
-    // 1. Proyectos donde es responsable primario
-    // 2. Proyectos donde tiene tareas asignadas
-
-    // Obtener IDs de proyectos donde el usuario tiene tareas
-    const { data: proyectosConTareas } = await supabase
-      .from('tareas')
-      .select('proyecto_id')
-      .eq('responsable_id', user.id)
-
-    const proyectoIds = proyectosConTareas?.map((t) => t.proyecto_id) || []
-    const projectIdsSet = new Set([...proyectoIds])
-
-    // Filtrar proyectos
-    query = query.or(`responsable_primario.eq.${user.id},id.in.(${Array.from(projectIdsSet).join(',')})`)
+    // Líder Area ve: todos los proyectos de su área responsable
+    query = query.eq('area_responsable', user.area_responsable)
   }
   // Gerente ve todos (sin filtro)
   // Espectador ve todos (read-only, controlado por RLS en BD)
@@ -47,7 +34,7 @@ export async function GET(request: NextRequest) {
 
   if (foco) query = query.eq('foco_estrategico', foco)
   if (estado) query = query.eq('estado', estado)
-  if (area && user.rol === 'Gerente') query = query.eq('area_responsable', area)
+  if (area) query = query.eq('area_responsable', area)
   if (prioridad) query = query.eq('prioridad', parseInt(prioridad))
 
   query = query.order('prioridad', { ascending: true })

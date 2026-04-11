@@ -20,6 +20,23 @@ export async function GET(request: NextRequest) {
 
   const supabase = createServerSupabaseClient()
 
+  // RBAC: Verificar que el usuario tiene acceso al proyecto
+  if (user.rol === 'Líder Area') {
+    const { data: proyecto, error: proyectoError } = await supabase
+      .from('proyectos')
+      .select('area_responsable')
+      .eq('id', proyectoId)
+      .single()
+
+    if (proyectoError || !proyecto) {
+      return NextResponse.json({ error: 'Proyecto no encontrado' }, { status: 404 })
+    }
+
+    if (proyecto.area_responsable !== user.area_responsable) {
+      return NextResponse.json({ error: 'Sin acceso a este proyecto' }, { status: 403 })
+    }
+  }
+
   // Primero: tareas básicas sin JOINs
   const { data: basicTareas, error: basicError } = await supabase
     .from('tareas')

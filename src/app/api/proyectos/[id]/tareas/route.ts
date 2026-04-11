@@ -39,10 +39,19 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   }
 
   const supabase = createServerSupabaseClient()
+
+  // Si no se asigna responsable, asignar al creador de la tarea
+  const taskData = {
+    ...result.data,
+    responsable_id: result.data.responsable_id || user.id,
+    created_by: user.id,
+    updated_by: user.id,
+  }
+
   const { data, error } = await supabase
     .from('tareas')
-    .insert([{ ...result.data, created_by: user.id, updated_by: user.id }])
-    .select()
+    .insert([taskData])
+    .select('*, responsable:usuarios!responsable_id(id, nombre_completo, email)')
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })

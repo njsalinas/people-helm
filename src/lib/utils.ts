@@ -192,15 +192,15 @@ export function canAccess(
 
 /**
  * Verifica si el usuario puede editar un proyecto específico
+ * Solo Gerentes pueden editar proyectos
  */
 export function canEditProject(
   userId: string,
   userRol: UserRole,
   responsablePrimario: string
 ): boolean {
-  if (userRol === 'Gerente') return true
-  if (userRol === 'Líder Area') return responsablePrimario === userId
-  return false
+  // Solo Gerentes pueden editar proyectos
+  return userRol === 'Gerente'
 }
 
 /**

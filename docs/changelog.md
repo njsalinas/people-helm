@@ -3,6 +3,8 @@
 *Auto-generated — do not edit manually*
 
 ```
+41161ee style: mejoras visuales y UX en componentes principales
+bbed0c2 docs: auto-generated documentation [skip ci]
 2dabdd8 fix: falta propiedad y propiedad desconocida
 918b840 docs: auto-generated documentation [skip ci]
 84dfee0 fix: para deploy en vercel
@@ -21,6 +23,4 @@ c63cceb test: Actualizar tests de useProyectos para usar MSW en lugar de Supabas
 64679ed feat: Completar eliminación de subproyectos
 986340c docs: auto-generated documentation [skip ci]
 ea46f33 fix: bypass ts error for proyecto_padre in patch route
-14d0edd docs: auto-generated documentation [skip ci]
-c358f43 fix: eliminar useUIStore no utilizado en SubproyectoForm
 ```

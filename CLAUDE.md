@@ -1,6 +1,6 @@
 # people-helm - Sistema de Dirección Operativa para Área de Personas
 
-**Last Updated:** 2026-04-11T03:21:09.486Z
+**Last Updated:** 2026-04-11T03:29:07.523Z
 **Status:** ✅ Development
 
 ---
@@ -51,11 +51,11 @@ SaaS para gestionar proyectos, bloqueos, tareas y generar reportería automátic
 ## 📋 Últimas 5 Actualizaciones
 
 ```
+84dfee0 fix: para deploy en vercel
+dfdff1f docs: auto-generated documentation [skip ci]
 3cfe522 fix: Mostrar nombre del responsable en tabla de proyectos del objetivo
 497f1d4 feat: Dashboard detallado de Objetivos con vista por áreas
 b68cb0f fix: remover referencia a hook useToast inexistente en useObjetivos
-cdfff84 feat: Implementar sistema completo de Objetivos Estratégicos
-aac533e fix: Corregir política RLS para evitar subquery recursiva
 ```
 
 ---
@@ -64,7 +64,7 @@ aac533e fix: Corregir política RLS para evitar subquery recursiva
 
 | Métrica | Valor |
 |---------|-------|
-| **Archivos fuente** | 117 |
+| **Archivos fuente** | 118 |
 | **Componentes React** | 39 |
 | **Hooks personalizados** | 9 |
 | **Tests** | 6 |
@@ -82,4 +82,4 @@ aac533e fix: Corregir política RLS para evitar subquery recursiva
 ---
 
 *Generado automáticamente por pre-commit hook*
-*Última sincronización:* 2026-04-11T03:21:09.486Z
+*Última sincronización:* 2026-04-11T03:29:07.523Z

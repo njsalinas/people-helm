@@ -314,6 +314,10 @@ Usado principalmente para invocaciones server-side o utilitarias.
 @file Constantes globales del sistema
 **Exports:** APP_NAME, APP_VERSION, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, SESSION_DURATION_HOURS, DIAS_BLOQUEO_AMARILLO, DIAS_BLOQUEO_ROJO, NOMBRE_PROYECTO_MIN, NOMBRE_PROYECTO_MAX, DESCRIPCION_BLOQUEO_MIN, DESCRIPCION_BLOQUEO_MAX, COMENTARIO_ESTADO_MIN, COMENTARIO_ESTADO_MAX, DETALLE_SEMAFORO_MAX, COMENTARIO_EJECUTIVO_MAX, TOAST_DURATION_MS, SEMAFORO_ITEMS_POR_COLOR
 
+### `src/lib/env.ts`
+@file Validación de variables de entorno
+**Exports:** getSupabaseUrl, getSupabaseAnonKey, getSupabaseServiceRoleKey
+
 ### `src/lib/supabase-server.ts`
 @file Cliente Supabase para Server Components y API routes
 **Exports:** createServerSupabaseClient, createServiceRoleClient

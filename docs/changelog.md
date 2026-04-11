@@ -3,6 +3,8 @@
 *Auto-generated — do not edit manually*
 
 ```
+84dfee0 fix: para deploy en vercel
+dfdff1f docs: auto-generated documentation [skip ci]
 3cfe522 fix: Mostrar nombre del responsable en tabla de proyectos del objetivo
 497f1d4 feat: Dashboard detallado de Objetivos con vista por áreas
 b68cb0f fix: remover referencia a hook useToast inexistente en useObjetivos
@@ -21,6 +23,4 @@ ea46f33 fix: bypass ts error for proyecto_padre in patch route
 c358f43 fix: eliminar useUIStore no utilizado en SubproyectoForm
 18e25ea docs: auto-generated documentation [skip ci]
 101ca03 fix: eliminar variables no usadas y errores de lint
-ce832da docs: auto-generated documentation [skip ci]
-dbf0184 feat: Mejoras V2 y fix errores
 ```

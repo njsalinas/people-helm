@@ -37,6 +37,7 @@ export interface Proyecto extends DbProyecto {
 /** Proyecto enriquecido para Vista Gerencial */
 export interface ProyectoGerencial extends VistaSemaforoProyecto {
   responsable?: Usuario
+  area_responsable?: string  // Nombre del área (denormalizado por API)
   tareas_total?: number
   tareas_completadas?: number
 }

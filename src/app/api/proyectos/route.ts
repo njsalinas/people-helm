@@ -8,6 +8,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getServerUser } from '@/lib/auth'
 import { CreateProjectSchema } from '@/lib/validations'
+import type { DbProyecto } from '@/types/database'
+
+interface ProyectoWithRelations extends DbProyecto {
+  area?: { nombre: string }
+  responsable?: { nombre_completo: string }
+}
 
 export async function GET(request: NextRequest) {
   const user = await getServerUser()
@@ -66,7 +72,7 @@ export async function GET(request: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   // Transformar area join a area_responsable para retrocompatibilidad
-  const transformedData = (data ?? []).map((proyecto: any) => ({
+  const transformedData = (data ?? []).map((proyecto: ProyectoWithRelations) => ({
     ...proyecto,
     area_responsable: proyecto.area?.nombre || 'Desconocida',
     area: undefined, // Eliminar el nested object

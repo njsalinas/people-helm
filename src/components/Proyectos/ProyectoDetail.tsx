@@ -16,7 +16,7 @@ import { TaskTable } from './Lista/TaskTable'
 import { useTareas } from '@/hooks/useTareas'
 import { useActualizarEstadoProyecto } from '@/hooks/useProjects'
 import { useAuth } from '@/hooks/useAuth'
-import { cn, formatDate, calcularDiasRestantes, formatPorcentaje, obtenerIniciales, canEditProject } from '@/lib/utils'
+import { cn, formatDate, calcularDiasRestantes, formatPorcentaje, obtenerIniciales, canEditProject, canCreateTask } from '@/lib/utils'
 import { COLORES_ESTADO, ESTADOS_PROYECTO } from '@/types/domain'
 import { TaskDetailModal } from './Kanban/TaskDetailModal'
 import { ProyectoEditForm } from './ProyectoEditForm'
@@ -53,6 +53,8 @@ export function ProyectoDetail({ proyecto }: ProyectoDetailProps) {
   const canEdit = user
     ? canEditProject(user.id, user.rol, proyecto.responsable_primario)
     : false
+
+  const canCreateNewTask = user ? canCreateTask(user.rol) : false
 
   const diasRestantes = calcularDiasRestantes(proyecto.fecha_fin_planificada)
   const estaVencido = diasRestantes < 0
@@ -263,7 +265,7 @@ export function ProyectoDetail({ proyecto }: ProyectoDetailProps) {
             tareas={tareas}
             usuarios={usuarios}
             isLoading={tareasLoading}
-            canEdit={canEdit}
+            canEdit={canCreateNewTask}
           />
         )}
 

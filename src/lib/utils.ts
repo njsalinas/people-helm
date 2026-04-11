@@ -204,6 +204,14 @@ export function canEditProject(
 }
 
 /**
+ * Verifica si el usuario puede crear tareas en un proyecto
+ * Gerentes y Líderes de Área pueden crear (no Espectador)
+ */
+export function canCreateTask(userRol: UserRole): boolean {
+  return userRol === 'Gerente' || userRol === 'Líder Area'
+}
+
+/**
  * Nombre del mes en español
  */
 export function nombreMes(mes: number): string {

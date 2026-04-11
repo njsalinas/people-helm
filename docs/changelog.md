@@ -3,6 +3,8 @@
 *Auto-generated — do not edit manually*
 
 ```
+2dabdd8 fix: falta propiedad y propiedad desconocida
+918b840 docs: auto-generated documentation [skip ci]
 84dfee0 fix: para deploy en vercel
 dfdff1f docs: auto-generated documentation [skip ci]
 3cfe522 fix: Mostrar nombre del responsable en tabla de proyectos del objetivo
@@ -21,6 +23,4 @@ c63cceb test: Actualizar tests de useProyectos para usar MSW en lugar de Supabas
 ea46f33 fix: bypass ts error for proyecto_padre in patch route
 14d0edd docs: auto-generated documentation [skip ci]
 c358f43 fix: eliminar useUIStore no utilizado en SubproyectoForm
-18e25ea docs: auto-generated documentation [skip ci]
-101ca03 fix: eliminar variables no usadas y errores de lint
 ```

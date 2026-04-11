@@ -3,6 +3,19 @@
 *Auto-generated — do not edit manually*
 
 ```
+3cfe522 fix: Mostrar nombre del responsable en tabla de proyectos del objetivo
+497f1d4 feat: Dashboard detallado de Objetivos con vista por áreas
+b68cb0f fix: remover referencia a hook useToast inexistente en useObjetivos
+cdfff84 feat: Implementar sistema completo de Objetivos Estratégicos
+aac533e fix: Corregir política RLS para evitar subquery recursiva
+8bf7ca7 fix: Permitir que todos vean lista de usuarios para asignar responsables
+e0024d4 fix: Restaurar botón crear tarea para Líderes de Área
+45d6491 feat: Mejorar permisos de edición de proyectos y asignación de responsables
+c63cceb test: Actualizar tests de useProyectos para usar MSW en lugar de Supabase mock
+2f5dad6 fix: Arreglar RBAC en lista y detalle de proyectos
+546b853 feat: Implementar RBAC por area_responsable
+64679ed feat: Completar eliminación de subproyectos
+986340c docs: auto-generated documentation [skip ci]
 ea46f33 fix: bypass ts error for proyecto_padre in patch route
 14d0edd docs: auto-generated documentation [skip ci]
 c358f43 fix: eliminar useUIStore no utilizado en SubproyectoForm
@@ -10,17 +23,4 @@ c358f43 fix: eliminar useUIStore no utilizado en SubproyectoForm
 101ca03 fix: eliminar variables no usadas y errores de lint
 ce832da docs: auto-generated documentation [skip ci]
 dbf0184 feat: Mejoras V2 y fix errores
-8179d7c fix: resolver 3 issues reportados
-4bdf4fb fix: corregir orden de ejecución en migración 011
-3e69b88 feat: implementar 15 mejoras People Helm v2
-507c062 docs: auto-generated documentation [skip ci]
-ca2cb98 fix: force-dynamic en root layout para evitar pre-render sin env vars
-a13aeeb docs: auto-generated documentation [skip ci]
-1770361 fix: resolver errores TypeScript que bloqueaban build en Vercel
-6e956b8 docs: auto-generated documentation [skip ci]
-3aaffcc fix: actualizar campo activo→canal_alerta_visual en API route notificaciones
-dff17c6 docs: auto-generated documentation [skip ci]
-f83e031 fix: corregir tipos en settings page (nombre_completo, evento, canal_alerta_visual)
-3d544b3 docs: auto-generated documentation [skip ci]
-51f43c6 fix: corregir addToast message→title en páginas restantes
 ```

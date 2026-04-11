@@ -54,6 +54,53 @@ Tabla dinámica principal con todos los proyectos y su estado
 <VistaGerencial proyectos={proyectos} onSelectProject={(id) => router.push(`/proyectos/${id}`)} />
 **Exports:** VistaGerencial
 
+### `src/components/Objetivos/AlertasObjetivo.tsx`
+@component AlertasObjetivo
+Muestra alertas y riesgos de los proyectos vinculados a un objetivo
+**Exports:** AlertasObjetivo
+
+### `src/components/Objetivos/BloqueosObjetivo.tsx`
+@component BloqueosObjetivo
+Muestra bloqueos activos de los proyectos vinculados a un objetivo
+**Exports:** BloqueosObjetivo
+
+### `src/components/Objetivos/ObjetivoCard.tsx`
+@component ObjetivoCard
+Tarjeta compacta de objetivo con semáforo de progreso
+**Exports:** ObjetivoCard
+
+### `src/components/Objetivos/ObjetivoDetalle.tsx`
+@component ObjetivoDetalle
+Encabezado y resumen de un objetivo específico
+**Exports:** ObjetivoDetalle
+
+### `src/components/Objetivos/ObjetivoForm.tsx`
+@component ObjetivoForm
+Formulario para crear/editar objetivos (solo Gerentes)
+**Exports:** ObjetivoForm
+
+### `src/components/Objetivos/ObjetivosMainView.tsx`
+@component ObjetivosMainView
+Vista principal de objetivos agrupada por área
+Muestra resumen de cada objetivo con acceso a detalle
+**Exports:** ObjetivosMainView
+
+### `src/components/Objetivos/ProyectosEnObjetivo.tsx`
+@component ProyectosEnObjetivo
+Tabla detallada de proyectos vinculados a un objetivo
+**Exports:** ProyectosEnObjetivo
+
+### `src/components/Objetivos/ProyectosObjetivo.tsx`
+@component ProyectosObjetivo
+Sección para gestionar proyectos vinculados a un objetivo
+**Exports:** ProyectosObjetivo
+
+### `src/components/Objetivos/VistaObjetivosPorArea.tsx`
+@component VistaObjetivosPorArea
+Vista de seguimiento de objetivos agrupada por área
+Muestra semáforos, progreso y métricas por objetivo
+**Exports:** VistaObjetivosPorArea
+
 ### `src/components/Proyectos/Kanban/DesbloquearTareaModal.tsx`
 @component DesbloquearTareaModal
 Modal para registrar la razón de desbloqueo al mover una tarea desde estado Bloqueado
@@ -212,6 +259,10 @@ Tabla editable para el semáforo abreviado (campo Detalle editable inline)
 
 ## Hooks Personalizados
 
+### `src/hooks/useAreas.ts`
+@file Hook: useAreas - Obtener lista de áreas responsables
+**Exports:** useAreas
+
 ### `src/hooks/useAuth.ts`
 @file Hook de autenticación con Supabase
 **Exports:** useAuth
@@ -225,9 +276,13 @@ Tabla editable para el semáforo abreviado (campo Detalle editable inline)
 Hooks para configuración y recepción de notificaciones en tiempo real
 **Exports:** useNotificacionesConfig, useUpdateNotificacionConfig, useRealtimeAlertas
 
+### `src/hooks/useObjetivos.ts`
+@file Hook: useObjetivos - CRUD de Objetivos
+**Exports:** useObjetivos, useObjetivo, useCrearObjetivo, useActualizarObjetivo, useEliminarObjetivo, useVincularProyecto, useDesvincularProyecto
+
 ### `src/hooks/useProjects.ts`
 @file React Query hooks para gestión de proyectos
-**Exports:** useProyectos, useProyecto, useCrearProyecto, useActualizarEstadoProyecto, useCrearSubproyecto
+**Exports:** useProyectos, useProyecto, useCrearProyecto, useActualizarEstadoProyecto, useCrearSubproyecto, useEliminarSubproyecto
 
 ### `src/hooks/useRiesgos.ts`
 @file useRiesgos
@@ -278,11 +333,11 @@ y Supabase cae a `any`, lo que hace que .insert()/.update() retornen `never`.
 
 ### `src/lib/utils.ts`
 @file Utilidades compartidas del sistema
-**Exports:** cn, formatDate, calcularDiasRestantes, calcularPorcentajeTiempo, calcularColorSemaforo, calcularPrioridadRiesgo, colorPrioridadRiesgo, colorFilaBloqueo, formatPorcentaje, truncate, obtenerIniciales, calcularKPIs, canAccess, canEditProject, nombreMes
+**Exports:** cn, formatDate, calcularDiasRestantes, calcularPorcentajeTiempo, calcularColorSemaforo, calcularPrioridadRiesgo, colorPrioridadRiesgo, colorFilaBloqueo, formatPorcentaje, truncate, obtenerIniciales, calcularKPIs, canAccess, canEditProject, canCreateTask, nombreMes
 
 ### `src/lib/validations.ts`
 @file Schemas de validación Zod para inputs del sistema
-**Exports:** CreateProjectSchema, CreateProjectInput, UpdateProjectStatusSchema, UpdateProjectStatusInput, UpdateProjectSchema, UpdateProjectInput, CreateTaskSchema, CreateTaskInput, UpdateTaskStatusSchema, UpdateTaskStatusInput, DesbloquearTareaSchema, DesbloquearTareaInput, CreateBloqueoSchema, CreateBloqueoInput, ResolveBloqueoSchema, ResolveBloqueoInput, CreateRiesgoSchema, CreateRiesgoInput, CreateComentarioSchema, CreateComentarioInput, LoginSchema, LoginInput, SemaforoItemManualSchema, SemaforoAbreviadoSchema, SemaforoAbreviadoInput
+**Exports:** CreateProjectSchema, CreateProjectInput, UpdateProjectStatusSchema, UpdateProjectStatusInput, UpdateProjectSchema, UpdateProjectInput, CreateTaskSchema, CreateTaskInput, UpdateTaskStatusSchema, UpdateTaskStatusInput, DesbloquearTareaSchema, DesbloquearTareaInput, CreateBloqueoSchema, CreateBloqueoInput, ResolveBloqueoSchema, ResolveBloqueoInput, CreateRiesgoSchema, CreateRiesgoInput, CreateComentarioSchema, CreateComentarioInput, LoginSchema, LoginInput, SemaforoItemManualSchema, SemaforoAbreviadoSchema, SemaforoAbreviadoInput, CreateObjetivoSchema, CreateObjetivoInput, UpdateObjetivoSchema, UpdateObjetivoInput, VincularProyectoSchema, VincularProyectoInput
 
 ## Stores Zustand
 

@@ -1,6 +1,6 @@
 # people-helm - Sistema de Dirección Operativa para Área de Personas
 
-**Last Updated:** 2026-04-09T03:07:33.270Z
+**Last Updated:** 2026-04-11T03:21:09.486Z
 **Status:** ✅ Development
 
 ---
@@ -32,7 +32,8 @@ SaaS para gestionar proyectos, bloqueos, tareas y generar reportería automátic
 - [Onboarding](./docs/onboarding.md) — Guía para nuevos developers
 - [Database Schema](./docs/database/schema.md) — Estructura PostgreSQL
 - [Decisiones Técnicas](./docs/decisions.md) — Architecture Decision Records
-
+- [PRD Completo](./Req/02_PRD_COMPLETO.md) — Requisitos funcionales
+- [TDD Completo](./Req/03_TDD_COMPLETO.md) — Diseño técnico
 
 ---
 
@@ -50,11 +51,11 @@ SaaS para gestionar proyectos, bloqueos, tareas y generar reportería automátic
 ## 📋 Últimas 5 Actualizaciones
 
 ```
-ea46f33 fix: bypass ts error for proyecto_padre in patch route
-14d0edd docs: auto-generated documentation [skip ci]
-c358f43 fix: eliminar useUIStore no utilizado en SubproyectoForm
-18e25ea docs: auto-generated documentation [skip ci]
-101ca03 fix: eliminar variables no usadas y errores de lint
+3cfe522 fix: Mostrar nombre del responsable en tabla de proyectos del objetivo
+497f1d4 feat: Dashboard detallado de Objetivos con vista por áreas
+b68cb0f fix: remover referencia a hook useToast inexistente en useObjetivos
+cdfff84 feat: Implementar sistema completo de Objetivos Estratégicos
+aac533e fix: Corregir política RLS para evitar subquery recursiva
 ```
 
 ---
@@ -63,9 +64,9 @@ c358f43 fix: eliminar useUIStore no utilizado en SubproyectoForm
 
 | Métrica | Valor |
 |---------|-------|
-| **Archivos fuente** | 100 |
-| **Componentes React** | 30 |
-| **Hooks personalizados** | 7 |
+| **Archivos fuente** | 117 |
+| **Componentes React** | 39 |
+| **Hooks personalizados** | 9 |
 | **Tests** | 6 |
 
 ---
@@ -81,4 +82,4 @@ c358f43 fix: eliminar useUIStore no utilizado en SubproyectoForm
 ---
 
 *Generado automáticamente por pre-commit hook*
-*Última sincronización:* 2026-04-09T03:07:33.270Z
+*Última sincronización:* 2026-04-11T03:21:09.486Z

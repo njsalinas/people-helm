@@ -4,6 +4,10 @@
 
 ## Next.js API Routes
 
+### `/areas`
+@file API: Listado de áreas responsables
+GET /api/areas - Retorna todas las áreas activas
+
 ### `/auth`
 @file API Route: /api/auth
 GET - Retorna el usuario autenticado actual
@@ -22,6 +26,22 @@ PATCH - Activar / desactivar una configuración de notificación
 ### `/notificaciones/config`
 @file API Route: /api/notificaciones/config
 GET - Obtener configuración de notificaciones del usuario autenticado
+
+### `/objetivos/[id]/proyectos`
+@file API: Gestión de relación Objetivos - Proyectos
+POST   - Vincular proyecto a objetivo
+DELETE - Desvincular proyecto de objetivo
+
+### `/objetivos/[id]`
+@file API: Detalle y edición de Objetivos
+GET    - Obtener objetivo por ID con proyectos asociados
+PATCH  - Actualizar objetivo (solo Gerentes)
+DELETE - Soft-delete de objetivo (solo Gerentes)
+
+### `/objetivos`
+@file API: Gestión de Objetivos
+GET  - Listar objetivos (con filtros)
+POST - Crear objetivo (solo Gerentes)
 
 ### `/proyectos/[id]/bloqueos`
 @file API Route: /api/proyectos/[id]/bloqueos

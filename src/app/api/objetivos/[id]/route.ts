@@ -31,15 +31,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     return NextResponse.json({ error: 'Objetivo no encontrado' }, { status: 404 })
   }
 
-  // Agrupar por objetivo (todos los rows tienen el mismo objetivo)
-  const primera = objetivo[0]
-  const objetivoDetalles = {
-    id: primera.objetivo_id,
-    titulo: primera.objetivo_titulo,
-    // ... otros campos (obtener del join)
-  }
-
-  // Para simplificar, retornar todo
+  // Retornar objetivo con proyectos asociados
   return NextResponse.json({ data: objetivo })
 }
 

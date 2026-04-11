@@ -1,24 +1,18 @@
 /**
  * @page /dashboard/objetivos
- * Página de gestión de objetivos (solo Gerentes)
+ * Página principal de objetivos - Vista por áreas (solo Gerentes)
  */
 
 'use client'
 
-import { useEffect, useCallback } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
-import { useCrearObjetivo, useActualizarObjetivo, useEliminarObjetivo } from '@/hooks/useObjetivos'
-import { VistaObjetivosPorArea } from '@/components/Objetivos/VistaObjetivosPorArea'
-import type { CreateObjetivoInput, UpdateObjetivoInput } from '@/lib/validations'
+import { ObjetivosMainView } from '@/components/Objetivos/ObjetivosMainView'
 
 export default function ObjetivosPage() {
   const router = useRouter()
-  const { user, isGerente, isLoading } = useAuth()
-  const crearObjetivo = useCrearObjetivo()
-  const handleRefresh = useCallback(() => {
-    // Forzar recarga de objetivos en VistaObjetivosPorArea
-  }, [])
+  const { isGerente, isLoading } = useAuth()
 
   // Proteger página: solo Gerentes
   useEffect(() => {
@@ -26,10 +20,6 @@ export default function ObjetivosPage() {
       router.replace('/proyectos')
     }
   }, [isGerente, isLoading, router])
-
-  const handleSubmitObjetivo = async (data: CreateObjetivoInput | UpdateObjetivoInput) => {
-    await crearObjetivo.mutateAsync(data as CreateObjetivoInput)
-  }
 
   if (isLoading) {
     return (
@@ -49,9 +39,9 @@ export default function ObjetivosPage() {
       <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Objetivos</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Objetivos Estratégicos</h1>
             <p className="text-sm text-gray-500 mt-1">
-              Gestiona los objetivos estratégicos por área y año
+              Seguimiento de objetivos por área, proyectos vinculados y métricas de progreso
             </p>
           </div>
         </div>
@@ -59,7 +49,7 @@ export default function ObjetivosPage() {
 
       {/* Contenido */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <VistaObjetivosPorArea anio={new Date().getFullYear()} onRefresh={handleRefresh} />
+        <ObjetivosMainView anio={new Date().getFullYear()} />
       </div>
     </div>
   )

@@ -8,7 +8,8 @@
 
 'use client'
 
-import { AREAS_RESPONSABLES, FOCOS_ESTRATEGICOS, ESTADOS_PROYECTO } from '@/types/domain'
+import { FOCOS_ESTRATEGICOS, ESTADOS_PROYECTO } from '@/types/domain'
+import { useAreas } from '@/hooks/useAreas'
 import type { ProyectosFilter } from '@/types/api'
 import type { Usuario } from '@/types'
 import { cn } from '@/lib/utils'
@@ -21,6 +22,8 @@ interface FiltrosProps {
 }
 
 export function Filtros({ filtros, onChange, onClear, user }: FiltrosProps) {
+  const { data: areas = [] } = useAreas()
+
   const hasFilters = Object.keys(filtros).some(
     (k) => filtros[k as keyof ProyectosFilter] !== undefined
   )
@@ -45,15 +48,15 @@ export function Filtros({ filtros, onChange, onClear, user }: FiltrosProps) {
       {/* Por Área - Solo para Gerentes */}
       {mostrarFiltroArea && (
         <FilterSection title="Área">
-          {AREAS_RESPONSABLES.map((area) => (
+          {areas.map((area) => (
             <CheckboxItem
-              key={area}
-              label={area}
-              checked={filtros.areas?.includes(area) ?? false}
+              key={area.id}
+              label={area.nombre}
+              checked={filtros.areas?.includes(area.nombre) ?? false}
               onChange={(checked) => {
                 const current = filtros.areas ?? []
                 onChange({
-                  areas: checked ? [...current, area] : current.filter((a) => a !== area),
+                  areas: checked ? [...current, area.nombre] : current.filter((a) => a !== area.nombre),
                 })
               }}
             />

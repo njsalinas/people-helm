@@ -17,7 +17,7 @@ import { FOCOS_ESTRATEGICOS, CATEGORIAS_POR_AREA } from '@/types/domain'
 import { useCrearProyecto } from '@/hooks/useProjects'
 import { useAreas } from '@/hooks/useAreas'
 import { useUIStore } from '@/stores/uiStore'
-import type { DbUsuario, DbArea } from '@/types/database'
+import type { DbUsuario } from '@/types/database'
 
 interface ProyectoFormProps {
   onClose: () => void

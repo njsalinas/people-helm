@@ -22,7 +22,6 @@ import {
   ACCIONES_BLOQUEO,
   PROBABILIDADES_RIESGO,
   IMPACTOS_RIESGO,
-  CATEGORIAS_POR_AREA,
 } from '@/types/domain'
 
 // ============================================================

@@ -3,7 +3,6 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import type { DbObjetivo } from '@/types/database'
 import type { CreateObjetivoInput, UpdateObjetivoInput } from '@/lib/validations'
 
 interface ObjetivoFiltros {

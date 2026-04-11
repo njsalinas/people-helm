@@ -31,7 +31,7 @@ const STATUS_LABELS: Record<string, string> = {
 }
 
 export function ObjetivoCard({
-  id,
+  id: _id,
   titulo,
   anio,
   areaNombre,

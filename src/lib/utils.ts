@@ -197,7 +197,7 @@ export function canAccess(
 export function canEditProject(
   userId: string,
   userRol: UserRole,
-  responsablePrimario: string
+  _responsablePrimario: string
 ): boolean {
   // Solo Gerentes pueden editar proyectos
   return userRol === 'Gerente'

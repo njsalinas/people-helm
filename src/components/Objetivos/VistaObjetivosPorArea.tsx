@@ -12,7 +12,7 @@ import { useAreas } from '@/hooks/useAreas'
 import { ObjetivoCard } from './ObjetivoCard'
 import { ProyectosObjetivo } from './ProyectosObjetivo'
 import { ObjetivoForm } from './ObjetivoForm'
-import type { ColorSemaforo } from '@/types/database'
+
 
 interface VistaObjetivosPorAreaProps {
   anio?: number

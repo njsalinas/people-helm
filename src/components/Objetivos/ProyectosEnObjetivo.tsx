@@ -97,7 +97,9 @@ export function ProyectosEnObjetivo({ proyectos, isLoading }: ProyectosEnObjetiv
                   <div className="grid grid-cols-4 gap-4 text-sm mb-3">
                     <div>
                       <span className="text-gray-500">Responsable:</span>
-                      <p className="text-gray-900 font-medium">{proyecto.responsable_primario_nombre || '-'}</p>
+                      <p className="text-gray-900 font-medium">
+                        {(proyecto.responsable as any)?.nombre_completo || '-'}
+                      </p>
                     </div>
                     <div>
                       <span className="text-gray-500">Área:</span>

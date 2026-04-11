@@ -16,11 +16,11 @@ export async function GET(request: NextRequest) {
   const supabase = createServerSupabaseClient()
   const searchParams = request.nextUrl.searchParams
 
-  // NOTA: Usar tabla base con JOIN a areas para obtener nombre del área
+  // NOTA: Usar tabla base con JOIN a areas y usuarios para obtener nombres
   // (RLS se aplica en la tabla proyectos, no en la vista)
   let query = supabase
     .from('proyectos')
-    .select('*, area:areas_responsables(nombre)')
+    .select('*, area:areas_responsables(nombre), responsable:usuarios!responsable_primario(nombre_completo)')
 
   // RBAC: Filtrar por rol del usuario
   if (user.rol === 'Líder Area') {

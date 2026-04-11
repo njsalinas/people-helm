@@ -43,7 +43,7 @@ export function ProyectoCard({ proyecto }: ProyectoCardProps) {
       {/* Header */}
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="flex-1 min-w-0">
-          <p className="text-xs text-gray-400 uppercase">{proyecto.area_responsable}</p>
+          <p className="text-xs text-gray-400 uppercase">{(proyecto as any).area_responsable}</p>
           <h3 className="text-sm font-semibold text-gray-900 truncate mt-0.5">{proyecto.nombre}</h3>
         </div>
         <span className={cn('w-2.5 h-2.5 rounded-full flex-shrink-0 mt-1', COLOR_DOT[color])} />

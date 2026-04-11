@@ -69,7 +69,7 @@ export function ProyectoEditForm({ proyecto, onClose }: ProyectoEditFormProps) {
     },
   })
 
-  const area_responsable = proyecto.area_responsable
+  const area_responsable = (proyecto as any).area_responsable
   const categorias = area_responsable ? (CATEGORIAS_POR_AREA[area_responsable] ?? []) : []
 
   const onSubmit = async (data: UpdateProjectInput) => {

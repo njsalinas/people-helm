@@ -103,7 +103,7 @@ export function ProyectosEnObjetivo({ proyectos, isLoading }: ProyectosEnObjetiv
                     </div>
                     <div>
                       <span className="text-gray-500">Área:</span>
-                      <p className="text-gray-900 font-medium">{proyecto.area_responsable || '-'}</p>
+                      <p className="text-gray-900 font-medium">{(proyecto as any).area_responsable || '-'}</p>
                     </div>
                     <div>
                       <span className="text-gray-500">Período:</span>

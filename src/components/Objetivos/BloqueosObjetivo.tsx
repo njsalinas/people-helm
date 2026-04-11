@@ -116,7 +116,7 @@ export function BloqueosObjetivo({ bloqueos, isLoading }: BloqueosObjetivoProps)
                     </div>
                     <div>
                       <span className="text-gray-500">Proyecto afectado:</span>
-                      <p className="text-gray-900 font-medium">{bloqueo.proyecto_nombre || 'N/A'}</p>
+                      <p className="text-gray-900 font-medium">{(bloqueo as any).proyecto_nombre || 'N/A'}</p>
                     </div>
                     <div>
                       <span className="text-gray-500">Duración:</span>

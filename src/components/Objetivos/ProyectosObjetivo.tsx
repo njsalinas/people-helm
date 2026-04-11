@@ -81,7 +81,7 @@ export function ProyectosObjetivo({
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">{proyecto.nombre}</p>
                 <p className="text-xs text-gray-500">
-                  {proyecto.area_responsable} · {proyecto.estado} · {proyecto.porcentaje_avance}%
+                  {(proyecto as any).area_responsable} · {proyecto.estado} · {proyecto.porcentaje_avance}%
                 </p>
               </div>
               <button

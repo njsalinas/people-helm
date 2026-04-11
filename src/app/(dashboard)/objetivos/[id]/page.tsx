@@ -65,6 +65,9 @@ export default function ObjetivoDetailPage({ params }: ObjetivoDetailPageProps) 
     objetivo.objetivo_proyecto?.some((op: any) => op.proyecto_id === p.id)
   )
 
+  // 1. MOVIDO AQUÍ: Declarar la variable antes de usarla en 'alertas'
+  const proyectosBloqueados = objetivo.proyectos_bloqueados || 0
+
   // Simular bloqueos (en producción vendrían de la API)
   const bloqueos = proyectosVinculados
     .filter(p => p.estado?.toLowerCase() === 'bloqueado')
@@ -111,7 +114,7 @@ export default function ObjetivoDetailPage({ params }: ObjetivoDetailPageProps) 
       : []),
   ]
 
-  const proyectosBloqueados = objetivo.proyectos_bloqueados || 0
+  /*const proyectosBloqueados = objetivo.proyectos_bloqueados || 0 */
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -157,7 +160,7 @@ export default function ObjetivoDetailPage({ params }: ObjetivoDetailPageProps) 
           {/* Bloqueos y Alertas - Columna lateral */}
           <div className="space-y-6">
             <BloqueosObjetivo
-              bloqueos={bloqueos}
+              bloqueos={bloqueos as any}
               isLoading={false}
             />
           </div>

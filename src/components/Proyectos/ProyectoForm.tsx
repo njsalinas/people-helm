@@ -50,8 +50,10 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
       tipo: 'Proyecto',
       foco_estrategico: 'Alta prioridad (estratégico)',
       area_responsable_id: areas[0]?.id || '',
+      responsable_primario: usuarios[0]?.id || '',
+      fecha_inicio: new Date().toISOString().split('T')[0],
       prioridad: 3,
-    },
+    } as any,
   })
 
   const areaId = watch('area_responsable_id')

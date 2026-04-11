@@ -108,7 +108,7 @@ export function ProyectoDetail({ proyecto }: ProyectoDetailProps) {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-medium text-gray-400 uppercase">
-                {proyecto.area_responsable} · {proyecto.categoria}
+                {(proyecto as any).area_responsable} · {(proyecto as any).categoria}
               </span>
             </div>
             {editandoNombre && canEdit ? (

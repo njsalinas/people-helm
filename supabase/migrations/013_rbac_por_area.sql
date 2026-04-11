@@ -15,7 +15,7 @@ $$ LANGUAGE sql SECURITY DEFINER STABLE;
 -- ============================================================
 
 -- Reemplazar policy que permitía a líderes ver TODOS los proyectos
-DROP POLICY IF EXISTS "lideres_ven_proyectos" ON proyectos;
+DROP POLICY IF EXISTS "lideres_ven_proyectos_area" ON proyectos;
 
 -- Nueva policy: líderes ven solo proyectos de su área
 CREATE POLICY "lideres_ven_proyectos_area" ON proyectos
@@ -32,7 +32,7 @@ CREATE POLICY "lideres_ven_proyectos_area" ON proyectos
 -- ============================================================
 
 -- Reemplazar policy que permitía a todos ver TODAS las tareas
-DROP POLICY IF EXISTS "todos_ven_tareas" ON tareas;
+DROP POLICY IF EXISTS "lideres_ven_tareas_area" ON tareas;
 
 -- Nueva policy: líderes ven tareas si:
 -- 1. Son el responsable, O
@@ -57,7 +57,7 @@ CREATE POLICY "lideres_ven_tareas_area" ON tareas
 -- ============================================================
 
 -- Reemplazar policy que permitía a todos ver TODOS los bloqueos
-DROP POLICY IF EXISTS "todos_ven_bloqueos" ON bloqueos;
+DROP POLICY IF EXISTS "lideres_ven_bloqueos_area" ON bloqueos;
 
 -- Nueva policy: líderes ven bloqueos de proyectos de su área
 CREATE POLICY "lideres_ven_bloqueos_area" ON bloqueos
@@ -78,7 +78,7 @@ CREATE POLICY "lideres_ven_bloqueos_area" ON bloqueos
 -- ============================================================
 
 -- Si existe policy anterior, eliminarla (para futuras ejecuciones)
-DROP POLICY IF EXISTS "todos_ven_riesgos" ON riesgos;
+DROP POLICY IF EXISTS "lideres_ven_riesgos_area" ON riesgos;
 
 -- Nueva policy: líderes ven riesgos de proyectos de su área
 CREATE POLICY "lideres_ven_riesgos_area" ON riesgos
@@ -100,7 +100,7 @@ CREATE POLICY "lideres_ven_riesgos_area" ON riesgos
 -- ============================================================
 
 -- Si existe política anterior más restrictiva, eliminarla
-DROP POLICY IF EXISTS "todos_ven_comentarios" ON comentarios;
+DROP POLICY IF EXISTS "lideres_ven_comentarios_area" ON comentarios;
 
 -- Nueva policy: líderes ven comentarios de proyectos de su área
 CREATE POLICY "lideres_ven_comentarios_area" ON comentarios

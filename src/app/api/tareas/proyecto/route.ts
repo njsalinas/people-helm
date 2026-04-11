@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
   if (user.rol === 'Líder Area') {
     const { data: proyecto, error: proyectoError } = await supabase
       .from('proyectos')
-      .select('area_responsable')
+      .select('area_responsable_id')
       .eq('id', proyectoId)
       .single()
 
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Proyecto no encontrado' }, { status: 404 })
     }
 
-    if (proyecto.area_responsable !== user.area_responsable) {
+    if (proyecto.area_responsable_id !== user.area_responsable_id) {
       return NextResponse.json({ error: 'Sin acceso a este proyecto' }, { status: 403 })
     }
   }
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
       .from('tareas')
       .select(`
         *,
-        responsable:usuarios!responsable_id(id, nombre_completo, email, rol, area_responsable, activo, created_at, updated_at)
+        responsable:usuarios!responsable_id(id, nombre_completo, email, rol, area_responsable_id, activo, created_at, updated_at)
       `)
       .eq('proyecto_id', proyectoId)
       .order('prioridad', { ascending: true })

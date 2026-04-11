@@ -86,7 +86,8 @@ export function useProyecto(id: string) {
         .from('proyectos')
         .select(`
           *,
-          responsable:usuarios!responsable_primario(id, nombre_completo, email, rol, area_responsable, activo, created_at, updated_at),
+          area:areas_responsables(id, nombre),
+          responsable:usuarios!responsable_primario(id, nombre_completo, email, rol, area_responsable_id, activo, created_at, updated_at),
           subproyectos:proyectos!proyecto_padre(
             id,
             nombre,
@@ -95,7 +96,7 @@ export function useProyecto(id: string) {
             subtipo,
             categoria,
             foco_estrategico,
-            area_responsable,
+            area_responsable_id,
             estado,
             porcentaje_avance,
             prioridad,
@@ -108,6 +109,10 @@ export function useProyecto(id: string) {
         .single()
 
       if (error) throw error
+      // Transformar para mantener retrocompatibilidad: traer nombre del área
+      if (data && data.area) {
+        ;(data as any).area_responsable = data.area.nombre
+      }
       return data as unknown as Proyecto
     },
     enabled: !!id,

@@ -10,7 +10,7 @@ export interface SessionUser {
   email: string
   nombre_completo: string
   rol: UserRole
-  area_responsable: string | null
+  area_responsable_id: string | null  // UUID FK a areas_responsables
 }
 
 /**
@@ -29,7 +29,7 @@ export async function getServerUser(): Promise<SessionUser | null> {
 
   const { data: perfil } = await supabase
     .from('usuarios')
-    .select('id, email, nombre_completo, rol, area_responsable')
+    .select('id, email, nombre_completo, rol, area_responsable_id')
     .eq('id', user.id)
     .single()
 
@@ -40,7 +40,7 @@ export async function getServerUser(): Promise<SessionUser | null> {
     email: perfil.email,
     nombre_completo: perfil.nombre_completo,
     rol: perfil.rol as UserRole,
-    area_responsable: perfil.area_responsable,
+    area_responsable_id: perfil.area_responsable_id,
   }
 }
 

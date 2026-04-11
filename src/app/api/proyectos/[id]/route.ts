@@ -20,7 +20,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
   if (user.rol === 'Líder Area') {
     const { data: proyecto, error: proyectoError } = await supabase
       .from('proyectos')
-      .select('area_responsable')
+      .select('area_responsable_id')
       .eq('id', params.id)
       .single()
 
@@ -28,7 +28,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: 'Proyecto no encontrado' }, { status: 404 })
     }
 
-    if (proyecto.area_responsable !== user.area_responsable) {
+    if (proyecto.area_responsable_id !== user.area_responsable_id) {
       return NextResponse.json({ error: 'Sin acceso a este proyecto' }, { status: 403 })
     }
   }
@@ -59,7 +59,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   // Obtener proyecto actual para validar permisos
   const { data: proyecto, error: proyectoError } = await supabase
     .from('proyectos')
-    .select('id, responsable_primario, area_responsable')
+    .select('id, responsable_primario, area_responsable_id')
     .eq('id', params.id)
     .single()
 
@@ -68,7 +68,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 
   // RBAC: Verificar acceso por área (Líderes solo pueden editar su área)
-  if (user.rol === 'Líder Area' && proyecto.area_responsable !== user.area_responsable) {
+  if (user.rol === 'Líder Area' && proyecto.area_responsable_id !== user.area_responsable_id) {
     return NextResponse.json(
       { error: 'Sin acceso a este proyecto' },
       { status: 403 }

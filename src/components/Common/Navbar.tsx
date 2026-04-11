@@ -12,8 +12,8 @@ import { useAuth } from '@/hooks/useAuth'
 import { APP_NAME } from '@/lib/constants'
 
 const navItems = [
-  { href: '/', label: 'Vista Gerencial', icon: '📊' },
-  { href: '/focos', label: 'Por Foco', icon: '🎯' },
+  { href: '/', label: 'Vista General', icon: '📊' },
+  { href: '/focos', label: 'Por Prioridad', icon: '🎯' },
   { href: '/kanban-global', label: 'Kanban Global', icon: '📌' },
   { href: '/bloqueos', label: 'Bloqueos', icon: '🔒' },
   { href: '/reporteria/semaforo', label: 'Semáforo', icon: '🚦' },
@@ -23,7 +23,7 @@ const navItems = [
 
 export function Navbar() {
   const pathname = usePathname()
-  const { user, logout } = useAuth()
+  const { user, logout, isGerente } = useAuth()
 
   return (
     <nav className="w-56 flex-shrink-0 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
@@ -57,6 +57,22 @@ export function Navbar() {
             </Link>
           )
         })}
+
+        {/* Objetivos (solo Gerentes) */}
+        {isGerente && (
+          <Link
+            href="/objetivos"
+            className={cn(
+              'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+              pathname === '/objetivos' || pathname.startsWith('/objetivos/')
+                ? 'bg-blue-50 text-blue-700 font-medium'
+                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+            )}
+          >
+            <span className="text-base leading-none">🎖️</span>
+            Objetivos
+          </Link>
+        )}
       </div>
 
       {/* User */}

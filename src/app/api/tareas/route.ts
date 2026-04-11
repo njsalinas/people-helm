@@ -37,8 +37,8 @@ export async function GET(_request: NextRequest) {
       .from('tareas')
       .select(`
         *,
-        responsable:usuarios!responsable_id(id, nombre_completo, email, rol, area_responsable, activo, created_at, updated_at),
-        proyecto:proyectos(id, nombre, area_responsable)
+        responsable:usuarios!responsable_id(id, nombre_completo, email, rol, area_responsable_id, activo, created_at, updated_at),
+        proyecto:proyectos(id, nombre, area_responsable_id, area:areas_responsables(nombre))
       `)
 
     // RBAC: Líderes de área ven solo sus tareas en Kanban Global

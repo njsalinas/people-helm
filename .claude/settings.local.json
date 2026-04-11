@@ -11,7 +11,8 @@
       "Bash(git commit:*)",
       "Bash(npx tsc:*)",
       "Bash(npm run:*)",
-      "Bash(grep -n \"CREATE TABLE.*historial_cambios\\\\|entidad\" /Users/nelsonsalinasalvarado/Documents/Proyectos/people-helm/supabase/migrations/*.sql)"
+      "Bash(grep -n \"CREATE TABLE.*historial_cambios\\\\|entidad\" /Users/nelsonsalinasalvarado/Documents/Proyectos/people-helm/supabase/migrations/*.sql)",
+      "mcp__ide__getDiagnostics"
     ]
   }
 }

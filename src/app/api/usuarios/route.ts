@@ -9,10 +9,18 @@ export async function GET() {
   const supabase = createServerSupabaseClient()
   const { data, error } = await supabase
     .from('usuarios')
-    .select('id, nombre_completo, rol, area_responsable')
+    .select('id, nombre_completo, rol, area_responsable_id, area:areas_responsables(nombre)')
     .eq('activo', true)
     .order('nombre_completo')
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ data })
+
+  // Transformar para exponer area.nombre como area_responsable para retrocompatibilidad
+  const transformedData = (data ?? []).map((user: any) => ({
+    ...user,
+    area_responsable: user.area?.nombre || null,
+    area: undefined,
+  }))
+
+  return NextResponse.json({ data: transformedData })
 }

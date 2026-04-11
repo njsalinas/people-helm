@@ -67,8 +67,13 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
     },
   })
 
-  const categorias = proyectoPadre.area_responsable
-    ? (CATEGORIAS_POR_AREA[proyectoPadre.area_responsable] ?? [])
+  // Obtener nombre del área: puede venir como area_responsable (string) o area.nombre
+  const areaNombre = typeof (proyectoPadre as any).area_responsable === 'string'
+    ? (proyectoPadre as any).area_responsable
+    : (proyectoPadre as any).area?.nombre || ''
+
+  const categorias = areaNombre
+    ? (CATEGORIAS_POR_AREA[areaNombre] ?? [])
     : []
 
   const onSubmit = async (data: CreateSubproyectoInput) => {
@@ -76,7 +81,7 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
       // Agregar los campos heredados del proyecto padre
       const dataWithInherited = {
         ...data,
-        area_responsable: proyectoPadre.area_responsable,
+        area_responsable_id: (proyectoPadre as any).area_responsable_id,
         foco_estrategico: proyectoPadre.foco_estrategico,
         tipo: 'Proyecto' as const,
       }
@@ -163,7 +168,7 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
             <p className="text-xs font-medium text-blue-900 mb-2">Heredado del Proyecto Padre:</p>
             <div className="grid grid-cols-2 gap-2 text-xs text-blue-800">
               <div>
-                <span className="font-medium">Área:</span> {proyectoPadre.area_responsable}
+                <span className="font-medium">Área:</span> {areaNombre}
               </div>
               <div>
                 <span className="font-medium">Foco:</span> {proyectoPadre.foco_estrategico}

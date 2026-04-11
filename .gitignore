@@ -52,3 +52,4 @@ supabase/.branches/
 Thumbs.db
 
 Req/
+.aider*

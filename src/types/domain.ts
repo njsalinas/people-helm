@@ -11,13 +11,17 @@ import type {
   DbRiesgo,
   DbComentario,
   DbHistorialCambio,
+  DbArea,
+  DbObjetivo,
+  DbObjetivoProyecto,
   VistaSemaforoProyecto,
   VistaBloqueoActivo,
   ColorSemaforo,
+  ObjetivoEstado,
 } from './database'
 
 // Re-exports de tipos base
-export type { ColorSemaforo }
+export type { ColorSemaforo, ObjetivoEstado }
 
 // ============================================================
 // Tipos de dominio (con joins resueltos)
@@ -45,7 +49,7 @@ export interface Tarea extends DbTarea {
 export interface Bloqueo extends DbBloqueo {
   creado_por?: Usuario
   resuelto_por?: Usuario
-  proyecto?: Pick<DbProyecto, 'id' | 'nombre' | 'area_responsable'>
+  proyecto?: Pick<DbProyecto, 'id' | 'nombre' | 'area_responsable_id'>
 }
 
 export interface BloqueoActivo extends VistaBloqueoActivo {}
@@ -61,6 +65,17 @@ export interface Comentario extends DbComentario {
 
 export interface HistorialCambio extends DbHistorialCambio {
   autor?: Usuario
+}
+
+export interface Area extends DbArea {}
+
+export interface Objetivo extends DbObjetivo {
+  area?: Area
+}
+
+export interface ObjetivoProyecto extends DbObjetivoProyecto {
+  objetivo?: Objetivo
+  proyecto?: Proyecto
 }
 
 // ============================================================
@@ -122,12 +137,17 @@ export const FOCOS_ESTRATEGICOS = [
   'Prioridad operacional',
 ] as const
 
-export const AREAS_RESPONSABLES = [
-  'DO',
-  'Gestión de Personas',
-  'SSO',
-  'Comunicaciones',
-] as const
+// AREAS_RESPONSABLES ahora se obtiene dinámicamente de la DB
+// Se mantiene este array solo como referencia histórica de áreas por defecto:
+// export const AREAS_RESPONSABLES_DEFAULT = [
+//   'DO',
+//   'Gestión de Personas',
+//   'SSO',
+//   'Comunicaciones',
+//   'Gerencia',
+// ] as const
+
+export const OBJETIVOS_STATUS = ['draft', 'active', 'completed', 'archived'] as const
 
 export const ESTADOS_PROYECTO = [
   'Pendiente',

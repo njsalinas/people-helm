@@ -15,7 +15,7 @@ import {
 } from './constants'
 import {
   FOCOS_ESTRATEGICOS,
-  AREAS_RESPONSABLES,
+  OBJETIVOS_STATUS,
   ESTADOS_PROYECTO,
   ESTADOS_TAREA,
   TIPOS_BLOQUEO,
@@ -38,7 +38,7 @@ export const CreateProjectSchema = z
     tipo: z.enum(['Proyecto', 'Línea']),
     subtipo: z.enum(['Operativo', 'Campaña', 'Estratégico']).optional(),
     foco_estrategico: z.enum(FOCOS_ESTRATEGICOS),
-    area_responsable: z.enum(AREAS_RESPONSABLES),
+    area_responsable_id: z.string().uuid('ID de área inválido'),
     categoria: z.string().min(1, 'Categoría requerida'),
     responsable_primario: z.string().uuid('ID de responsable inválido'),
     descripcion_ejecutiva: z.string().max(2000).optional(),
@@ -59,13 +59,7 @@ export const CreateProjectSchema = z
     },
     { message: 'Fecha fin debe ser mayor a fecha inicio', path: ['fecha_fin_planificada'] }
   )
-  .refine(
-    (data) => {
-      const cats = CATEGORIAS_POR_AREA[data.area_responsable]
-      return cats?.includes(data.categoria)
-    },
-    { message: 'Categoría no válida para el área seleccionada', path: ['categoria'] }
-  )
+  // Validación de categoría se hace en el servidor (necesita el nombre del área desde BD)
 
 export type CreateProjectInput = z.infer<typeof CreateProjectSchema>
 
@@ -224,3 +218,36 @@ export const SemaforoAbreviadoSchema = z.object({
 })
 
 export type SemaforoAbreviadoInput = z.infer<typeof SemaforoAbreviadoSchema>
+
+// ============================================================
+// Objetivos
+// ============================================================
+
+export const CreateObjetivoSchema = z.object({
+  titulo: z.string().min(5, 'Mínimo 5 caracteres').max(255, 'Máximo 255 caracteres'),
+  descripcion: z.string().max(2000).optional(),
+  anio: z.number().int().min(2020).max(2100),
+  area_responsable_id: z.string().uuid('ID de área inválido'),
+  status: z.enum(OBJETIVOS_STATUS).default('draft'),
+  orden: z.number().int().min(0).default(0),
+})
+
+export type CreateObjetivoInput = z.infer<typeof CreateObjetivoSchema>
+
+export const UpdateObjetivoSchema = z.object({
+  titulo: z.string().min(5, 'Mínimo 5 caracteres').max(255, 'Máximo 255 caracteres').optional(),
+  descripcion: z.string().max(2000).optional(),
+  anio: z.number().int().min(2020).max(2100).optional(),
+  area_responsable_id: z.string().uuid('ID de área inválido').optional(),
+  status: z.enum(OBJETIVOS_STATUS).optional(),
+  orden: z.number().int().min(0).optional(),
+})
+
+export type UpdateObjetivoInput = z.infer<typeof UpdateObjetivoSchema>
+
+export const VincularProyectoSchema = z.object({
+  objetivo_id: z.string().uuid(),
+  proyecto_id: z.string().uuid(),
+})
+
+export type VincularProyectoInput = z.infer<typeof VincularProyectoSchema>

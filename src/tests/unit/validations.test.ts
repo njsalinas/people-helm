@@ -20,7 +20,7 @@ describe('CreateProjectSchema', () => {
     nombre: 'ATS Q2',
     tipo: 'Proyecto',
     foco_estrategico: 'Alta prioridad (estratégico)',
-    area_responsable: 'DO',
+    area_responsable_id: UUID,
     categoria: 'Desempeño',
     responsable_primario: UUID,
     fecha_inicio: '2026-01-01',
@@ -47,7 +47,7 @@ describe('CreateProjectSchema', () => {
   })
 
   it('rechaza área inválida', () => {
-    const r = CreateProjectSchema.safeParse({ ...valid, area_responsable: 'NoExiste' })
+    const r = CreateProjectSchema.safeParse({ ...valid, area_responsable_id: 'no-es-uuid' })
     expect(r.success).toBe(false)
   })
 })

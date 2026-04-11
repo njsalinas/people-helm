@@ -13,10 +13,11 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CreateProjectSchema } from '@/lib/validations'
 import type { CreateProjectInput } from '@/types/api'
-import { AREAS_RESPONSABLES, FOCOS_ESTRATEGICOS, CATEGORIAS_POR_AREA } from '@/types/domain'
+import { FOCOS_ESTRATEGICOS, CATEGORIAS_POR_AREA } from '@/types/domain'
 import { useCrearProyecto } from '@/hooks/useProjects'
+import { useAreas } from '@/hooks/useAreas'
 import { useUIStore } from '@/stores/uiStore'
-import type { DbUsuario } from '@/types/database'
+import type { DbUsuario, DbArea } from '@/types/database'
 
 interface ProyectoFormProps {
   onClose: () => void
@@ -26,6 +27,10 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
   const crearMutation = useCrearProyecto()
   const addToast = useUIStore((s) => s.addToast)
   const [usuarios, setUsuarios] = useState<DbUsuario[]>([])
+  const { data: areas = [], isLoading: areasLoading } = useAreas()
+
+  // Mapa de ID -> nombre para hacer lookups
+  const areaNamesMap = new Map(areas.map(a => [a.id, a.nombre]))
 
   useEffect(() => {
     fetch('/api/usuarios')
@@ -44,13 +49,14 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
     defaultValues: {
       tipo: 'Proyecto',
       foco_estrategico: 'Alta prioridad (estratégico)',
-      area_responsable: 'DO',
+      area_responsable_id: areas[0]?.id || '',
       prioridad: 3,
     },
   })
 
-  const area = watch('area_responsable')
-  const categorias = area ? (CATEGORIAS_POR_AREA[area] ?? []) : []
+  const areaId = watch('area_responsable_id')
+  const areaNombre = areaNamesMap.get(areaId) || ''
+  const categorias = areaNombre ? (CATEGORIAS_POR_AREA[areaNombre] ?? []) : []
 
   const onSubmit = async (data: CreateProjectInput) => {
     try {
@@ -101,15 +107,17 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
                 Área *
               </label>
               <select
-                {...register('area_responsable')}
+                {...register('area_responsable_id')}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={areasLoading}
               >
-                {AREAS_RESPONSABLES.map((a) => (
-                  <option key={a} value={a}>{a}</option>
+                <option value="">Cargando áreas...</option>
+                {areas.map((a) => (
+                  <option key={a.id} value={a.id}>{a.nombre}</option>
                 ))}
               </select>
-              {errors.area_responsable && (
-                <p className="text-xs text-red-500 mt-1">{errors.area_responsable.message}</p>
+              {errors.area_responsable_id && (
+                <p className="text-xs text-red-500 mt-1">{errors.area_responsable_id.message}</p>
               )}
             </div>
             <div>

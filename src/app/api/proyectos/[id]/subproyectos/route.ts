@@ -22,7 +22,7 @@ export async function POST(
   const supabase = createServerSupabaseClient()
   const { data: proyectoPadre, error: errorPadre } = await supabase
     .from('proyectos')
-    .select('id, area_responsable, foco_estrategico')
+    .select('id, area_responsable_id, foco_estrategico, area:areas_responsables(nombre)')
     .eq('id', params.id)
     .single()
 
@@ -46,11 +46,11 @@ export async function POST(
     )
   }
 
-  // Validar que hereda area_responsable del padre
-  if (result.data.area_responsable !== proyectoPadre.area_responsable) {
+  // Validar que hereda area_responsable_id del padre
+  if (result.data.area_responsable_id !== proyectoPadre.area_responsable_id) {
     return NextResponse.json(
       {
-        error: `El subproyecto debe estar en el área "${proyectoPadre.area_responsable}" (igual al padre)`,
+        error: `El subproyecto debe estar en el área "${(proyectoPadre as any).area?.nombre || 'desconocida'}" (igual al padre)`,
       },
       { status: 400 }
     )

@@ -32,8 +32,7 @@ SaaS para gestionar proyectos, bloqueos, tareas y generar reportería automátic
 - [Onboarding](./docs/onboarding.md) — Guía para nuevos developers
 - [Database Schema](./docs/database/schema.md) — Estructura PostgreSQL
 - [Decisiones Técnicas](./docs/decisions.md) — Architecture Decision Records
-- [PRD Completo](./Req/02_PRD_COMPLETO.md) — Requisitos funcionales
-- [TDD Completo](./Req/03_TDD_COMPLETO.md) — Diseño técnico
+
 
 ---
 

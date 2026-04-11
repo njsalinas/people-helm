@@ -16,18 +16,20 @@ export async function GET(request: NextRequest) {
   const supabase = createServerSupabaseClient()
   const searchParams = request.nextUrl.searchParams
 
-  // NOTA: Usar tabla base directamente para asegurar que RLS se aplique correctamente
-  // (Las vistas con JOINs no siempre heredan RLS correctamente en Supabase)
-  let query = supabase.from('proyectos').select('*')
+  // NOTA: Usar tabla base con JOIN a areas para obtener nombre del área
+  // (RLS se aplica en la tabla proyectos, no en la vista)
+  let query = supabase
+    .from('proyectos')
+    .select('*, area:areas_responsables(nombre)')
 
   // RBAC: Filtrar por rol del usuario
   if (user.rol === 'Líder Area') {
     // Líder Area ve: todos los proyectos de su área responsable
-    if (!user.area_responsable) {
-      // Seguridad: si un Líder no tiene area_responsable asignada, no ve nada
+    if (!user.area_responsable_id) {
+      // Seguridad: si un Líder no tiene area_responsable_id asignada, no ve nada
       return NextResponse.json({ data: [] })
     }
-    query = query.eq('area_responsable', user.area_responsable)
+    query = query.eq('area_responsable_id', user.area_responsable_id)
   }
   // Gerente ve todos (sin filtro)
   // Espectador ve todos (read-only, controlado por RLS en BD)
@@ -47,8 +49,8 @@ export async function GET(request: NextRequest) {
 
   if (focos) query = query.in('foco_estrategico', focos.split(','))
   if (estados) query = query.in('estado', estados.split(','))
-  if (areas) query = query.in('area_responsable', areas.split(','))
-  if (area) query = query.eq('area_responsable', area) // Legacy
+  if (areas) query = query.in('area_responsable_id', areas.split(','))
+  if (area) query = query.eq('area_responsable_id', area) // Legacy: espera UUID
   if (prioridad) query = query.eq('prioridad', parseInt(prioridad))
   if (soloConBloqueos === 'true') query = query.gt('bloqueos_activos', 0)
   if (soloVencidos === 'true') query = query.not('dias_vencido', 'is', null)
@@ -62,7 +64,15 @@ export async function GET(request: NextRequest) {
   const { data, error } = await query
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ data })
+
+  // Transformar area join a area_responsable para retrocompatibilidad
+  const transformedData = (data ?? []).map((proyecto: any) => ({
+    ...proyecto,
+    area_responsable: proyecto.area?.nombre || 'Desconocida',
+    area: undefined, // Eliminar el nested object
+  }))
+
+  return NextResponse.json({ data: transformedData })
 }
 
 export async function POST(request: NextRequest) {

@@ -12,7 +12,7 @@
 --
 -- La política anterior solo permitía a Gerentes ver todos.
 -- Los Líderes de Área solo podían verse a sí mismos.
-
+DROP POLICY IF EXISTS "todos_ven_usuarios_para_asignar" ON usuarios; 
 -- Nueva política: Todos los usuarios autenticados ven la lista completa
 -- NOTA: No usar subquery recursiva (EXISTS) porque causa conflicto con RLS
 -- Solo verificar que el usuario está autenticado (auth.uid() IS NOT NULL)

@@ -12,7 +12,8 @@ export type FocoEstrategico =
   | 'Alta prioridad (estratégico)'
   | 'Prioridad media (habilitadores)'
   | 'Prioridad operacional'
-export type AreaResponsable = 'DO' | 'Gestión de Personas' | 'SSO' | 'Comunicaciones'
+export type AreaResponsable = string  // UUID FK a areas_responsables, pero se mantiene nombre semántico
+export type ObjetivoEstado = 'draft' | 'active' | 'completed' | 'archived'
 
 export type TareaEstado = 'Pendiente' | 'En Curso' | 'Finalizado' | 'Bloqueado'
 
@@ -50,12 +51,21 @@ export type NotificacionEvento =
 // TABLAS
 // ============================================================
 
+export interface DbArea {
+  id: string
+  nombre: string
+  es_gerencia: boolean
+  activo: boolean
+  created_at: string
+  updated_at: string
+}
+
 export interface DbUsuario {
   id: string
   email: string
   nombre_completo: string
   rol: UserRole
-  area_responsable: AreaResponsable | null
+  area_responsable_id: string | null  // UUID FK a areas_responsables
   activo: boolean
   created_at: string
   updated_at: string
@@ -67,7 +77,7 @@ export interface DbProyecto {
   tipo: ProyectoTipo
   subtipo: ProyectoSubtipo | null
   foco_estrategico: FocoEstrategico
-  area_responsable: AreaResponsable
+  area_responsable_id: string  // UUID FK a areas_responsables
   categoria: string
   responsable_primario: string
   descripcion_ejecutiva: string | null
@@ -228,6 +238,27 @@ export interface DbNotificacionConfig {
   updated_at: string
 }
 
+export interface DbObjetivo {
+  id: string
+  titulo: string
+  descripcion: string | null
+  anio: number
+  area_responsable_id: string  // UUID FK a areas_responsables
+  status: ObjetivoEstado
+  orden: number
+  created_by: string
+  updated_by: string
+  created_at: string
+  updated_at: string
+  archived_at: string | null  // soft-delete
+}
+
+export interface DbObjetivoProyecto {
+  objetivo_id: string
+  proyecto_id: string
+  created_at: string
+}
+
 // ============================================================
 // VISTAS
 // ============================================================
@@ -247,7 +278,7 @@ export interface VistaBloqueoActivo {
   id: string
   proyecto_id: string
   proyecto_nombre: string
-  area_responsable: AreaResponsable
+  area_responsable: string  // nombre del área (denormalizado desde JOIN)
   descripcion: string
   tipo: BloqueoTipo
   accion_requerida: BloqueoAccion

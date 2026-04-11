@@ -5,7 +5,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { DbObjetivo } from '@/types/database'
 import type { CreateObjetivoInput, UpdateObjetivoInput } from '@/lib/validations'
-import { useToast } from '@/hooks/useToast'
 
 interface ObjetivoFiltros {
   anio?: number
@@ -54,7 +53,6 @@ export function useObjetivo(id: string | null) {
 // Mutation: Crear objetivo
 export function useCrearObjetivo() {
   const queryClient = useQueryClient()
-  const { addToast } = useToast()
 
   return useMutation({
     mutationFn: async (input: CreateObjetivoInput) => {
@@ -73,10 +71,6 @@ export function useCrearObjetivo() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['objetivos'] })
-      addToast({ type: 'success', message: 'Objetivo creado exitosamente' })
-    },
-    onError: (error) => {
-      addToast({ type: 'error', message: error instanceof Error ? error.message : 'Error creating objetivo' })
     },
   })
 }
@@ -84,7 +78,6 @@ export function useCrearObjetivo() {
 // Mutation: Actualizar objetivo
 export function useActualizarObjetivo(objetivoId: string) {
   const queryClient = useQueryClient()
-  const { addToast } = useToast()
 
   return useMutation({
     mutationFn: async (input: UpdateObjetivoInput) => {
@@ -104,10 +97,6 @@ export function useActualizarObjetivo(objetivoId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['objetivos'] })
       queryClient.invalidateQueries({ queryKey: ['objetivos', objetivoId] })
-      addToast({ type: 'success', message: 'Objetivo actualizado' })
-    },
-    onError: (error) => {
-      addToast({ type: 'error', message: error instanceof Error ? error.message : 'Error updating objetivo' })
     },
   })
 }
@@ -115,7 +104,6 @@ export function useActualizarObjetivo(objetivoId: string) {
 // Mutation: Eliminar objetivo (soft-delete)
 export function useEliminarObjetivo() {
   const queryClient = useQueryClient()
-  const { addToast } = useToast()
 
   return useMutation({
     mutationFn: async (objetivoId: string) => {
@@ -132,10 +120,6 @@ export function useEliminarObjetivo() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['objetivos'] })
-      addToast({ type: 'success', message: 'Objetivo eliminado' })
-    },
-    onError: (error) => {
-      addToast({ type: 'error', message: error instanceof Error ? error.message : 'Error deleting objetivo' })
     },
   })
 }
@@ -143,7 +127,6 @@ export function useEliminarObjetivo() {
 // Mutation: Vincular proyecto a objetivo
 export function useVincularProyecto(objetivoId: string) {
   const queryClient = useQueryClient()
-  const { addToast } = useToast()
 
   return useMutation({
     mutationFn: async (proyectoId: string) => {
@@ -163,10 +146,6 @@ export function useVincularProyecto(objetivoId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['objetivos'] })
       queryClient.invalidateQueries({ queryKey: ['objetivos', objetivoId] })
-      addToast({ type: 'success', message: 'Proyecto vinculado' })
-    },
-    onError: (error) => {
-      addToast({ type: 'error', message: error instanceof Error ? error.message : 'Error vinculando proyecto' })
     },
   })
 }
@@ -174,7 +153,6 @@ export function useVincularProyecto(objetivoId: string) {
 // Mutation: Desvincular proyecto de objetivo
 export function useDesvincularProyecto(objetivoId: string) {
   const queryClient = useQueryClient()
-  const { addToast } = useToast()
 
   return useMutation({
     mutationFn: async (proyectoId: string) => {
@@ -194,10 +172,6 @@ export function useDesvincularProyecto(objetivoId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['objetivos'] })
       queryClient.invalidateQueries({ queryKey: ['objetivos', objetivoId] })
-      addToast({ type: 'success', message: 'Proyecto desvinculado' })
-    },
-    onError: (error) => {
-      addToast({ type: 'error', message: error instanceof Error ? error.message : 'Error desvinculando proyecto' })
     },
   })
 }

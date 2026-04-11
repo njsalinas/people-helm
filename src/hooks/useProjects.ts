@@ -19,53 +19,55 @@ const QUERY_KEYS = {
 /**
  * Hook principal para la Vista Gerencial
  * Carga proyectos con datos calculados (color semáforo, bloqueos, etc.)
+ *
+ * NOTA: Usa API route /api/proyectos en lugar de consultar Supabase directamente
+ * Esto asegura que se aplique correctamente el filtrado por rol/área en el servidor
  */
 export function useProyectos(filtros: ProyectosFilter = {}) {
-  const supabase = getSupabaseBrowserClient()
-
   return useQuery({
     queryKey: QUERY_KEYS.proyectosList(filtros),
     queryFn: async (): Promise<ProyectoGerencial[]> => {
-      let query = supabase
-        .from('vista_semaforo_proyectos')
-        .select('*')
+      // Construir query string con filtros
+      const params = new URLSearchParams()
 
-      // Aplicar filtros
       if (filtros.areas?.length) {
-        query = query.in('area_responsable', filtros.areas)
+        params.append('areas', filtros.areas.join(','))
       }
       if (filtros.focos?.length) {
-        query = query.in('foco_estrategico', filtros.focos)
+        params.append('focos', filtros.focos.join(','))
       }
       if (filtros.estados?.length) {
-        query = query.in('estado', filtros.estados)
+        params.append('estados', filtros.estados.join(','))
       }
       if (filtros.solo_con_bloqueos) {
-        query = query.gt('bloqueos_activos', 0)
+        params.append('solo_con_bloqueos', 'true')
       }
       if (filtros.solo_vencidos) {
-        query = query.not('dias_vencido', 'is', null)
+        params.append('solo_vencidos', 'true')
       }
       if (filtros.solo_criticos) {
-        query = query.in('prioridad', [1, 2])
+        params.append('solo_criticos', 'true')
       }
       if (filtros.responsable_id) {
-        query = query.eq('responsable_primario', filtros.responsable_id)
+        params.append('responsable_id', filtros.responsable_id)
       }
       if (filtros.fecha_inicio) {
-        query = query.gte('fecha_inicio', filtros.fecha_inicio)
+        params.append('fecha_inicio', filtros.fecha_inicio)
       }
       if (filtros.fecha_fin) {
-        query = query.lte('fecha_fin_planificada', filtros.fecha_fin)
+        params.append('fecha_fin', filtros.fecha_fin)
       }
 
-      // Ordenamiento por defecto: prioridad desc, estado
-      query = query.order('prioridad', { ascending: true }).order('estado')
+      const url = `/api/proyectos${params.toString() ? '?' + params.toString() : ''}`
+      const response = await fetch(url)
 
-      const { data, error } = await query
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Error fetching proyectos')
+      }
 
-      if (error) throw error
-      return (data ?? []) as ProyectoGerencial[]
+      const json = await response.json()
+      return (json.data ?? []) as ProyectoGerencial[]
     },
     staleTime: 30 * 1000,
   })

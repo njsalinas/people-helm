@@ -32,18 +32,32 @@ export async function GET(request: NextRequest) {
   // Gerente ve todos (sin filtro)
   // Espectador ve todos (read-only, controlado por RLS en BD)
 
-  // Aplicar filtros opcionales
-  const foco = searchParams.get('foco')
-  const estado = searchParams.get('estado')
-  const area = searchParams.get('area')
+  // Aplicar filtros opcionales (soportar ambos formatos: singular y plural, coma-separados)
+  const focos = searchParams.get('focos')
+  const estados = searchParams.get('estados')
+  const areas = searchParams.get('areas')
+  const area = searchParams.get('area') // Legacy
   const prioridad = searchParams.get('prioridad')
+  const soloConBloqueos = searchParams.get('solo_con_bloqueos')
+  const soloVencidos = searchParams.get('solo_vencidos')
+  const soloCriticos = searchParams.get('solo_criticos')
+  const responsableId = searchParams.get('responsable_id')
+  const fechaInicio = searchParams.get('fecha_inicio')
+  const fechaFin = searchParams.get('fecha_fin')
 
-  if (foco) query = query.eq('foco_estrategico', foco)
-  if (estado) query = query.eq('estado', estado)
-  if (area) query = query.eq('area_responsable', area)
+  if (focos) query = query.in('foco_estrategico', focos.split(','))
+  if (estados) query = query.in('estado', estados.split(','))
+  if (areas) query = query.in('area_responsable', areas.split(','))
+  if (area) query = query.eq('area_responsable', area) // Legacy
   if (prioridad) query = query.eq('prioridad', parseInt(prioridad))
+  if (soloConBloqueos === 'true') query = query.gt('bloqueos_activos', 0)
+  if (soloVencidos === 'true') query = query.not('dias_vencido', 'is', null)
+  if (soloCriticos === 'true') query = query.in('prioridad', [1, 2])
+  if (responsableId) query = query.eq('responsable_primario', responsableId)
+  if (fechaInicio) query = query.gte('fecha_inicio', fechaInicio)
+  if (fechaFin) query = query.lte('fecha_fin_planificada', fechaFin)
 
-  query = query.order('prioridad', { ascending: true })
+  query = query.order('prioridad', { ascending: true }).order('estado')
 
   const { data, error } = await query
 

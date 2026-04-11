@@ -15,6 +15,24 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
   if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
 
   const supabase = createServerSupabaseClient()
+
+  // RBAC: Verificar acceso al proyecto antes de obtener los datos completos
+  if (user.rol === 'Líder Area') {
+    const { data: proyecto, error: proyectoError } = await supabase
+      .from('proyectos')
+      .select('area_responsable')
+      .eq('id', params.id)
+      .single()
+
+    if (proyectoError || !proyecto) {
+      return NextResponse.json({ error: 'Proyecto no encontrado' }, { status: 404 })
+    }
+
+    if (proyecto.area_responsable !== user.area_responsable) {
+      return NextResponse.json({ error: 'Sin acceso a este proyecto' }, { status: 403 })
+    }
+  }
+
   const { data, error } = await supabase
     .from('proyectos')
     .select(`
@@ -41,12 +59,20 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   // Obtener proyecto actual para validar permisos
   const { data: proyecto, error: proyectoError } = await supabase
     .from('proyectos')
-    .select('id, responsable_primario')
+    .select('id, responsable_primario, area_responsable')
     .eq('id', params.id)
     .single()
 
   if (proyectoError || !proyecto) {
     return NextResponse.json({ error: 'Proyecto no encontrado' }, { status: 404 })
+  }
+
+  // RBAC: Verificar acceso por área (Líderes solo pueden editar su área)
+  if (user.rol === 'Líder Area' && proyecto.area_responsable !== user.area_responsable) {
+    return NextResponse.json(
+      { error: 'Sin acceso a este proyecto' },
+      { status: 403 }
+    )
   }
 
   // RBAC: Solo Gerente o responsable primario pueden editar

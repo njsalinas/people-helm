@@ -16,11 +16,17 @@ export async function GET(request: NextRequest) {
   const supabase = createServerSupabaseClient()
   const searchParams = request.nextUrl.searchParams
 
-  let query = supabase.from('vista_semaforo_proyectos').select('*')
+  // NOTA: Usar tabla base directamente para asegurar que RLS se aplique correctamente
+  // (Las vistas con JOINs no siempre heredan RLS correctamente en Supabase)
+  let query = supabase.from('proyectos').select('*')
 
   // RBAC: Filtrar por rol del usuario
   if (user.rol === 'Líder Area') {
     // Líder Area ve: todos los proyectos de su área responsable
+    if (!user.area_responsable) {
+      // Seguridad: si un Líder no tiene area_responsable asignada, no ve nada
+      return NextResponse.json({ data: [] })
+    }
     query = query.eq('area_responsable', user.area_responsable)
   }
   // Gerente ve todos (sin filtro)

@@ -14,6 +14,8 @@
 -- Los Líderes de Área solo podían verse a sí mismos.
 
 -- Nueva política: Todos los usuarios autenticados ven la lista completa
+-- NOTA: No usar subquery recursiva (EXISTS) porque causa conflicto con RLS
+-- Solo verificar que el usuario está autenticado (auth.uid() IS NOT NULL)
 CREATE POLICY "todos_ven_usuarios_para_asignar" ON usuarios
   FOR SELECT
-  USING (EXISTS (SELECT 1 FROM usuarios WHERE id = auth.uid()));
+  USING (auth.uid() IS NOT NULL);

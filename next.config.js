@@ -3,12 +3,12 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['@react-pdf/renderer'],
   },
-   typescript: {
+  /* typescript: {
     // !! ADVERTENCIA !!
     // Esto permitirá que el build termine aunque haya errores de tipo.
     // Úsalo solo para desatascar el deploy ahora y arregla los tipos después.
     ignoreBuildErrors: true,
-  }, 
+  }, */
   images: {
     remotePatterns: [
       {

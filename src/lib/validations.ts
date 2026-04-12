@@ -82,12 +82,81 @@ export const UpdateProjectSchema = z.object({
   descripcion_ejecutiva: z.string().max(2000).optional(),
   objetivo: z.string().max(1000).optional(),
   resultado_esperado: z.string().max(1000).optional(),
+  categoria: z.string().optional(),
+  foco_estrategico: z.enum(['Alta prioridad (estratégico)', 'Prioridad media (habilitadores)', 'Prioridad operacional']).optional(),
   responsable_primario: z.string().uuid('ID de responsable inválido').optional(),
+  fecha_inicio: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  fecha_fin_planificada: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   prioridad: z.number().int().min(1).max(5).optional(),
   estado: z.enum(ESTADOS_PROYECTO).optional(),
 })
 
 export type UpdateProjectInput = z.infer<typeof UpdateProjectSchema>
+
+// ============================================================
+// Subproyectos
+// ============================================================
+
+export const CreateSubprojectSchema = z
+  .object({
+    proyecto_id: z.string().uuid('ID de proyecto inválido'),
+    nombre: z
+      .string()
+      .min(NOMBRE_PROYECTO_MIN, `Mínimo ${NOMBRE_PROYECTO_MIN} caracteres`)
+      .max(NOMBRE_PROYECTO_MAX, `Máximo ${NOMBRE_PROYECTO_MAX} caracteres`),
+    subtipo: z.enum(['Operativo', 'Campaña', 'Estratégico']).optional(),
+    foco_estrategico: z.enum(FOCOS_ESTRATEGICOS),
+    area_responsable_id: z.string().uuid('ID de área inválido'),
+    categoria: z.string().min(1, 'Categoría requerida'),
+    responsable_primario: z.string().uuid('ID de responsable inválido'),
+    descripcion_ejecutiva: z.string().max(2000).optional(),
+    objetivo: z.string().max(1000).optional(),
+    resultado_esperado: z.string().max(1000).optional(),
+    fecha_inicio: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha inválido (YYYY-MM-DD)'),
+    fecha_fin_planificada: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha inválido (YYYY-MM-DD)'),
+    prioridad: z.number().int().min(1).max(5).default(3),
+  })
+  .refine(
+    (data) => {
+      const inicio = new Date(data.fecha_inicio)
+      const fin = new Date(data.fecha_fin_planificada)
+      return fin > inicio
+    },
+    { message: 'Fecha fin debe ser mayor a fecha inicio', path: ['fecha_fin_planificada'] }
+  )
+
+export type CreateSubprojectInput = z.infer<typeof CreateSubprojectSchema>
+
+export const UpdateSubprojectSchema = z
+  .object({
+    nombre: z
+      .string()
+      .min(NOMBRE_PROYECTO_MIN, `Mínimo ${NOMBRE_PROYECTO_MIN} caracteres`)
+      .max(NOMBRE_PROYECTO_MAX, `Máximo ${NOMBRE_PROYECTO_MAX} caracteres`)
+      .optional(),
+    descripcion_ejecutiva: z.string().max(2000).optional(),
+    objetivo: z.string().max(1000).optional(),
+    resultado_esperado: z.string().max(1000).optional(),
+    responsable_primario: z.string().uuid('ID de responsable inválido').optional(),
+    fecha_inicio: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    fecha_fin_planificada: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    prioridad: z.number().int().min(1).max(5).optional(),
+    estado: z.enum(ESTADOS_PROYECTO).optional(),
+    porcentaje_avance: z.number().int().min(0).max(100).optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.fecha_inicio && data.fecha_fin_planificada) {
+        return new Date(data.fecha_fin_planificada) > new Date(data.fecha_inicio)
+      }
+      return true
+    },
+    { message: 'Fecha fin debe ser mayor a fecha inicio', path: ['fecha_fin_planificada'] }
+  )
+
+export type UpdateSubprojectInput = z.infer<typeof UpdateSubprojectSchema>
 
 // ============================================================
 // Tareas
@@ -103,6 +172,7 @@ export const CreateTaskSchema = z
     fecha_fin_planificada: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     prioridad: z.number().int().min(1).max(5).default(3),
     tarea_padre: z.string().uuid().optional(),
+    subproyecto_id: z.string().uuid().optional(),
   })
   .refine(
     (data) => new Date(data.fecha_fin_planificada) >= new Date(data.fecha_inicio),
@@ -119,6 +189,27 @@ export const UpdateTaskStatusSchema = z.object({
 })
 
 export type UpdateTaskStatusInput = z.infer<typeof UpdateTaskStatusSchema>
+
+export const UpdateTaskSchema = z
+  .object({
+    nombre: z.string().min(3, 'Mínimo 3 caracteres').max(200).optional(),
+    descripcion: z.string().max(2000).optional().nullable(),
+    responsable_id: z.string().uuid().optional(),
+    fecha_inicio: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    fecha_fin_planificada: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    prioridad: z.number().int().min(1).max(5).optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.fecha_inicio && data.fecha_fin_planificada) {
+        return new Date(data.fecha_fin_planificada) >= new Date(data.fecha_inicio)
+      }
+      return true
+    },
+    { message: 'Fecha fin debe ser mayor o igual a fecha inicio', path: ['fecha_fin_planificada'] }
+  )
+
+export type UpdateTaskInput = z.infer<typeof UpdateTaskSchema>
 
 export const DesbloquearTareaSchema = z.object({
   nuevo_estado: z.enum(['Pendiente', 'En Curso', 'Finalizado']),

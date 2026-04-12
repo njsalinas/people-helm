@@ -6,14 +6,14 @@
 'use client'
 
 import { useState } from 'react'
-import type { Proyecto } from '@/types'
+import type { Proyecto, Subproyecto } from '@/types'
 import { SubproyectoCard } from './SubproyectoCard'
 import { SubproyectoForm } from './SubproyectoForm'
 import { useEliminarSubproyecto } from '@/hooks/useProjects'
 
 interface SubproyectoListProps {
   proyecto: Proyecto
-  subproyectos?: Proyecto[]
+  subproyectos?: Subproyecto[]
   canEdit?: boolean
 }
 
@@ -55,11 +55,11 @@ export function SubproyectoList({
               subproyecto={sub}
               onView={() => {
                 // Navegar al detalle del subproyecto
-                window.location.href = `/proyectos/${sub.id}`
+                window.location.href = `/subproyectos/${sub.id}`
               }}
               onEdit={canEdit ? () => {
                 // Navegar al detalle del subproyecto para editar
-                window.location.href = `/proyectos/${sub.id}`
+                window.location.href = `/subproyectos/${sub.id}`
               } : undefined}
               onDelete={canEdit ? () => {
                 setDeletingId(sub.id)

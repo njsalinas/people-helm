@@ -17,8 +17,8 @@ interface KPIDashboardProps {
   isLoading?: boolean
 }
 
-export function KPIDashboard({ proyectos, isLoading }: KPIDashboardProps) {
-  const kpis = calcularKPIs(proyectos)
+export function KPIDashboard({ proyectos = [], isLoading }: KPIDashboardProps) {
+  const kpis = calcularKPIs(proyectos || [])
 
   const items = [
     {
@@ -95,7 +95,7 @@ export function KPIDashboard({ proyectos, isLoading }: KPIDashboardProps) {
             {item.icon && <span className="text-base">{item.icon}</span>}
             <span className="text-xs text-gray-500 truncate">{item.label}</span>
           </div>
-          <div className={cn('text-2xl font-bold', item.color)}>{item.value}</div>
+          <div className={cn('text-2xl font-bold', item.color)}>{Number.isNaN(item.value) ? 0 : item.value}</div>
           {item.subtitle && <div className="text-xs text-gray-400 mt-0.5">{item.subtitle}</div>}
         </div>
       ))}

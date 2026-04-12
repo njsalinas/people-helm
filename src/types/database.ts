@@ -97,9 +97,35 @@ export interface DbProyecto {
   updated_by: string
 }
 
+export interface DbSubproyecto {
+  id: string
+  proyecto_id: string  // UUID FK obligatoria al proyecto raíz
+  nombre: string
+  subtipo: ProyectoSubtipo | null
+  foco_estrategico: FocoEstrategico
+  area_responsable_id: string  // UUID FK a areas_responsables
+  categoria: string
+  responsable_primario: string
+  descripcion_ejecutiva: string | null
+  objetivo: string | null
+  resultado_esperado: string | null
+  fecha_inicio: string
+  fecha_fin_planificada: string
+  fecha_fin_real: string | null
+  estado: ProyectoEstado
+  porcentaje_avance: number
+  prioridad: number
+  requiere_escalamiento: boolean
+  created_at: string
+  updated_at: string
+  created_by: string
+  updated_by: string
+}
+
 export interface DbTarea {
   id: string
   proyecto_id: string
+  subproyecto_id: string | null  // UUID FK opcional a subproyectos
   nombre: string
   descripcion: string | null
   estado: TareaEstado

@@ -9,27 +9,11 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import type { Proyecto } from '@/types'
 import { CATEGORIAS_POR_AREA } from '@/types/domain'
-/* import { useUIStore } from '@/stores/uiStore' */
 import type { DbUsuario } from '@/types/database'
 import { useCrearSubproyecto } from '@/hooks/useProjects'
-
-// Schema para crear subproyecto
-const CreateSubproyectoSchema = z.object({
-  nombre: z.string().min(3, 'Mínimo 3 caracteres').max(200),
-  descripcion_ejecutiva: z.string().max(1000).optional(),
-  objetivo: z.string().max(2000).optional(),
-  resultado_esperado: z.string().max(2000).optional(),
-  categoria: z.string().min(1, 'Selecciona una categoría'),
-  responsable_primario: z.string().uuid('Selecciona un responsable'),
-  fecha_inicio: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  fecha_fin_planificada: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  prioridad: z.number().int().min(1).max(5),
-})
-
-type CreateSubproyectoInput = z.infer<typeof CreateSubproyectoSchema>
+import { CreateSubprojectSchema, type CreateSubprojectInput } from '@/lib/validations'
 
 interface SubproyectoFormProps {
   proyectoPadre: Proyecto
@@ -37,7 +21,6 @@ interface SubproyectoFormProps {
 }
 
 export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps) {
-  /* const addToast = useUIStore((s) => s.addToast) */
   const [usuarios, setUsuarios] = useState<DbUsuario[]>([])
   const crearSubproyecto = useCrearSubproyecto(proyectoPadre.id)
 
@@ -52,8 +35,8 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateSubproyectoInput>({
-    resolver: zodResolver(CreateSubproyectoSchema),
+  } = useForm<CreateSubprojectInput>({
+    resolver: zodResolver(CreateSubprojectSchema),
     defaultValues: {
       nombre: '',
       descripcion_ejecutiva: '',
@@ -61,6 +44,7 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
       resultado_esperado: '',
       categoria: '',
       responsable_primario: '',
+      subtipo: undefined,
       fecha_inicio: new Date().toISOString().split('T')[0],
       fecha_fin_planificada: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       prioridad: 3,
@@ -76,14 +60,14 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
     ? (CATEGORIAS_POR_AREA[areaNombre] ?? [])
     : []
 
-  const onSubmit = async (data: CreateSubproyectoInput) => {
+  const onSubmit = async (data: CreateSubprojectInput) => {
     try {
       // Agregar los campos heredados del proyecto padre
-      const dataWithInherited = {
+      const dataWithInherited: CreateSubprojectInput = {
         ...data,
-        area_responsable_id: (proyectoPadre as any).area_responsable_id,
+        proyecto_id: proyectoPadre.id,
+        area_responsable_id: proyectoPadre.area_responsable_id,
         foco_estrategico: proyectoPadre.foco_estrategico,
-        tipo: 'Proyecto' as const,
       }
       await crearSubproyecto.mutateAsync(dataWithInherited)
       onClose()

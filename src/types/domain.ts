@@ -6,6 +6,7 @@
 import type {
   DbUsuario,
   DbProyecto,
+  DbSubproyecto,
   DbTarea,
   DbBloqueo,
   DbRiesgo,
@@ -29,9 +30,14 @@ export type { ColorSemaforo, ObjetivoEstado }
 
 export interface Usuario extends DbUsuario {}
 
+export interface Subproyecto extends DbSubproyecto {
+  responsable?: Usuario
+  area?: Area
+}
+
 export interface Proyecto extends DbProyecto {
   responsable?: Usuario
-  subproyectos?: Proyecto[]
+  subproyectos?: Subproyecto[]
 }
 
 /** Proyecto enriquecido para Vista Gerencial */

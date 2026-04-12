@@ -99,37 +99,10 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     )
   }
 
-  // Forzamos el tipo a 'any' temporalmente para que TS no se queje de proyecto_padre
-  const updateData = result.data as any;
-
-  // Si intenta cambiar proyecto_padre, validar que no sea circular
-  if (updateData.proyecto_padre !== undefined && updateData.proyecto_padre !== null) {
-    // Validar: el nuevo padre no puede ser el proyecto actual
-    if (updateData.proyecto_padre === params.id) {
-      return NextResponse.json(
-        { error: 'Un proyecto no puede ser subproyecto de sí mismo' },
-        { status: 400 }
-      )
-    }
-
-    // Validar: el nuevo padre no puede ser un subproyecto del actual
-    const { data: chain } = await supabase.rpc('validar_proyecto_circular', {
-      p_proyecto_id: params.id,
-      p_nuevo_padre_id: updateData.proyecto_padre,
-    })
-
-    if (chain && chain.es_circular) {
-      return NextResponse.json(
-        { error: 'Esta relación crearía una referencia circular entre proyectos' },
-        { status: 400 }
-      )
-    }
-  }
-
   const { data, error } = await supabase
     .from('proyectos')
     .update({
-      ...updateData, // Usamos la variable con el cast
+      ...result.data,
       updated_at: new Date().toISOString(),
       updated_by: user.id,
     })

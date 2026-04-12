@@ -166,3 +166,4 @@ JOIN objetivos o ON op.objetivo_id = o.id
 JOIN proyectos p ON op.proyecto_id = p.id
 LEFT JOIN usuarios u ON p.responsable_primario = u.id
 WHERE o.archived_at IS NULL;
+

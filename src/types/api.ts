@@ -41,7 +41,7 @@ export interface CreateProjectInput {
   tipo: ProyectoTipo
   subtipo?: ProyectoSubtipo
   foco_estrategico: FocoEstrategico
-  area_responsable: AreaResponsable
+  area_responsable_id: string
   categoria: string
   responsable_primario: string
   descripcion_ejecutiva?: string
@@ -75,6 +75,38 @@ export interface UpdateProjectProgressInput {
 }
 
 // ============================================================
+// Subproyectos
+// ============================================================
+
+export interface CreateSubprojectInput {
+  proyecto_id: string
+  nombre: string
+  subtipo?: ProyectoSubtipo
+  foco_estrategico: FocoEstrategico
+  area_responsable_id: string
+  categoria: string
+  responsable_primario: string
+  descripcion_ejecutiva?: string
+  objetivo?: string
+  resultado_esperado?: string
+  fecha_inicio: string
+  fecha_fin_planificada: string
+  prioridad?: number
+}
+
+export interface UpdateSubprojectInput {
+  nombre?: string
+  descripcion_ejecutiva?: string
+  objetivo?: string
+  resultado_esperado?: string
+  fecha_fin_planificada?: string
+  prioridad?: number
+  responsable_primario?: string
+  estado?: ProyectoEstado
+  porcentaje_avance?: number
+}
+
+// ============================================================
 // Tareas
 // ============================================================
 
@@ -87,6 +119,7 @@ export interface CreateTaskInput {
   fecha_fin_planificada: string
   prioridad?: number
   tarea_padre?: string
+  subproyecto_id?: string
 }
 
 export interface UpdateTaskStatusInput {
@@ -94,6 +127,15 @@ export interface UpdateTaskStatusInput {
   estado_nuevo: TareaEstado
   porcentaje_avance?: number
   comentario?: string
+}
+
+export interface UpdateTaskInput {
+  nombre?: string
+  descripcion?: string | null
+  responsable_id?: string
+  fecha_inicio?: string
+  fecha_fin_planificada?: string
+  prioridad?: number
 }
 
 // ============================================================

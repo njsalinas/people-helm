@@ -79,6 +79,25 @@ bbed0c2 docs: auto-generated documentation [skip ci]
 - ✅ Zod en cliente y servidor
 - ✅ Middleware de protección de rutas
 
+## Comandos esenciales
+- Build: `npm run build`
+- Dev: `npm run dev`
+- Type check: `npx tsc --noEmit`
+- Lint: `npm run lint`
+
+## Reglas OBLIGATORIAS antes de considerar cualquier tarea completa
+1. El código DEBE compilar sin errores con `npm run build`
+2. No debe haber errores de TypeScript (`npx tsc --noEmit`)
+3. Después de cada cambio significativo, ejecuta `npm run build` para verificar
+4. Si `npm run build` falla, corrígelo ANTES de continuar con otra tarea
+
+## Errores comunes a evitar
+- No importar módulos que no existen
+- No usar `any` como escape a errores de tipos
+- No dejar imports sin usar (causa errores en build)
+- Verificar que las variables de entorno requeridas estén en `.env.example`
+
+
 ---
 
 *Generado automáticamente por pre-commit hook*

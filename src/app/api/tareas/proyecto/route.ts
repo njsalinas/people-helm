@@ -38,10 +38,12 @@ export async function GET(request: NextRequest) {
   }
 
   // Primero: tareas básicas sin JOINs
+  // Solo tareas directas del proyecto (subproyecto_id IS NULL)
   const { data: basicTareas, error: basicError } = await supabase
     .from('tareas')
     .select('*')
     .eq('proyecto_id', proyectoId)
+    .is('subproyecto_id', null)
     .order('prioridad', { ascending: true })
     .order('fecha_fin_planificada', { ascending: true })
 
@@ -58,6 +60,7 @@ export async function GET(request: NextRequest) {
         responsable:usuarios!responsable_id(id, nombre_completo, email, rol, area_responsable_id, activo, created_at, updated_at)
       `)
       .eq('proyecto_id', proyectoId)
+      .is('subproyecto_id', null)
       .order('prioridad', { ascending: true })
       .order('fecha_fin_planificada', { ascending: true })
 

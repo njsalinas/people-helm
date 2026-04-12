@@ -5,12 +5,12 @@
 
 'use client'
 
-import type { Proyecto } from '@/types'
+import type { Subproyecto } from '@/types'
 import { cn, formatDate, calcularDiasRestantes, formatPorcentaje, obtenerIniciales } from '@/lib/utils'
 import { COLORES_ESTADO } from '@/types/domain'
 
 interface SubproyectoCardProps {
-  subproyecto: Proyecto
+  subproyecto: Subproyecto
   onEdit?: () => void
   onView?: () => void
   onDelete?: () => void

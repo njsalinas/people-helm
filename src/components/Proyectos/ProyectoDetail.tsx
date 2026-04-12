@@ -9,12 +9,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import type { Proyecto, ProyectoEstado } from '@/types'
 import { KanbanBoard } from './Kanban/KanbanBoard'
 import { TimelineChart } from './Timeline/TimelineChart'
 import { TaskTable } from './Lista/TaskTable'
 import { useTareas } from '@/hooks/useTareas'
-import { useActualizarEstadoProyecto } from '@/hooks/useProjects'
+import { useActualizarEstadoProyecto, useEliminarProyecto } from '@/hooks/useProjects'
 import { useAuth } from '@/hooks/useAuth'
 import { cn, formatDate, calcularDiasRestantes, formatPorcentaje, obtenerIniciales, canEditProject, canCreateTask } from '@/lib/utils'
 import { COLORES_ESTADO, ESTADOS_PROYECTO } from '@/types/domain'
@@ -29,6 +30,7 @@ interface ProyectoDetailProps {
 type Tab = 'kanban' | 'timeline' | 'lista'
 
 export function ProyectoDetail({ proyecto }: ProyectoDetailProps) {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState<Tab>('kanban')
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
   const [showEstadoModal, setShowEstadoModal] = useState(false)
@@ -37,10 +39,12 @@ export function ProyectoDetail({ proyecto }: ProyectoDetailProps) {
   const [editandoNombre, setEditandoNombre] = useState(false)
   const [nuevoNombre, setNuevoNombre] = useState(proyecto.nombre)
   const [showEditModal, setShowEditModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const { user } = useAuth()
   const { data: tareas = [], isLoading: tareasLoading } = useTareas(proyecto.id)
   const actualizarEstado = useActualizarEstadoProyecto()
+  const eliminarProyecto = useEliminarProyecto()
 
   const [usuarios, setUsuarios] = useState<{ id: string; nombre_completo: string }[]>([])
   useEffect(() => {
@@ -69,6 +73,16 @@ export function ProyectoDetail({ proyecto }: ProyectoDetailProps) {
     })
     setShowEstadoModal(false)
     setComentarioEstado('')
+  }
+
+  const handleEliminarProyecto = async () => {
+    try {
+      await eliminarProyecto.mutateAsync(proyecto.id)
+      setShowDeleteModal(false)
+      router.push('/dashboard/proyectos')
+    } catch (error) {
+      console.error('Error al eliminar proyecto:', error)
+    }
   }
 
   const handleActualizarNombre = async () => {
@@ -153,15 +167,23 @@ export function ProyectoDetail({ proyecto }: ProyectoDetailProps) {
             )}
           </div>
 
-          {/* Estado + Editar */}
+          {/* Estado + Editar + Eliminar */}
           <div className="flex items-center gap-3">
             {canEdit && (
-              <button
-                onClick={() => setShowEditModal(true)}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
-              >
-                ✎ Editar
-              </button>
+              <>
+                <button
+                  onClick={() => setShowEditModal(true)}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+                >
+                  ✎ Editar
+                </button>
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-red-50 text-red-700 hover:bg-red-100 transition-colors border border-red-200"
+                >
+                  🗑 Eliminar
+                </button>
+              </>
             )}
             <button
               onClick={() => canEdit && setShowEstadoModal(true)}
@@ -354,6 +376,35 @@ export function ProyectoDetail({ proyecto }: ProyectoDetailProps) {
           onClose={() => setSelectedTaskId(null)}
           canEdit={canEdit}
         />
+      )}
+
+      {/* Delete project modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-black/40" onClick={() => setShowDeleteModal(false)} />
+          <div className="relative bg-white rounded-xl shadow-xl p-6 w-full max-w-md z-10">
+            <h3 className="font-bold text-gray-900 mb-2">Eliminar Proyecto</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              ¿Estás seguro de que deseas eliminar &quot;{proyecto.nombre}&quot;? Esta acción no se puede deshacer.
+            </p>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="flex-1 py-2 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleEliminarProyecto}
+                disabled={eliminarProyecto.isPending}
+                className="flex-1 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 disabled:opacity-60"
+              >
+                {eliminarProyecto.isPending ? 'Eliminando...' : 'Eliminar'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

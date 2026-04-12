@@ -1,13 +1,13 @@
 /**
  * @file API Route: /api/proyectos/[id]/subproyectos
- * POST - Crear subproyecto
- * GET - Listar subproyectos (opcional)
+ * POST - Crear subproyecto (en tabla subproyectos)
+ * GET - Listar subproyectos del proyecto
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getServerUser } from '@/lib/auth'
-import { CreateProjectSchema } from '@/lib/validations'
+import { CreateSubprojectSchema } from '@/lib/validations'
 
 export async function POST(
   request: NextRequest,
@@ -22,7 +22,7 @@ export async function POST(
   const supabase = createServerSupabaseClient()
   const { data: proyectoPadre, error: errorPadre } = await supabase
     .from('proyectos')
-    .select('id, area_responsable_id, foco_estrategico, area:areas_responsables(nombre)')
+    .select('id, area_responsable_id, area:areas_responsables(nombre)')
     .eq('id', params.id)
     .single()
 
@@ -33,10 +33,10 @@ export async function POST(
     )
   }
 
-  // Validar datos con schema
-  const result = CreateProjectSchema.safeParse({
+  // Validar datos con schema de subproyectos
+  const result = CreateSubprojectSchema.safeParse({
     ...body,
-    proyecto_padre: params.id, // Forzar proyecto padre
+    proyecto_id: params.id, // Forzar FK al proyecto padre
   })
 
   if (!result.success) {
@@ -56,13 +56,13 @@ export async function POST(
     )
   }
 
-  // Crear subproyecto
+  // Crear subproyecto en tabla subproyectos
   const { data, error } = await supabase
-    .from('proyectos')
+    .from('subproyectos')
     .insert([
       {
         ...result.data,
-        proyecto_padre: params.id,
+        proyecto_id: params.id,
         created_by: user.id,
         updated_by: user.id,
       },
@@ -89,15 +89,14 @@ export async function GET(
 
   const supabase = createServerSupabaseClient()
   const { data, error } = await supabase
-    .from('proyectos')
+    .from('subproyectos')
     .select(
       `
       id,
       nombre,
-      tipo,
       subtipo,
       foco_estrategico,
-      area_responsable,
+      area_responsable_id,
       estado,
       porcentaje_avance,
       prioridad,
@@ -106,7 +105,7 @@ export async function GET(
       responsable:usuarios!responsable_primario(id, nombre_completo, email)
     `
     )
-    .eq('proyecto_padre', params.id)
+    .eq('proyecto_id', params.id)
     .order('prioridad', { ascending: true })
 
   if (error) {

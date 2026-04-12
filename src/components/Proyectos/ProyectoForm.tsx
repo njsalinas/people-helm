@@ -119,7 +119,7 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
                 ))}
               </select>
               {errors.area_responsable_id && (
-                <p className="text-xs text-red-500 mt-1">{errors.area_responsable_id.message}</p>
+                <p className="text-xs text-red-500 mt-1">{errors.area_responsable_id?.message}</p>
               )}
             </div>
             <div>

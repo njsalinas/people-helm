@@ -8,7 +8,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getSupabaseBrowserClient } from '@/lib/supabase'
 import { useUIStore } from '@/stores/uiStore'
 import type { ProyectoGerencial, Proyecto } from '@/types'
-import type { ProyectosFilter, CreateProjectInput, UpdateProjectStatusInput } from '@/types/api'
+import type { ProyectosFilter, CreateProjectInput, CreateSubprojectInput, UpdateSubprojectInput, UpdateProjectStatusInput } from '@/types/api'
 
 const QUERY_KEYS = {
   proyectos: ['proyectos'] as const,
@@ -88,11 +88,10 @@ export function useProyecto(id: string) {
           *,
           area:areas_responsables(id, nombre),
           responsable:usuarios!responsable_primario(id, nombre_completo, email, rol, area_responsable_id, activo, created_at, updated_at),
-          subproyectos:proyectos!proyecto_padre(
+          subproyectos(
             id,
             nombre,
             descripcion_ejecutiva,
-            tipo,
             subtipo,
             categoria,
             foco_estrategico,
@@ -192,7 +191,7 @@ export function useCrearSubproyecto(proyectoPadreId: string) {
   const addToast = useUIStore((s) => s.addToast)
 
   return useMutation({
-    mutationFn: async (input: CreateProjectInput) => {
+    mutationFn: async (input: CreateSubprojectInput) => {
       const response = await fetch(`/api/proyectos/${proyectoPadreId}/subproyectos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -217,6 +216,36 @@ export function useCrearSubproyecto(proyectoPadreId: string) {
 }
 
 /**
+ * Hook para eliminar un proyecto
+ */
+export function useEliminarProyecto() {
+  const queryClient = useQueryClient()
+  const addToast = useUIStore((s) => s.addToast)
+
+  return useMutation({
+    mutationFn: async (proyectoId: string) => {
+      const response = await fetch(`/api/proyectos/${proyectoId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Error al eliminar proyecto')
+      }
+
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.proyectos })
+      addToast({ type: 'success', title: 'Proyecto eliminado exitosamente' })
+    },
+    onError: (error: Error) => {
+      addToast({ type: 'error', title: 'Error al eliminar proyecto', description: error.message })
+    },
+  })
+}
+
+/**
  * Hook para eliminar un subproyecto
  */
 export function useEliminarSubproyecto(proyectoPadreId: string) {
@@ -225,7 +254,7 @@ export function useEliminarSubproyecto(proyectoPadreId: string) {
 
   return useMutation({
     mutationFn: async (subproyectoId: string) => {
-      const response = await fetch(`/api/proyectos/${subproyectoId}`, {
+      const response = await fetch(`/api/subproyectos/${subproyectoId}`, {
         method: 'DELETE',
       })
 
@@ -242,6 +271,38 @@ export function useEliminarSubproyecto(proyectoPadreId: string) {
     },
     onError: (error: Error) => {
       addToast({ type: 'error', title: 'Error al eliminar subproyecto', description: error.message })
+    },
+  })
+}
+
+/**
+ * Hook para actualizar un subproyecto
+ */
+export function useActualizarSubproyecto(subproyectoId: string) {
+  const queryClient = useQueryClient()
+  const addToast = useUIStore((s) => s.addToast)
+
+  return useMutation({
+    mutationFn: async (input: UpdateSubprojectInput) => {
+      const response = await fetch(`/api/subproyectos/${subproyectoId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Error al actualizar subproyecto')
+      }
+
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['subproyecto', subproyectoId] })
+      addToast({ type: 'success', title: 'Subproyecto actualizado exitosamente' })
+    },
+    onError: (error: Error) => {
+      addToast({ type: 'error', title: 'Error al actualizar subproyecto', description: error.message })
     },
   })
 }

@@ -8,7 +8,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 /* import { getSupabaseBrowserClient } from '@/lib/supabase' */
 import { useUIStore } from '@/stores/uiStore'
 import type { Tarea } from '@/types'
-import type { CreateTaskInput, UpdateTaskStatusInput } from '@/types/api'
+import type { CreateTaskInput, UpdateTaskStatusInput, UpdateTaskInput } from '@/types/api'
 
 const QUERY_KEYS = {
   tareas: ['tareas'] as const,
@@ -124,6 +124,70 @@ export function useActualizarTarea(proyectoId: string) {
     },
     onError: (error: Error) => {
       addToast({ type: 'error', title: 'Error', description: error.message })
+    },
+  })
+}
+
+/**
+ * Hook para editar campos de una tarea (nombre, descripción, responsable, fechas, prioridad)
+ */
+export function useEditarTarea(proyectoId: string) {
+  const queryClient = useQueryClient()
+  const addToast = useUIStore((s) => s.addToast)
+
+  return useMutation({
+    mutationFn: async ({ tareaId, data }: { tareaId: string; data: UpdateTaskInput }) => {
+      const response = await fetch(`/api/tareas/${tareaId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const err = await response.json()
+        throw new Error(err.error || 'Error al editar tarea')
+      }
+
+      return response.json()
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tareasByProject(proyectoId) })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tareaDetail(variables.tareaId) })
+      addToast({ type: 'success', title: 'Tarea actualizada' })
+    },
+    onError: (error: Error) => {
+      addToast({ type: 'error', title: 'Error al actualizar tarea', description: error.message })
+    },
+  })
+}
+
+/**
+ * Hook para eliminar una tarea
+ */
+export function useEliminarTarea(proyectoId: string) {
+  const queryClient = useQueryClient()
+  const addToast = useUIStore((s) => s.addToast)
+
+  return useMutation({
+    mutationFn: async (tareaId: string) => {
+      const response = await fetch(`/api/tareas/${tareaId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Error al eliminar tarea')
+      }
+
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tareasByProject(proyectoId) })
+      queryClient.invalidateQueries({ queryKey: ['tareas', 'global'] })
+      addToast({ type: 'success', title: 'Tarea eliminada exitosamente' })
+    },
+    onError: (error: Error) => {
+      addToast({ type: 'error', title: 'Error al eliminar tarea', description: error.message })
     },
   })
 }

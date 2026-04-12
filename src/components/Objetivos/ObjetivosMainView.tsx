@@ -8,8 +8,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useObjetivos } from '@/hooks/useObjetivos'
+import { useObjetivos, useCrearObjetivo } from '@/hooks/useObjetivos'
 import { useAreas } from '@/hooks/useAreas'
+import { ObjetivoForm } from './ObjetivoForm'
 import { COLORES_SEMAFORO } from '@/types/domain'
 
 
@@ -20,12 +21,15 @@ interface ObjetivosMainViewProps {
 export function ObjetivosMainView({ anio = new Date().getFullYear() }: ObjetivosMainViewProps) {
   const [selectedAnio, setSelectedAnio] = useState(anio)
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null)
+  const [showForm, setShowForm] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
 
   const { data: areas = [] } = useAreas()
-  const { data: objetivosData = [], isLoading } = useObjetivos({
+  const { data: objetivosData = [], isLoading, refetch } = useObjetivos({
     anio: selectedAnio,
     area_id: selectedAreaId || undefined,
   })
+  const crearObjetivo = useCrearObjetivo()
 
   // Agrupar objetivos por área
   const areaNamesMap = new Map(areas.map(a => [a.id, a.nombre]))
@@ -76,6 +80,12 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
             </select>
           </div>
         </div>
+        <button
+          onClick={() => setShowForm(true)}
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+        >
+          + Nuevo Objetivo
+        </button>
       </div>
 
       {/* Contenido */}
@@ -182,6 +192,38 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
               </div>
             )
           })}
+        </div>
+      )}
+
+      {/* Modal de formulario */}
+      {showForm && (
+        <ObjetivoForm
+          objetivo={null}
+          onSubmit={async (data) => {
+            try {
+              setFormError(null)
+              await crearObjetivo.mutateAsync(data as any)
+              setShowForm(false)
+              await refetch()
+            } catch (error) {
+              setFormError(
+                error instanceof Error ? error.message : 'Error al guardar el objetivo'
+              )
+            }
+          }}
+          onClose={() => {
+            setShowForm(false)
+            setFormError(null)
+            refetch()
+          }}
+          isLoading={crearObjetivo.isPending}
+        />
+      )}
+
+      {/* Toast de error */}
+      {formError && (
+        <div className="fixed bottom-4 right-4 bg-red-500 text-white px-4 py-3 rounded-lg shadow-lg z-50">
+          {formError}
         </div>
       )}
     </div>

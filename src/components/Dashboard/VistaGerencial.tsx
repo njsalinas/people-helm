@@ -20,7 +20,7 @@ interface VistaGerencialProps {
   onSelectProject?: (id: string) => void
 }
 
-type SortKey = 'nombre' | 'estado' | 'porcentaje_avance' | 'bloqueos_activos' | 'prioridad' | 'dias_restantes' | 'area_responsable'
+type SortKey = 'nombre' | 'estado' | 'porcentaje_avance' | 'bloqueos_activos' | 'prioridad' | 'dias_restantes' | 'area_responsable' | 'subproyectos_count'
 
 export function VistaGerencial({ proyectos, isLoading, onSelectProject }: VistaGerencialProps) {
   const router = useRouter()
@@ -86,6 +86,7 @@ export function VistaGerencial({ proyectos, isLoading, onSelectProject }: VistaG
             <Th label="Área" sortKey="area_responsable" current={sortKey} dir={sortDir} onSort={handleSort} />
             <Th label="Estado" sortKey="estado" current={sortKey} dir={sortDir} onSort={handleSort} />
             <Th label="% Avance" sortKey="porcentaje_avance" current={sortKey} dir={sortDir} onSort={handleSort} />
+            <Th label="Subproyectos" sortKey="subproyectos_count" current={sortKey} dir={sortDir} onSort={handleSort} />
             <Th label="Bloqueos" sortKey="bloqueos_activos" current={sortKey} dir={sortDir} onSort={handleSort} />
             <Th label="Plazo" sortKey="dias_restantes" current={sortKey} dir={sortDir} onSort={handleSort} />
             <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
@@ -99,7 +100,7 @@ export function VistaGerencial({ proyectos, isLoading, onSelectProject }: VistaG
         <tbody className="divide-y divide-gray-100">
           {sorted.length === 0 ? (
             <tr>
-              <td colSpan={9} className="px-4 py-12 text-center text-gray-400">
+              <td colSpan={10} className="px-4 py-12 text-center text-gray-400">
                 No hay proyectos que coincidan con los filtros
               </td>
             </tr>
@@ -232,6 +233,28 @@ function ProyectoRow({
             {formatPorcentaje(proyecto.porcentaje_avance)}
           </span>
         </div>
+      </td>
+
+      {/* Subproyectos */}
+      <td className="px-4 py-3">
+        {proyecto.subproyectos_count && proyecto.subproyectos_count > 0 ? (
+          <div className="flex items-center gap-2">
+            <div className="text-xs font-medium text-gray-700">
+              {proyecto.subproyectos_count} sub{proyecto.subproyectos_count !== 1 ? 's' : ''}
+            </div>
+            <div className="flex-1 bg-gray-200 rounded-full h-1.5 min-w-[60px]">
+              <div
+                className="h-1.5 rounded-full bg-purple-500"
+                style={{ width: `${proyecto.subproyectos_avance || 0}%` }}
+              />
+            </div>
+            <span className="text-xs text-gray-600 w-7 text-right">
+              {proyecto.subproyectos_avance}%
+            </span>
+          </div>
+        ) : (
+          <span className="text-gray-300 text-xs">—</span>
+        )}
       </td>
 
       {/* Bloqueos */}

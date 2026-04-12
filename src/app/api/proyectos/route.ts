@@ -71,12 +71,34 @@ export async function GET(request: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // Transformar area join a area_responsable para retrocompatibilidad
-  const transformedData = (data ?? []).map((proyecto: ProyectoWithRelations) => ({
-    ...proyecto,
-    area_responsable: proyecto.area?.nombre || 'Desconocida',
-    area: undefined, // Eliminar el nested object
-  }))
+  // Obtener información de subproyectos para todos los proyectos
+  const { data: subproyectos } = await supabase
+    .from('subproyectos')
+    .select('proyecto_id, porcentaje_avance')
+
+  const subproyectosByProject = new Map<string, { count: number; totalAvance: number }>()
+  if (subproyectos) {
+    subproyectos.forEach((sub: any) => {
+      if (!subproyectosByProject.has(sub.proyecto_id)) {
+        subproyectosByProject.set(sub.proyecto_id, { count: 0, totalAvance: 0 })
+      }
+      const current = subproyectosByProject.get(sub.proyecto_id)!
+      current.count += 1
+      current.totalAvance += sub.porcentaje_avance || 0
+    })
+  }
+
+  // Transformar area join a area_responsable para retrocompatibilidad y agregar subproyectos
+  const transformedData = (data ?? []).map((proyecto: ProyectoWithRelations) => {
+    const subData = subproyectosByProject.get(proyecto.id)
+    return {
+      ...proyecto,
+      area_responsable: proyecto.area?.nombre || 'Desconocida',
+      area: undefined, // Eliminar el nested object
+      subproyectos_count: subData?.count || 0,
+      subproyectos_avance: subData ? Math.round(subData.totalAvance / subData.count) : 0,
+    }
+  })
 
   return NextResponse.json({ data: transformedData })
 }

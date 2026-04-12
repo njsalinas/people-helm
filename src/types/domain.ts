@@ -46,6 +46,8 @@ export interface ProyectoGerencial extends VistaSemaforoProyecto {
   area_responsable?: string  // Nombre del área (denormalizado por API)
   tareas_total?: number
   tareas_completadas?: number
+  subproyectos_count?: number  // Cantidad de subproyectos
+  subproyectos_avance?: number  // Avance promedio de subproyectos
 }
 
 export interface Tarea extends DbTarea {

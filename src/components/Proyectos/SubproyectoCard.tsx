@@ -100,7 +100,7 @@ export function SubproyectoCard({
               onClick={onView}
               className="flex-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium transition-colors duration-150"
             >
-              Ver
+              Kanban
             </button>
           )}
           {onEdit && (

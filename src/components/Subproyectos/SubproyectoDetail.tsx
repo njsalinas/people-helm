@@ -6,7 +6,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useTareasSubproyecto, useCrearTareaSubproyecto } from '@/hooks/useSubproyecto'
+import { useTareasSubproyecto } from '@/hooks/useSubproyecto'
 import type { Subproyecto } from '@/types'
 import { KanbanBoard } from '@/components/Proyectos/Kanban/KanbanBoard'
 import { COLORES_ESTADO } from '@/types/domain'
@@ -19,7 +19,6 @@ interface SubproyectoDetailProps {
 export function SubproyectoDetail({ subproyecto }: SubproyectoDetailProps) {
   const router = useRouter()
   const { data: tareas = [] } = useTareasSubproyecto(subproyecto.id)
-  const crearTarea = useCrearTareaSubproyecto(subproyecto.id)
 
   const colorEstado = COLORES_ESTADO[subproyecto.estado] ?? COLORES_ESTADO['Pendiente']
 
@@ -111,11 +110,9 @@ export function SubproyectoDetail({ subproyecto }: SubproyectoDetailProps) {
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h2 className="text-xl font-bold text-gray-900 mb-4">Tareas</h2>
         <KanbanBoard
-          tareas={tareas}
-          onCrearTarea={async (data) => {
-            await crearTarea.mutateAsync(data)
-          }}
+          proyectoId={subproyecto.proyecto_id}
           subproyectoId={subproyecto.id}
+          tareas={tareas}
         />
       </div>
     </div>

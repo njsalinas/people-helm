@@ -28,9 +28,10 @@ import { useActualizarTarea } from '@/hooks/useTareas'
 import { useUIStore } from '@/stores/uiStore'
 
 interface KanbanBoardProps {
-  proyectoId: string
+  proyectoId?: string
+  subproyectoId?: string
   tareas: Tarea[]
-  usuarios: { id: string; nombre_completo: string }[]
+  usuarios?: { id: string; nombre_completo: string }[]
   isLoading?: boolean
   canEdit?: boolean
 }
@@ -50,12 +51,12 @@ function buildColumns(tareas: Tarea[]): KanbanColumnType[] {
   }))
 }
 
-export function KanbanBoard({ proyectoId, tareas, usuarios, isLoading, canEdit = true }: KanbanBoardProps) {
+export function KanbanBoard({ proyectoId, subproyectoId, tareas, usuarios = [], isLoading, canEdit = true }: KanbanBoardProps) {
   const [columns, setColumns] = useState<KanbanColumnType[]>(() => buildColumns(tareas))
   const [activeTask, setActiveTask] = useState<Tarea | null>(null)
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
 
-  const actualizarTarea = useActualizarTarea(proyectoId)
+  const actualizarTarea = useActualizarTarea(proyectoId || '')
   const { isTareaFormOpen, openTareaForm, closeTareaForm } = useUIStore((s) => ({
     isTareaFormOpen: s.isTareaFormOpen,
     openTareaForm: s.openTareaForm,
@@ -152,7 +153,7 @@ export function KanbanBoard({ proyectoId, tareas, usuarios, isLoading, canEdit =
               key={column.id}
               column={column}
               onTaskClick={(id) => setSelectedTaskId(id)}
-              onAddTask={canEdit ? () => openTareaForm(proyectoId) : undefined}
+              onAddTask={canEdit && proyectoId ? () => openTareaForm(proyectoId) : undefined}
             />
           ))}
         </div>
@@ -164,7 +165,7 @@ export function KanbanBoard({ proyectoId, tareas, usuarios, isLoading, canEdit =
         </DragOverlay>
       </DndContext>
 
-      {selectedTaskId && (
+      {selectedTaskId && proyectoId && (
         <TaskDetailModal
           tareaId={selectedTaskId}
           proyectoId={proyectoId}
@@ -173,9 +174,10 @@ export function KanbanBoard({ proyectoId, tareas, usuarios, isLoading, canEdit =
         />
       )}
 
-      {isTareaFormOpen && (
+      {isTareaFormOpen && proyectoId && (
         <TareaForm
           proyectoId={proyectoId}
+          subproyectoId={subproyectoId}
           usuarios={usuarios}
           onClose={closeTareaForm}
         />

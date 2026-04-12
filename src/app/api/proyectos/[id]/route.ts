@@ -40,7 +40,8 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
       responsable:usuarios!proyectos_responsable_id_fkey(id, nombre, email),
       tareas(id, nombre, estado, porcentaje_avance, responsable_id, fecha_inicio, fecha_fin, prioridad, orden),
       bloqueos(id, tipo, descripcion, accion_requerida, estado, created_at),
-      riesgos(id, descripcion, probabilidad, impacto, prioridad, estado)
+      riesgos(id, descripcion, probabilidad, impacto, prioridad, estado),
+      subproyectos(id, nombre, descripcion_ejecutiva, subtipo, categoria, foco_estrategico, area_responsable_id, estado, porcentaje_avance, prioridad, fecha_inicio, fecha_fin_planificada)
     `)
     .eq('id', params.id)
     .single()

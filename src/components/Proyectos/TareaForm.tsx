@@ -7,11 +7,12 @@ import { useCrearTarea } from '@/hooks/useTareas'
 
 interface TareaFormProps {
   proyectoId: string
+  subproyectoId?: string
   usuarios: { id: string; nombre_completo: string }[]
   onClose: () => void
 }
 
-export function TareaForm({ proyectoId, usuarios, onClose }: TareaFormProps) {
+export function TareaForm({ proyectoId, subproyectoId, usuarios, onClose }: TareaFormProps) {
   const crearTarea = useCrearTarea()
 
   const form = useForm<CreateTaskInput>({
@@ -28,7 +29,8 @@ export function TareaForm({ proyectoId, usuarios, onClose }: TareaFormProps) {
 
   const onSubmit = async (data: CreateTaskInput) => {
     try {
-      await crearTarea.mutateAsync(data as any)
+      const payload = subproyectoId ? { ...data, subproyecto_id: subproyectoId } : data
+      await crearTarea.mutateAsync(payload as any)
       // Agregar un pequeño delay para asegurar que la query se refetch
       await new Promise(resolve => setTimeout(resolve, 500))
       onClose()

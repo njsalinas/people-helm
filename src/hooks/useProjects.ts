@@ -5,7 +5,6 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getSupabaseBrowserClient } from '@/lib/supabase'
 import { useUIStore } from '@/stores/uiStore'
 import type { ProyectoGerencial, Proyecto } from '@/types'
 import type { ProyectosFilter, CreateProjectInput, CreateSubprojectInput, UpdateSubprojectInput, UpdateProjectStatusInput } from '@/types/api'
@@ -75,44 +74,22 @@ export function useProyectos(filtros: ProyectosFilter = {}) {
 
 /**
  * Hook para obtener detalle de un proyecto específico (con subproyectos)
+ * Usa la API route para garantizar validaciones y RLS correcto
  */
 export function useProyecto(id: string) {
-  const supabase = getSupabaseBrowserClient()
-
   return useQuery({
     queryKey: QUERY_KEYS.proyectoDetail(id),
     queryFn: async (): Promise<Proyecto | null> => {
-      const { data, error } = await supabase
-        .from('proyectos')
-        .select(`
-          *,
-          area:areas_responsables(id, nombre),
-          responsable:usuarios!responsable_primario(id, nombre_completo, email, rol, area_responsable_id, activo, created_at, updated_at),
-          subproyectos(
-            id,
-            nombre,
-            descripcion_ejecutiva,
-            subtipo,
-            categoria,
-            foco_estrategico,
-            area_responsable_id,
-            estado,
-            porcentaje_avance,
-            prioridad,
-            fecha_inicio,
-            fecha_fin_planificada,
-            responsable:usuarios!responsable_primario(id, nombre_completo, email)
-          )
-        `)
-        .eq('id', id)
-        .single()
+      const response = await fetch(`/api/proyectos/${id}`)
 
-      if (error) throw error
-      // Transformar para mantener retrocompatibilidad: traer nombre del área
-      if (data && data.area) {
-        ;(data as any).area_responsable = data.area.nombre
+      if (!response.ok) {
+        if (response.status === 404) return null
+        const error = await response.json()
+        throw new Error(error.error || 'Error fetching proyecto')
       }
-      return data as unknown as Proyecto
+
+      const json = await response.json()
+      return json.data as Proyecto
     },
     enabled: !!id,
   })

@@ -40,15 +40,32 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
       responsable:usuarios!proyectos_responsable_id_fkey(id, nombre, email),
       tareas(id, nombre, estado, porcentaje_avance, responsable_id, fecha_inicio, fecha_fin, prioridad, orden),
       bloqueos(id, tipo, descripcion, accion_requerida, estado, created_at),
-      riesgos(id, descripcion, probabilidad, impacto, prioridad, estado),
-      subproyectos(id, nombre, descripcion_ejecutiva, subtipo, categoria, foco_estrategico, area_responsable_id, estado, porcentaje_avance, prioridad, fecha_inicio, fecha_fin_planificada)
+      riesgos(id, descripcion, probabilidad, impacto, prioridad, estado)
     `)
     .eq('id', params.id)
     .single()
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 404 })
+  if (error) {
+    console.error('[GET /api/proyectos/[id]] Error:', error)
+    return NextResponse.json({ error: error.message }, { status: 404 })
+  }
 
-  return NextResponse.json({ data })
+  if (!data) {
+    return NextResponse.json({ error: 'Proyecto no encontrado' }, { status: 404 })
+  }
+
+  // Obtener subproyectos por separado para evitar problemas de alias en PostgREST
+  const { data: subproyectos } = await supabase
+    .from('subproyectos')
+    .select('id, nombre, descripcion_ejecutiva, subtipo, categoria, foco_estrategico, area_responsable_id, estado, porcentaje_avance, prioridad, fecha_inicio, fecha_fin_planificada')
+    .eq('proyecto_id', params.id)
+
+  const projectWithSubproyectos = {
+    ...data,
+    subproyectos: subproyectos || [],
+  }
+
+  return NextResponse.json({ data: projectWithSubproyectos })
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {

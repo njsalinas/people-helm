@@ -114,7 +114,7 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
                 {/* Grid de objetivos con resumen */}
                 <div className="space-y-4">
                   {objetivos.map(obj => {
-                    const colores = COLORES_SEMAFORO[(obj.color_semaforo || 'VERDE') as keyof typeof COLORES_SEMAFORO]
+                    const colores = COLORES_SEMAFORO[(obj.color_semaforo || 'VERDE') as keyof typeof COLORES_SEMAFORO] ?? COLORES_SEMAFORO.VERDE
                     const proyectosBloqueados = obj.proyectos_bloqueados || 0
 
                     return (

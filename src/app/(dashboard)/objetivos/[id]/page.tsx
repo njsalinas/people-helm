@@ -12,7 +12,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useObjetivo } from '@/hooks/useObjetivos'
 import { useProyectos } from '@/hooks/useProjects'
 import { ObjetivoDetalle } from '@/components/Objetivos/ObjetivoDetalle'
-import { ProyectosEnObjetivo } from '@/components/Objetivos/ProyectosEnObjetivo'
+import { ProyectosObjetivo } from '@/components/Objetivos/ProyectosObjetivo'
 import { BloqueosObjetivo } from '@/components/Objetivos/BloqueosObjetivo'
 import { AlertasObjetivo } from '@/components/Objetivos/AlertasObjetivo'
 
@@ -23,7 +23,7 @@ interface ObjetivoDetailPageProps {
 export default function ObjetivoDetailPage({ params }: ObjetivoDetailPageProps) {
   const router = useRouter()
   const { isGerente, isLoading: authLoading } = useAuth()
-  const { data: objetivo, isLoading: objetivoLoading } = useObjetivo(params.id)
+  const { data: objetivo, isLoading: objetivoLoading, refetch } = useObjetivo(params.id)
   const { data: todosProyectos = [] } = useProyectos()
 
   // Proteger página: solo Gerentes
@@ -150,10 +150,11 @@ export default function ObjetivoDetailPage({ params }: ObjetivoDetailPageProps) 
         {/* Grid de información */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Proyectos - Columna ancha */}
-          <div className="lg:col-span-2">
-            <ProyectosEnObjetivo
-              proyectos={proyectosVinculados}
-              isLoading={false}
+          <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200 p-6">
+            <ProyectosObjetivo
+              objetivoId={objetivo.id}
+              proyectosVinculados={proyectosVinculados}
+              onRefresh={() => refetch()}
             />
           </div>
 

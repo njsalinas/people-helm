@@ -16,23 +16,30 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
   const supabase = createServerSupabaseClient()
 
-  // Obtener objetivo con proyectos asociados
+  // Obtener objetivo desde tabla (no desde vista, para que retorne aunque no tenga proyectos)
   const { data: objetivo, error: objetivoError } = await supabase
-    .from('vista_objetivo_proyectos')
+    .from('vista_objetivos_con_metricas')
     .select('*')
-    .eq('objetivo_id', params.id)
-    .not('proyecto_id', 'is', null)
+    .eq('id', params.id)
+    .single()
 
-  if (objetivoError) {
-    return NextResponse.json({ error: objetivoError.message }, { status: 500 })
-  }
-
-  if (!objetivo || objetivo.length === 0) {
+  if (objetivoError || !objetivo) {
     return NextResponse.json({ error: 'Objetivo no encontrado' }, { status: 404 })
   }
 
+  // Obtener proyectos asociados (si los hay)
+  const { data: proyectos } = await supabase
+    .from('vista_objetivo_proyectos')
+    .select('*')
+    .eq('objetivo_id', params.id)
+
   // Retornar objetivo con proyectos asociados
-  return NextResponse.json({ data: objetivo })
+  return NextResponse.json({
+    data: {
+      ...objetivo,
+      objetivo_proyecto: proyectos || []
+    }
+  })
 }
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {

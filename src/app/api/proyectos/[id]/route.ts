@@ -37,7 +37,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     .from('proyectos')
     .select(`
       *,
-      responsable:usuarios!proyectos_responsable_id_fkey(id, nombre, email),
+      responsable:usuarios!responsable_primario(id, nombre_completo, email),
       tareas(id, nombre, estado, porcentaje_avance, responsable_id, fecha_inicio, fecha_fin, prioridad, orden),
       bloqueos(id, tipo, descripcion, accion_requerida, estado, created_at),
       riesgos(id, descripcion, probabilidad, impacto, prioridad, estado)

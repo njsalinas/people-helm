@@ -13,7 +13,7 @@ import type { Proyecto } from '@/types'
 import { CATEGORIAS_POR_AREA } from '@/types/domain'
 import type { DbUsuario } from '@/types/database'
 import { useCrearSubproyecto } from '@/hooks/useProjects'
-import { CreateSubprojectSchema, type CreateSubprojectInput } from '@/lib/validations'
+import { CreateSubprojectFormSchema, type CreateSubprojectFormInput, type CreateSubprojectInput } from '@/lib/validations'
 
 interface SubproyectoFormProps {
   proyectoPadre: Proyecto
@@ -35,8 +35,8 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateSubprojectInput>({
-    resolver: zodResolver(CreateSubprojectSchema),
+  } = useForm<CreateSubprojectFormInput>({
+    resolver: zodResolver(CreateSubprojectFormSchema),
     defaultValues: {
       nombre: '',
       descripcion_ejecutiva: '',
@@ -60,7 +60,7 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
     ? (CATEGORIAS_POR_AREA[areaNombre] ?? [])
     : []
 
-  const onSubmit = async (data: CreateSubprojectInput) => {
+  const onSubmit = async (data: CreateSubprojectFormInput) => {
     try {
       // Agregar los campos heredados del proyecto padre
       const dataWithInherited: CreateSubprojectInput = {

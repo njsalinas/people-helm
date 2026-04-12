@@ -97,16 +97,14 @@ export type UpdateProjectInput = z.infer<typeof UpdateProjectSchema>
 // Subproyectos
 // ============================================================
 
-export const CreateSubprojectSchema = z
+// Schema para el formulario (sin campos heredados)
+export const CreateSubprojectFormSchema = z
   .object({
-    proyecto_id: z.string().uuid('ID de proyecto inválido'),
     nombre: z
       .string()
       .min(NOMBRE_PROYECTO_MIN, `Mínimo ${NOMBRE_PROYECTO_MIN} caracteres`)
       .max(NOMBRE_PROYECTO_MAX, `Máximo ${NOMBRE_PROYECTO_MAX} caracteres`),
     subtipo: z.enum(['Operativo', 'Campaña', 'Estratégico']).optional(),
-    foco_estrategico: z.enum(FOCOS_ESTRATEGICOS),
-    area_responsable_id: z.string().uuid('ID de área inválido'),
     categoria: z.string().min(1, 'Categoría requerida'),
     responsable_primario: z.string().uuid('ID de responsable inválido'),
     descripcion_ejecutiva: z.string().max(2000).optional(),
@@ -126,6 +124,37 @@ export const CreateSubprojectSchema = z
     },
     { message: 'Fecha fin debe ser mayor a fecha inicio', path: ['fecha_fin_planificada'] }
   )
+
+export type CreateSubprojectFormInput = z.infer<typeof CreateSubprojectFormSchema>
+
+// Schema completo para la API (incluye campos heredados)
+export const CreateSubprojectSchema = z.object({
+  nombre: z
+    .string()
+    .min(NOMBRE_PROYECTO_MIN, `Mínimo ${NOMBRE_PROYECTO_MIN} caracteres`)
+    .max(NOMBRE_PROYECTO_MAX, `Máximo ${NOMBRE_PROYECTO_MAX} caracteres`),
+  subtipo: z.enum(['Operativo', 'Campaña', 'Estratégico']).optional(),
+  categoria: z.string().min(1, 'Categoría requerida'),
+  responsable_primario: z.string().uuid('ID de responsable inválido'),
+  descripcion_ejecutiva: z.string().max(2000).optional(),
+  objetivo: z.string().max(1000).optional(),
+  resultado_esperado: z.string().max(1000).optional(),
+  fecha_inicio: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha inválido (YYYY-MM-DD)'),
+  fecha_fin_planificada: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha inválido (YYYY-MM-DD)'),
+  prioridad: z.number().int().min(1).max(5).default(3),
+  proyecto_id: z.string().uuid('ID de proyecto inválido'),
+  area_responsable_id: z.string().uuid('ID de área inválido'),
+  foco_estrategico: z.enum(FOCOS_ESTRATEGICOS),
+}).refine(
+  (data) => {
+    const inicio = new Date(data.fecha_inicio)
+    const fin = new Date(data.fecha_fin_planificada)
+    return fin > inicio
+  },
+  { message: 'Fecha fin debe ser mayor a fecha inicio', path: ['fecha_fin_planificada'] }
+)
 
 export type CreateSubprojectInput = z.infer<typeof CreateSubprojectSchema>
 

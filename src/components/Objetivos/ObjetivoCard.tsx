@@ -22,6 +22,7 @@ interface ObjetivoCardProps {
   onEdit?: () => void
   onDelete?: () => void
   onViewProjects?: () => void
+  onAddProject?: () => void
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -44,6 +45,7 @@ export function ObjetivoCard({
   onEdit,
   onDelete,
   onViewProjects,
+  onAddProject,
 }: ObjetivoCardProps) {
   const colores = COLORES_SEMAFORO[colorSemaforo]
 
@@ -105,6 +107,14 @@ export function ObjetivoCard({
 
       {/* Actions */}
       <div className="flex gap-2">
+        {onAddProject && (
+          <button
+            onClick={onAddProject}
+            className="px-3 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md border border-blue-600 transition-colors duration-150"
+          >
+            + Agregar
+          </button>
+        )}
         <button
           onClick={onViewProjects}
           className="flex-1 px-3 py-2 text-xs font-semibold text-blue-600 hover:bg-blue-100 bg-blue-50 rounded-md border border-blue-300 transition-colors duration-150"

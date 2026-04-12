@@ -11,7 +11,7 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import type { Tarea } from '@/types'
-import { cn, formatDate, calcularDiasRestantes, obtenerIniciales, formatPorcentaje } from '@/lib/utils'
+import { cn, calcularDiasRestantes, obtenerIniciales, formatPorcentaje } from '@/lib/utils'
 
 interface TaskCardProps {
   tarea: Tarea
@@ -29,6 +29,7 @@ export function TaskCard({ tarea, onClick }: TaskCardProps) {
   }
 
   const estaBloqueada = tarea.estado === 'Bloqueado'
+  const diasParaInicio = calcularDiasRestantes(tarea.fecha_inicio)
   const diasRestantes = calcularDiasRestantes(tarea.fecha_fin_planificada)
   const estaVencida = diasRestantes < 0
 
@@ -93,30 +94,36 @@ export function TaskCard({ tarea, onClick }: TaskCardProps) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between gap-2">
+      <div className="space-y-1.5">
         {/* Responsable */}
         {tarea.responsable && (
           <div className="flex items-center gap-1.5 min-w-0">
             <div className="w-5 h-5 rounded-full bg-blue-100 text-blue-700 text-[10px] font-semibold flex items-center justify-center flex-shrink-0">
               {obtenerIniciales(tarea.responsable.nombre_completo)}
             </div>
-            <span className="text-xs text-gray-600 truncate max-w-[70px]">
+            <span className="text-xs text-gray-600 truncate max-w-[100px]">
               {tarea.responsable.nombre_completo.split(' ')[0]}
             </span>
           </div>
         )}
 
-        {/* Fecha */}
-        <span
-          className={cn(
-            'text-xs font-medium whitespace-nowrap',
-            estaVencida ? 'text-red-600' : 'text-gray-500'
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs text-gray-600 whitespace-nowrap">
+            🚀 {diasParaInicio > 0
+              ? `Inicia en ${diasParaInicio}d`
+              : diasParaInicio === 0
+                ? 'Inicia hoy'
+                : `Inició hace ${Math.abs(diasParaInicio)}d`}
+          </span>
+
+          {estaVencida ? (
+            <span className="text-xs text-red-600 whitespace-nowrap">⏰ Vencido {Math.abs(diasRestantes)}d</span>
+          ) : (
+            <span className="text-xs text-gray-600 whitespace-nowrap">
+              ⏰ {diasRestantes === 0 ? 'Vence hoy' : `${diasRestantes}d`}
+            </span>
           )}
-        >
-          {estaVencida
-            ? `Venció`
-            : formatDate(tarea.fecha_fin_planificada)}
-        </span>
+        </div>
       </div>
 
       {/* Bloqueo badge */}

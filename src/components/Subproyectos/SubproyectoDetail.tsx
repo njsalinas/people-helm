@@ -6,6 +6,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import { useTareasSubproyecto } from '@/hooks/useSubproyecto'
 import type { Subproyecto } from '@/types'
 import { KanbanBoard } from '@/components/Proyectos/Kanban/KanbanBoard'
@@ -19,6 +20,14 @@ interface SubproyectoDetailProps {
 export function SubproyectoDetail({ subproyecto }: SubproyectoDetailProps) {
   const router = useRouter()
   const { data: tareas = [] } = useTareasSubproyecto(subproyecto.id)
+
+  const [usuarios, setUsuarios] = useState<{ id: string; nombre_completo: string }[]>([])
+  useEffect(() => {
+    fetch('/api/usuarios')
+      .then((r) => r.json())
+      .then((json) => { if (json.data) setUsuarios(json.data) })
+      .catch(() => {})
+  }, [])
 
   const colorEstado = COLORES_ESTADO[subproyecto.estado] ?? COLORES_ESTADO['Pendiente']
 
@@ -113,6 +122,7 @@ export function SubproyectoDetail({ subproyecto }: SubproyectoDetailProps) {
           proyectoId={subproyecto.proyecto_id}
           subproyectoId={subproyecto.id}
           tareas={tareas}
+          usuarios={usuarios}
         />
       </div>
     </div>

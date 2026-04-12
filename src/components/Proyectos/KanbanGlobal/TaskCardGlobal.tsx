@@ -27,17 +27,15 @@ export function TaskCardGlobal({ tarea, getProyectoColor, isDragging = false }: 
   }
 
   const estaBloqueada = tarea.estado === 'Bloqueado'
+  const diasParaInicio = calcularDiasRestantes(tarea.fecha_inicio)
   const diasRestantes = calcularDiasRestantes(tarea.fecha_fin_planificada)
-  const estaVencida = diasRestantes < 0
 
-  const bgColor = getProyectoColor(tarea.proyecto_id)
+  const proyectoColor = getProyectoColor(tarea.proyecto_id)
 
   const cardColor = cn(
-    'p-3 rounded-lg cursor-grab active:cursor-grabbing transition-all border-l-4',
+    'p-3 rounded-lg cursor-grab active:cursor-grabbing transition-all border border-l-4',
     isDragging && 'opacity-50 shadow-lg',
-    estaBloqueada ? 'border-red-500 bg-red-50 border-l-red-500' : 'border-l-blue-500',
-    !estaBloqueada && estaVencida && 'bg-orange-50',
-    !estaBloqueada && !estaVencida && bgColor,
+    proyectoColor,
   )
 
   return (
@@ -77,21 +75,33 @@ export function TaskCardGlobal({ tarea, getProyectoColor, isDragging = false }: 
         </div>
       </div>
 
-      {/* Footer: Plazo + Prioridad + Estado */}
-      <div className="flex items-center justify-between gap-2">
-        {diasRestantes >= 0 ? (
+      {/* Footer: Inicio + Vencimiento + Badges */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between gap-2">
           <span className="text-xs text-gray-600">
-            ⏰ {diasRestantes === 0 ? 'Hoy' : `${diasRestantes}d`}
+            🚀 {diasParaInicio > 0
+              ? `Inicia en ${diasParaInicio}d`
+              : diasParaInicio === 0
+                ? 'Inicia hoy'
+                : `Inició hace ${Math.abs(diasParaInicio)}d`}
           </span>
-        ) : (
-          <span className="text-xs text-red-600">⏰ Vencido {Math.abs(diasRestantes)}d</span>
-        )}
 
-        {tarea.prioridad <= 2 && (
-          <span className="text-xs text-orange-600">⚡ P{tarea.prioridad}</span>
-        )}
+          {diasRestantes >= 0 ? (
+            <span className="text-xs text-gray-600">
+              ⏰ {diasRestantes === 0 ? 'Vence hoy' : `${diasRestantes}d`}
+            </span>
+          ) : (
+            <span className="text-xs text-red-600">⏰ Vencido {Math.abs(diasRestantes)}d</span>
+          )}
+        </div>
 
-        {estaBloqueada && <span className="text-xs text-red-600">🔴 Bloqueado</span>}
+        <div className="flex items-center justify-end gap-2">
+          {tarea.prioridad <= 2 && (
+            <span className="text-xs text-orange-600">⚡ P{tarea.prioridad}</span>
+          )}
+
+          {estaBloqueada && <span className="text-xs text-red-600">🔴 Bloqueado</span>}
+        </div>
       </div>
     </div>
   )

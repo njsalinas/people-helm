@@ -11,7 +11,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { ProyectoGerencial, ProyectoEstado, ColorSemaforo } from '@/types'
-import { cn, formatDate, calcularDiasRestantes, formatPorcentaje, obtenerIniciales } from '@/lib/utils'
+import { cn, formatDate, calcularDiasRestantes, formatPorcentaje, obtenerIniciales, getAvatarColor } from '@/lib/utils'
 import { COLORES_ESTADO } from '@/types/domain'
 
 interface VistaGerencialProps {
@@ -20,13 +20,23 @@ interface VistaGerencialProps {
   onSelectProject?: (id: string) => void
 }
 
-type SortKey = 'nombre' | 'estado' | 'porcentaje_avance' | 'bloqueos_activos' | 'prioridad' | 'dias_restantes' | 'area_responsable' | 'subproyectos_count'
+type SortKey =
+  | 'nombre'
+  | 'estado'
+  | 'porcentaje_avance'
+  | 'bloqueos_activos'
+  | 'prioridad'
+  | 'dias_restantes'
+  | 'area_responsable'
+  | 'subproyectos_count'
+  | 'foco_estrategico'
 
 export function VistaGerencial({ proyectos, isLoading, onSelectProject }: VistaGerencialProps) {
   const router = useRouter()
   const [sortKey, setSortKey] = useState<SortKey>('prioridad')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [hoveredRow, setHoveredRow] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -37,7 +47,16 @@ export function VistaGerencial({ proyectos, isLoading, onSelectProject }: VistaG
     }
   }
 
-  const sorted = [...proyectos].sort((a, b) => {
+  const filtered = proyectos.filter((p) => {
+    if (!searchQuery) return true
+    const query = searchQuery.toLowerCase()
+    return (
+      p.nombre.toLowerCase().includes(query) ||
+      p.foco_estrategico?.toLowerCase().includes(query)
+    )
+  })
+
+  const sorted = [...filtered].sort((a, b) => {
     let aVal: string | number = a[sortKey] as string | number
     let bVal: string | number = b[sortKey] as string | number
 
@@ -77,12 +96,30 @@ export function VistaGerencial({ proyectos, isLoading, onSelectProject }: VistaG
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
-      <table className="w-full text-sm">
+    <div className="bg-white rounded-xl border border-gray-200">
+      {/* Search toolbar */}
+      <div className="px-4 py-3 border-b border-gray-200 flex items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <input
+            type="search"
+            placeholder="Buscar por nombre o foco..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+        <span className="text-xs text-gray-500 whitespace-nowrap flex-shrink-0">
+          {sorted.length} resultado{sorted.length !== 1 ? 's' : ''}
+        </span>
+      </div>
+
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
         <thead>
           <tr className="bg-gray-50 border-b border-gray-200">
-            <Th label="Proyecto / Línea" sortKey="nombre" current={sortKey} dir={sortDir} onSort={handleSort} />
-            <Th label="Foco" sortKey="area_responsable" current={sortKey} dir={sortDir} onSort={handleSort} />
+            <Th label="Proyecto / Línea" sortKey="nombre" current={sortKey} dir={sortDir} onSort={handleSort} sticky />
+            <Th label="Foco" sortKey="foco_estrategico" current={sortKey} dir={sortDir} onSort={handleSort} />
             <Th label="Área" sortKey="area_responsable" current={sortKey} dir={sortDir} onSort={handleSort} />
             <Th label="Estado" sortKey="estado" current={sortKey} dir={sortDir} onSort={handleSort} />
             <Th label="% Avance" sortKey="porcentaje_avance" current={sortKey} dir={sortDir} onSort={handleSort} />
@@ -93,15 +130,21 @@ export function VistaGerencial({ proyectos, isLoading, onSelectProject }: VistaG
               Responsable
             </th>
             <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
-              Acción
+              Atención
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
           {sorted.length === 0 ? (
             <tr>
-              <td colSpan={10} className="px-4 py-12 text-center text-gray-400">
-                No hay proyectos que coincidan con los filtros
+              <td colSpan={10} className="px-4 py-12 text-center">
+                <div className="flex flex-col items-center gap-2">
+                  <svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p className="text-sm text-gray-600 font-medium">No hay proyectos que coincidan</p>
+                  <p className="text-xs text-gray-400">Prueba ajustando los filtros activos o la búsqueda</p>
+                </div>
               </td>
             </tr>
           ) : (
@@ -117,6 +160,7 @@ export function VistaGerencial({ proyectos, isLoading, onSelectProject }: VistaG
           )}
         </tbody>
       </table>
+      </div>
     </div>
   )
 }
@@ -131,18 +175,23 @@ function Th({
   current,
   dir,
   onSort,
+  sticky,
 }: {
   label: string
   sortKey: SortKey
   current: SortKey
   dir: 'asc' | 'desc'
   onSort: (k: SortKey) => void
+  sticky?: boolean
 }) {
   const active = current === key
   return (
     <th
       onClick={() => onSort(key)}
-      className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-700 whitespace-nowrap select-none"
+      className={cn(
+        'px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-700 whitespace-nowrap select-none',
+        sticky && 'sticky left-0 z-20 bg-gray-50'
+      )}
     >
       <span className="flex items-center gap-1">
         {label}
@@ -171,9 +220,11 @@ function ProyectoRow({
 
   const rowBg = cn(
     'transition-colors cursor-pointer',
-    proyecto.estado === 'Bloqueado' && 'bg-red-50',
-    proyecto.estado === 'En Riesgo' && 'bg-yellow-50',
-    isHovered && 'bg-blue-50'
+    proyecto.estado === 'Bloqueado'
+      ? isHovered ? 'bg-red-100' : 'bg-red-50'
+      : proyecto.estado === 'En Riesgo'
+        ? isHovered ? 'bg-yellow-100' : 'bg-yellow-50'
+        : isHovered ? 'bg-blue-50' : ''
   )
 
   return (
@@ -184,7 +235,16 @@ function ProyectoRow({
       onClick={onClick}
     >
       {/* Proyecto */}
-      <td className="px-4 py-3">
+      <td
+        className={cn(
+          'px-4 py-3 sticky left-0 z-10',
+          proyecto.estado === 'Bloqueado'
+            ? isHovered ? 'bg-red-100' : 'bg-red-50'
+            : proyecto.estado === 'En Riesgo'
+              ? isHovered ? 'bg-yellow-100' : 'bg-yellow-50'
+              : isHovered ? 'bg-blue-50' : 'bg-white'
+        )}
+      >
         <div className="flex items-center gap-2">
           <SemaforoIndicator color={colorSemaforo} />
           <div>
@@ -283,7 +343,7 @@ function ProyectoRow({
       {/* Responsable */}
       <td className="px-4 py-3">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold flex items-center justify-center flex-shrink-0">
+          <div className={cn('w-7 h-7 rounded-full text-xs font-semibold flex items-center justify-center flex-shrink-0', getAvatarColor(proyecto.responsable_nombre))}>
             {obtenerIniciales(proyecto.responsable_nombre)}
           </div>
           <span className="text-xs text-gray-600 max-w-[100px] truncate">
@@ -292,7 +352,7 @@ function ProyectoRow({
         </div>
       </td>
 
-      {/* Acción requerida */}
+      {/* Atención */}
       <td className="px-4 py-3">
         {proyecto.requiere_escalamiento && (
           <span className="inline-flex items-center gap-1 text-xs font-medium text-orange-700 bg-orange-50 px-2 py-0.5 rounded-full">
@@ -300,7 +360,10 @@ function ProyectoRow({
           </span>
         )}
         {proyecto.bloqueos_activos > 0 && !proyecto.requiere_escalamiento && (
-          <span className="text-xs text-red-600">Bloqueo</span>
+          <span className="text-xs text-red-600 font-medium">Bloqueo</span>
+        )}
+        {!proyecto.requiere_escalamiento && proyecto.bloqueos_activos === 0 && (
+          <span className="text-xs text-gray-400">Sin alerta</span>
         )}
       </td>
     </tr>

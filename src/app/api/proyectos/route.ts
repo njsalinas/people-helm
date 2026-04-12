@@ -24,9 +24,10 @@ export async function GET(request: NextRequest) {
 
   // NOTA: Usar tabla base con JOIN a areas y usuarios para obtener nombres
   // (RLS se aplica en la tabla proyectos, no en la vista)
+  // Incluir color_semaforo, bloqueos_activos, riesgos_activos que se actualizan con triggers
   let query = supabase
     .from('proyectos')
-    .select('*, area:areas_responsables(nombre), responsable:usuarios!responsable_primario(nombre_completo)')
+    .select('*, color_semaforo, bloqueos_activos, riesgos_activos, area:areas_responsables(nombre), responsable:usuarios!responsable_primario(nombre_completo)')
 
   // RBAC: Filtrar por rol del usuario
   if (user.rol === 'Líder Area') {

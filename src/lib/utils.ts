@@ -152,6 +152,27 @@ export function obtenerIniciales(nombreCompleto: string | null | undefined): str
 }
 
 /**
+ * Devuelve una clase de color de avatar basada en el hash del nombre
+ * Asegura que cada persona tenga un color consistente
+ */
+export function getAvatarColor(nombre: string | null | undefined): string {
+  const AVATAR_COLORS = [
+    'bg-blue-100 text-blue-700',
+    'bg-purple-100 text-purple-700',
+    'bg-green-100 text-green-700',
+    'bg-orange-100 text-orange-700',
+    'bg-pink-100 text-pink-700',
+    'bg-teal-100 text-teal-700',
+  ]
+
+  if (!nombre) return AVATAR_COLORS[0]
+
+  // Hash simple del nombre para obtener índice consistente
+  const hash = nombre.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+  return AVATAR_COLORS[hash % AVATAR_COLORS.length]
+}
+
+/**
  * Calcula KPIs para el dashboard dado un listado de proyectos
  */
 export function calcularKPIs(proyectos: ProyectoGerencial[]) {

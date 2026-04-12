@@ -8,9 +8,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useObjetivos, useCrearObjetivo } from '@/hooks/useObjetivos'
+import { useObjetivos, useCrearObjetivo, useActualizarObjetivo } from '@/hooks/useObjetivos'
 import { useAreas } from '@/hooks/useAreas'
+import { useAuth } from '@/hooks/useAuth'
 import { ObjetivoForm } from './ObjetivoForm'
+import { ProyectosObjetivo } from './ProyectosObjetivo'
 import { COLORES_SEMAFORO } from '@/types/domain'
 
 
@@ -22,14 +24,18 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
   const [selectedAnio, setSelectedAnio] = useState(anio)
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [editingObjetivo, setEditingObjetivo] = useState<any | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
+  const [expandedObjetivo, setExpandedObjetivo] = useState<string | null>(null)
 
+  const { isGerente } = useAuth()
   const { data: areas = [] } = useAreas()
   const { data: objetivosData = [], isLoading, refetch } = useObjetivos({
     anio: selectedAnio,
     area_id: selectedAreaId || undefined,
   })
   const crearObjetivo = useCrearObjetivo()
+  const actualizarObjetivo = useActualizarObjetivo(editingObjetivo?.id || '')
 
   // Agrupar objetivos por área
   const areaNamesMap = new Map(areas.map(a => [a.id, a.nombre]))
@@ -44,6 +50,10 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
   })
 
   const areasSorted = Array.from(areas).sort((a, b) => a.nombre.localeCompare(b.nombre))
+
+  const handleRefresh = async () => {
+    await refetch()
+  }
 
   return (
     <div className="space-y-6">
@@ -81,7 +91,10 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
           </div>
         </div>
         <button
-          onClick={() => setShowForm(true)}
+          onClick={() => {
+            setEditingObjetivo(null)
+            setShowForm(true)
+          }}
           className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
         >
           + Nuevo Objetivo
@@ -118,10 +131,9 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
                     const proyectosBloqueados = obj.proyectos_bloqueados || 0
 
                     return (
-                      <Link
+                      <div
                         key={obj.id}
-                        href={`/dashboard/objetivos/${obj.id}`}
-                        className={`block rounded-lg border-2 p-5 transition-all hover:shadow-md hover:border-blue-400 cursor-pointer ${colores.bg} border-gray-200`}
+                        className={`rounded-lg border-2 p-5 transition-all hover:shadow-md border-gray-200 ${colores.bg}`}
                       >
                         {/* Header */}
                         <div className="flex items-start justify-between mb-4">
@@ -135,7 +147,13 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
                             </div>
                             <p className="text-sm text-gray-600">{obj.anio}</p>
                           </div>
-                          <span className="text-2xl">→</span>
+                          <Link
+                            href={`/dashboard/objetivos/${obj.id}`}
+                            className="text-2xl text-gray-700 hover:text-blue-600 transition-colors"
+                            title="Ver detalle del objetivo"
+                          >
+                            →
+                          </Link>
                         </div>
 
                         {/* Descripción */}
@@ -185,7 +203,38 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
                             <div className="text-xs text-gray-600">En riesgo</div>
                           </div>
                         </div>
-                      </Link>
+
+                        {/* Actions */}
+                        <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200">
+                          <button
+                            onClick={() => setExpandedObjetivo(expandedObjetivo === obj.id ? null : obj.id)}
+                            className="w-full px-3 py-2 text-xs font-semibold text-blue-600 hover:bg-blue-100 bg-blue-50 rounded-md border border-blue-300 transition-colors duration-150"
+                          >
+                            Ver proyectos
+                          </button>
+                          {isGerente && (
+                            <button
+                              onClick={() => {
+                                setEditingObjetivo(obj)
+                                setShowForm(true)
+                              }}
+                              className="px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 bg-white rounded-md border border-gray-300 transition-colors duration-150"
+                            >
+                              Editar objetivo
+                            </button>
+                          )}
+                        </div>
+
+                        {expandedObjetivo === obj.id && (
+                          <div className="mt-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                            <ProyectosObjetivo
+                              objetivoId={obj.id}
+                              proyectosVinculados={[]}
+                              onRefresh={handleRefresh}
+                            />
+                          </div>
+                        )}
+                      </div>
                     )
                   })}
                 </div>
@@ -198,12 +247,17 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
       {/* Modal de formulario */}
       {showForm && (
         <ObjetivoForm
-          objetivo={null}
+          objetivo={editingObjetivo}
           onSubmit={async (data) => {
             try {
               setFormError(null)
-              await crearObjetivo.mutateAsync(data as any)
+              if (editingObjetivo?.id) {
+                await actualizarObjetivo.mutateAsync(data as any)
+              } else {
+                await crearObjetivo.mutateAsync(data as any)
+              }
               setShowForm(false)
+              setEditingObjetivo(null)
               await refetch()
             } catch (error) {
               setFormError(
@@ -213,10 +267,11 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
           }}
           onClose={() => {
             setShowForm(false)
+            setEditingObjetivo(null)
             setFormError(null)
             refetch()
           }}
-          isLoading={crearObjetivo.isPending}
+          isLoading={crearObjetivo.isPending || actualizarObjetivo.isPending}
         />
       )}
 

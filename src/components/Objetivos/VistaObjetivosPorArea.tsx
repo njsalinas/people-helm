@@ -7,6 +7,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useAuth } from '@/hooks/useAuth'
 import { useObjetivos } from '@/hooks/useObjetivos'
 import { useAreas } from '@/hooks/useAreas'
 import { ObjetivoCard } from './ObjetivoCard'
@@ -25,7 +26,10 @@ export function VistaObjetivosPorArea({ anio = new Date().getFullYear(), onRefre
   const [editingObjetivo, setEditingObjetivo] = useState<any | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [expandedObjetivo, setExpandedObjetivo] = useState<string | null>(null)
+  const [autoOpenModalForObjetivo, setAutoOpenModalForObjetivo] = useState<string | null>(null)
+  const [autoOpenModalKey, setAutoOpenModalKey] = useState(0)
 
+  const { isGerente } = useAuth()
   const { data: areas = [] } = useAreas()
   const { data: objetivosData = [], isLoading, refetch } = useObjetivos({
     anio: selectedAnio,
@@ -143,13 +147,20 @@ export function VistaObjetivosPorArea({ anio = new Date().getFullYear(), onRefre
                         avancePromedio={obj.avance_promedio || 0}
                         proyectosBloqueados={obj.proyectos_bloqueados || 0}
                         colorSemaforo={obj.color_semaforo || 'VERDE'}
-                        onEdit={() => {
-                          setEditingObjetivo(obj)
-                          setShowForm(true)
-                        }}
+                        onEdit={isGerente
+                          ? () => {
+                              setEditingObjetivo(obj)
+                              setShowForm(true)
+                            }
+                          : undefined}
                         onViewProjects={() => setExpandedObjetivo(
                           expandedObjetivo === obj.id ? null : obj.id
                         )}
+                        onAddProject={() => {
+                          setExpandedObjetivo(obj.id)
+                          setAutoOpenModalForObjetivo(obj.id)
+                          setAutoOpenModalKey(prev => prev + 1)
+                        }}
                       />
                       {expandedObjetivo === obj.id && (
                         <div className="mt-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
@@ -157,6 +168,7 @@ export function VistaObjetivosPorArea({ anio = new Date().getFullYear(), onRefre
                             objetivoId={obj.id}
                             proyectosVinculados={[]}
                             onRefresh={handleRefresh}
+                            autoOpenModalKey={autoOpenModalForObjetivo === obj.id ? autoOpenModalKey : undefined}
                           />
                         </div>
                       )}

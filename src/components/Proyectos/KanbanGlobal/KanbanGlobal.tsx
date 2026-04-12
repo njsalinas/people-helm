@@ -125,7 +125,7 @@ export function KanbanGlobal() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           tarea_id: taskId,
-          estado: nuevoEstado,
+          estado_nuevo: nuevoEstado,
         }),
       })
 

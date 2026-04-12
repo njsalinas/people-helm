@@ -234,24 +234,25 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
             />
             {errors.prioridad && <p className="text-red-500 text-xs mt-1">{errors.prioridad.message}</p>}
           </div>
-        </form>
 
-        {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-100 flex gap-2 flex-shrink-0">
-          <button
-            onClick={onClose}
-            className="flex-1 py-2 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={handleSubmit(onSubmit)}
-            disabled={crearSubproyecto.isPending}
-            className="flex-1 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-60"
-          >
-            {crearSubproyecto.isPending ? 'Creando...' : 'Crear Subproyecto'}
-          </button>
-        </div>
+          {/* Footer */}
+          <div className="pt-4 border-t border-gray-100 flex gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 py-2 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={crearSubproyecto.isPending}
+              className="flex-1 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-60"
+            >
+              {crearSubproyecto.isPending ? 'Creando...' : 'Crear Subproyecto'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )

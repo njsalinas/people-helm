@@ -3,6 +3,7 @@
 import { useNotificacionesConfig, useUpdateNotificacionConfig } from '@/hooks/useNotificaciones'
 import { useUIStore } from '@/stores/uiStore'
 import { useAuthStore } from '@/stores/authStore'
+import { ChangePasswordForm } from '@/components/Settings/ChangePasswordForm'
 import { cn } from '@/lib/utils'
 
 const EVENTO_LABELS: Record<string, { label: string; descripcion: string }> = {
@@ -49,6 +50,15 @@ export default function SettingsPage() {
             </span>
           </div>
         </div>
+      </div>
+
+      {/* Cambiar Contraseña */}
+      <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <h2 className="text-sm font-bold text-gray-800 mb-1">Cambiar Contraseña</h2>
+        <p className="text-xs text-gray-500 mb-4">
+          Actualiza tu contraseña para mantener tu cuenta segura.
+        </p>
+        <ChangePasswordForm />
       </div>
 
       {/* Notificaciones */}

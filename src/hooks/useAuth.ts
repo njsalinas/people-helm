@@ -59,6 +59,11 @@ export function useAuth() {
     router.push('/login')
   }
 
+  const changePassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
+    if (error) throw error
+  }
+
   return {
     user,
     isLoading,
@@ -67,5 +72,6 @@ export function useAuth() {
     isLiderArea: user?.rol === 'Líder Area',
     login,
     logout,
+    changePassword,
   }
 }

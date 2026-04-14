@@ -1,6 +1,6 @@
 /**
  * @page /dashboard/objetivos
- * Página principal de objetivos - Vista por áreas (solo Gerentes)
+ * Página principal de objetivos - Vista por áreas (Gerentes y Líderes de Área)
  */
 
 'use client'
@@ -12,14 +12,15 @@ import { ObjetivosMainView } from '@/components/Objetivos/ObjetivosMainView'
 
 export default function ObjetivosPage() {
   const router = useRouter()
-  const { isGerente, isLoading } = useAuth()
+  const { user, isLoading } = useAuth()
+  const canAccess = user?.rol === 'Gerente' || user?.rol === 'Líder Area'
 
-  // Proteger página: solo Gerentes
+  // Proteger página: solo Gerentes y Líderes de Área
   useEffect(() => {
-    if (!isLoading && !isGerente) {
-      router.replace('/proyectos')
+    if (!isLoading && !canAccess) {
+      router.replace('/')
     }
-  }, [isGerente, isLoading, router])
+  }, [canAccess, isLoading, router])
 
   if (isLoading) {
     return (
@@ -29,7 +30,7 @@ export default function ObjetivosPage() {
     )
   }
 
-  if (!isGerente) {
+  if (!canAccess) {
     return null
   }
 

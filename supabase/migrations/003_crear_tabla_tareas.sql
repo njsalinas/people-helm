@@ -73,3 +73,15 @@ CREATE POLICY "crear_tareas" ON tareas
   WITH CHECK (
     EXISTS (SELECT 1 FROM usuarios WHERE id = auth.uid() AND rol IN ('Gerente', 'Líder Area'))
   );
+
+CREATE POLICY "responsables_eliminan_tareas" ON tareas
+  FOR DELETE
+  USING (
+    responsable_id = auth.uid()
+    OR EXISTS (SELECT 1 FROM usuarios WHERE id = auth.uid() AND rol = 'Gerente')
+    OR EXISTS (
+      SELECT 1 FROM proyectos p
+      WHERE p.id = tareas.proyecto_id
+        AND p.responsable_primario = auth.uid()
+    )
+  );

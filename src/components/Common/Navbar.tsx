@@ -59,10 +59,10 @@ export function Navbar() {
         })}
 
         {/* Separator */}
-        {isGerente && <div className="my-2 border-t border-gray-200" />}
+        {(isGerente || user?.rol === 'Líder Area') && <div className="my-2 border-t border-gray-200" />}
 
-        {/* Objetivos (solo Gerentes) */}
-        {isGerente && (
+        {/* Objetivos (Gerentes y Líderes de Área) */}
+        {(isGerente || user?.rol === 'Líder Area') && (
           <Link
             href="/objetivos"
             className={cn(

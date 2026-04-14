@@ -28,8 +28,19 @@ export async function GET(request: NextRequest) {
   const status = searchParams.get('status')
 
   if (anio) query = query.eq('anio', parseInt(anio))
-  if (areaId) query = query.eq('area_responsable_id', areaId)
   if (status) query = query.eq('status', status)
+
+  // Filtro por área según rol
+  if (user.rol === 'Líder Area') {
+    // Líderes solo ven objetivos de su área
+    if (!user.area_responsable_id) {
+      return NextResponse.json({ data: [] })
+    }
+    query = query.eq('area_responsable_id', user.area_responsable_id)
+  } else if (areaId) {
+    // Gerentes pueden filtrar por área opcional
+    query = query.eq('area_responsable_id', areaId)
+  }
 
   // Ordenar por área y luego por orden
   query = query.order('area_responsable_id', { ascending: true }).order('orden', { ascending: true })

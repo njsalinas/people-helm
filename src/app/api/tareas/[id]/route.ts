@@ -1,6 +1,7 @@
 /**
  * @file API Route: /api/tareas/[id]
  * PATCH - Actualizar campos de una tarea (nombre, descripción, responsable, fechas, prioridad)
+ * DELETE - Eliminar una tarea
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -34,4 +35,20 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   return NextResponse.json({ mensaje: 'Tarea actualizada' })
+}
+
+export async function DELETE(_request: NextRequest, { params }: { params: { id: string } }) {
+  const user = await getServerUser()
+  if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
+
+  const supabase = createServerSupabaseClient()
+
+  const { error } = await supabase
+    .from('tareas')
+    .delete()
+    .eq('id', params.id)
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  return NextResponse.json({ mensaje: 'Tarea eliminada exitosamente' })
 }

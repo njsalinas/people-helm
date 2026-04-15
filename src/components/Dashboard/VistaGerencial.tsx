@@ -11,7 +11,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { ProyectoGerencial, ProyectoEstado, ColorSemaforo } from '@/types'
-import { cn, formatDate, calcularDiasRestantes, formatPorcentaje, obtenerIniciales, getAvatarColor } from '@/lib/utils'
+import { cn, formatDate, calcularDiasRestantes, formatPorcentaje } from '@/lib/utils'
 import { COLORES_ESTADO } from '@/types/domain'
 import { UserAvatar } from '@/components/Common/UserAvatar'
 import { StatusBadge } from '@/components/Common/StatusBadge'
@@ -381,7 +381,6 @@ function SemaforoIndicator({ color }: { color: ColorSemaforo }) {
 }
 
 function EstadoBadge({ estado }: { estado: ProyectoEstado }) {
-  const colores = COLORES_ESTADO[estado] ?? COLORES_ESTADO['Pendiente']
   const colorMap: Record<string, 'gray' | 'green' | 'yellow' | 'red' | 'blue' | 'orange'> = {
     'Pendiente': 'gray',
     'En Progreso': 'blue',

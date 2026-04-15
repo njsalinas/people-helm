@@ -185,9 +185,8 @@ export function VistaObjetivosPorArea({ anio = new Date().getFullYear(), onRefre
       {showForm && (
         <ObjetivoForm
           objetivo={editingObjetivo}
-          onSubmit={async (data) => {
-            // Implementado en la página
-            console.log('Submit objetivo:', data)
+          onSubmit={async (_data) => {
+            handleRefresh()
           }}
           onClose={() => {
             setShowForm(false)

@@ -153,11 +153,11 @@ export function KanbanGlobal() {
         {ESTADOS_TAREA.map((estado) => (
           <div
             key={estado}
-            className="w-80 flex-shrink-0 bg-white rounded-xl border border-gray-200 p-4"
+            className="w-80 flex-shrink-0 bg-white rounded-2xl border border-gray-100 shadow-sm p-4"
           >
             <div className="h-6 bg-gray-200 rounded mb-4 w-24" />
             {Array.from({ length: 2 }).map((_, i) => (
-              <div key={i} className="h-32 bg-gray-100 rounded-lg mb-3 animate-pulse" />
+              <div key={i} className="h-32 bg-gray-100 rounded-2xl mb-3 animate-pulse" />
             ))}
           </div>
         ))}
@@ -172,7 +172,7 @@ export function KanbanGlobal() {
         <select
           value={filtroProyecto ?? ''}
           onChange={(e) => setFiltroProyecto(e.target.value || null)}
-          className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+          className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         >
           <option value="">Todos los proyectos</option>
           {proyectos?.map((p) => (
@@ -185,7 +185,7 @@ export function KanbanGlobal() {
         <select
           value={filtroResponsable ?? ''}
           onChange={(e) => setFiltroResponsable(e.target.value || null)}
-          className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+          className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         >
           <option value="">Todos los responsables</option>
           {responsables.map((resp) => (

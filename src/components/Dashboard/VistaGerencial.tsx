@@ -1,6 +1,6 @@
 /**
  * @component VistaGerencial
- * Tabla dinámica principal con todos los proyectos y su estado
+ * Tabla dinámica principal con todos los proyectos y su estado - Material Design 3
  *
  * @example
  * <VistaGerencial proyectos={proyectos} onSelectProject={(id) => router.push(`/proyectos/${id}`)} />
@@ -13,6 +13,9 @@ import { useRouter } from 'next/navigation'
 import type { ProyectoGerencial, ProyectoEstado, ColorSemaforo } from '@/types'
 import { cn, formatDate, calcularDiasRestantes, formatPorcentaje, obtenerIniciales, getAvatarColor } from '@/lib/utils'
 import { COLORES_ESTADO } from '@/types/domain'
+import { UserAvatar } from '@/components/Common/UserAvatar'
+import { StatusBadge } from '@/components/Common/StatusBadge'
+import { AlertCircle } from 'lucide-react'
 
 interface VistaGerencialProps {
   proyectos: ProyectoGerencial[]
@@ -81,7 +84,7 @@ export function VistaGerencial({ proyectos, isLoading, onSelectProject }: VistaG
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="animate-pulse divide-y divide-gray-100">
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="h-12 px-4 flex items-center gap-4">
@@ -96,16 +99,16 @@ export function VistaGerencial({ proyectos, isLoading, onSelectProject }: VistaG
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
       {/* Search toolbar */}
-      <div className="px-4 py-3 border-b border-gray-200 flex items-center gap-3">
+      <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <input
             type="search"
             placeholder="Buscar por nombre o foco..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           />
         </div>
         <span className="text-xs text-gray-500 whitespace-nowrap flex-shrink-0">
@@ -117,7 +120,7 @@ export function VistaGerencial({ proyectos, isLoading, onSelectProject }: VistaG
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
         <thead>
-          <tr className="bg-gray-50 border-b border-gray-200">
+          <tr className="bg-gray-50 border-b border-gray-100">
             <Th label="Proyecto / Línea" sortKey="nombre" current={sortKey} dir={sortDir} onSort={handleSort} sticky />
             <Th label="Foco" sortKey="foco_estrategico" current={sortKey} dir={sortDir} onSort={handleSort} />
             <Th label="Área" sortKey="area_responsable" current={sortKey} dir={sortDir} onSort={handleSort} />
@@ -189,13 +192,13 @@ function Th({
     <th
       onClick={() => onSort(key)}
       className={cn(
-        'px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-700 whitespace-nowrap select-none',
-        sticky && 'sticky left-0 z-20 bg-gray-50'
+        'px-4 py-3 text-left text-xs font-semibold text-gray-600 cursor-pointer hover:bg-gray-50 transition-colors whitespace-nowrap select-none',
+        sticky && 'sticky left-0 z-20 bg-gray-50 hover:bg-gray-100'
       )}
     >
       <span className="flex items-center gap-1">
         {label}
-        <span className={cn('text-gray-300', active && 'text-gray-600')}>
+        <span className={cn('text-gray-300 text-xs', active && 'text-gray-500')}>
           {active ? (dir === 'asc' ? '↑' : '↓') : '↕'}
         </span>
       </span>
@@ -265,9 +268,9 @@ function ProyectoRow({
 
       {/* Área */}
       <td className="px-4 py-3">
-        <span className="text-xs font-medium bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full">
-          {proyecto.area_responsable}
-        </span>
+        {proyecto.area_responsable && (
+          <StatusBadge label={proyecto.area_responsable} color="gray" />
+        )}
       </td>
 
       {/* Estado */}
@@ -343,9 +346,7 @@ function ProyectoRow({
       {/* Responsable */}
       <td className="px-4 py-3">
         <div className="flex items-center gap-2">
-          <div className={cn('w-7 h-7 rounded-full text-xs font-semibold flex items-center justify-center flex-shrink-0', getAvatarColor(proyecto.responsable_nombre))}>
-            {obtenerIniciales(proyecto.responsable_nombre)}
-          </div>
+          <UserAvatar nombre={proyecto.responsable_nombre} size="sm" />
           <span className="text-xs text-gray-600 max-w-[100px] truncate">
             {proyecto.responsable_nombre}
           </span>
@@ -355,8 +356,8 @@ function ProyectoRow({
       {/* Atención */}
       <td className="px-4 py-3">
         {proyecto.requiere_escalamiento && (
-          <span className="inline-flex items-center gap-1 text-xs font-medium text-orange-700 bg-orange-50 px-2 py-0.5 rounded-full">
-            <span>⚠</span> Escalamiento
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-orange-700 bg-orange-50 px-2.5 py-1 rounded-full">
+            <AlertCircle className="w-3.5 h-3.5" strokeWidth={1.5} /> Escalamiento
           </span>
         )}
         {proyecto.bloqueos_activos > 0 && !proyecto.requiere_escalamiento && (
@@ -376,20 +377,17 @@ function SemaforoIndicator({ color }: { color: ColorSemaforo }) {
     AMARILLO: 'bg-yellow-500',
     ROJO: 'bg-red-500',
   }
-  return <span className={cn('w-2.5 h-2.5 rounded-full flex-shrink-0', colors[color])} />
+  return <span className={cn('w-3 h-3 rounded-full flex-shrink-0', colors[color])} />
 }
 
 function EstadoBadge({ estado }: { estado: ProyectoEstado }) {
   const colores = COLORES_ESTADO[estado] ?? COLORES_ESTADO['Pendiente']
-  return (
-    <span
-      className={cn(
-        'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
-        colores.bg,
-        colores.text
-      )}
-    >
-      {estado}
-    </span>
-  )
+  const colorMap: Record<string, 'gray' | 'green' | 'yellow' | 'red' | 'blue' | 'orange'> = {
+    'Pendiente': 'gray',
+    'En Progreso': 'blue',
+    'En Riesgo': 'yellow',
+    'Bloqueado': 'red',
+    'Completado': 'green',
+  }
+  return <StatusBadge label={estado} color={colorMap[estado] || 'gray'} />
 }

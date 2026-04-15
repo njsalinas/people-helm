@@ -123,7 +123,7 @@ export function ProyectoEditForm({ proyecto, onClose }: ProyectoEditFormProps) {
             <input
               type="text"
               {...register('nombre')}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
             {errors.nombre && <p className="text-red-500 text-xs mt-1">{errors.nombre.message}</p>}
           </div>
@@ -134,7 +134,7 @@ export function ProyectoEditForm({ proyecto, onClose }: ProyectoEditFormProps) {
             <textarea
               {...register('descripcion_ejecutiva')}
               rows={2}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
             />
             {errors.descripcion_ejecutiva && (
               <p className="text-red-500 text-xs mt-1">{errors.descripcion_ejecutiva.message}</p>
@@ -147,7 +147,7 @@ export function ProyectoEditForm({ proyecto, onClose }: ProyectoEditFormProps) {
             <textarea
               {...register('objetivo')}
               rows={2}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
             />
             {errors.objetivo && <p className="text-red-500 text-xs mt-1">{errors.objetivo.message}</p>}
           </div>
@@ -158,7 +158,7 @@ export function ProyectoEditForm({ proyecto, onClose }: ProyectoEditFormProps) {
             <textarea
               {...register('resultado_esperado')}
               rows={2}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
             />
             {errors.resultado_esperado && (
               <p className="text-red-500 text-xs mt-1">{errors.resultado_esperado.message}</p>
@@ -170,7 +170,7 @@ export function ProyectoEditForm({ proyecto, onClose }: ProyectoEditFormProps) {
             <label className="block text-sm font-medium text-gray-700 mb-1">Categoría *</label>
             <select
               {...register('categoria')}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Selecciona una categoría</option>
               {categorias.map((cat) => (
@@ -187,7 +187,7 @@ export function ProyectoEditForm({ proyecto, onClose }: ProyectoEditFormProps) {
             <label className="block text-sm font-medium text-gray-700 mb-1">Foco Estratégico *</label>
             <select
               {...register('foco_estrategico')}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               {FOCOS_ESTRATEGICOS.map((foco) => (
                 <option key={foco} value={foco}>
@@ -205,7 +205,7 @@ export function ProyectoEditForm({ proyecto, onClose }: ProyectoEditFormProps) {
             <label className="block text-sm font-medium text-gray-700 mb-1">Responsable Principal *</label>
             <select
               {...register('responsable_primario')}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Selecciona un responsable</option>
               {usuarios.map((u) => (
@@ -226,7 +226,7 @@ export function ProyectoEditForm({ proyecto, onClose }: ProyectoEditFormProps) {
               <input
                 type="date"
                 {...register('fecha_inicio')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
               {errors.fecha_inicio && (
                 <p className="text-red-500 text-xs mt-1">{errors.fecha_inicio.message}</p>
@@ -237,7 +237,7 @@ export function ProyectoEditForm({ proyecto, onClose }: ProyectoEditFormProps) {
               <input
                 type="date"
                 {...register('fecha_fin_planificada')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
               {errors.fecha_fin_planificada && (
                 <p className="text-red-500 text-xs mt-1">{errors.fecha_fin_planificada.message}</p>
@@ -253,7 +253,7 @@ export function ProyectoEditForm({ proyecto, onClose }: ProyectoEditFormProps) {
               min={1}
               max={5}
               {...register('prioridad', { valueAsNumber: true })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
             {errors.prioridad && <p className="text-red-500 text-xs mt-1">{errors.prioridad.message}</p>}
           </div>

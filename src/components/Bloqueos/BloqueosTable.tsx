@@ -1,6 +1,6 @@
 /**
  * @component BloqueosTable
- * Tabla transversal de todos los bloqueos activos del sistema
+ * Tabla transversal de todos los bloqueos activos del sistema - Material Design 3
  *
  * @example
  * <BloqueosTable bloqueos={bloqueos} />
@@ -13,6 +13,8 @@ import { useRouter } from 'next/navigation'
 import type { BloqueoActivo } from '@/types'
 import { cn, colorFilaBloqueo } from '@/lib/utils'
 import { TIPOS_BLOQUEO, ACCIONES_BLOQUEO } from '@/types/domain'
+import { StatusBadge } from '@/components/Common/StatusBadge'
+import { AlertCircle } from 'lucide-react'
 
 interface BloqueosTableProps {
   bloqueos: BloqueoActivo[]
@@ -34,8 +36,8 @@ export function BloqueosTable({ bloqueos, isLoading }: BloqueosTableProps) {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="animate-pulse divide-y">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="animate-pulse divide-y divide-gray-100">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="h-14 px-4 flex items-center gap-4">
               <div className="h-4 bg-gray-200 rounded w-40" />
@@ -54,7 +56,7 @@ export function BloqueosTable({ bloqueos, isLoading }: BloqueosTableProps) {
         <select
           value={filtroTipo}
           onChange={(e) => setFiltroTipo(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         >
           <option value="">Todos los tipos</option>
           {TIPOS_BLOQUEO.map((t) => <option key={t} value={t}>{t}</option>)}
@@ -63,7 +65,7 @@ export function BloqueosTable({ bloqueos, isLoading }: BloqueosTableProps) {
         <select
           value={filtroAccion}
           onChange={(e) => setFiltroAccion(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         >
           <option value="">Todas las acciones</option>
           {ACCIONES_BLOQUEO.map((a) => <option key={a} value={a}>{a}</option>)}
@@ -72,7 +74,7 @@ export function BloqueosTable({ bloqueos, isLoading }: BloqueosTableProps) {
         <select
           value={filtroArea}
           onChange={(e) => setFiltroArea(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+          className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         >
           <option value="">Todas las áreas</option>
           {Array.from(new Set(bloqueos.map((b) => b.area_responsable))).map((a) => (
@@ -80,18 +82,18 @@ export function BloqueosTable({ bloqueos, isLoading }: BloqueosTableProps) {
           ))}
         </select>
 
-        <span className="text-sm text-gray-400 ml-auto">
+        <span className="text-sm text-gray-500 ml-auto">
           {filtrados.length} bloqueo{filtrados.length !== 1 ? 's' : ''}
         </span>
       </div>
 
       {/* Tabla */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
+            <tr className="bg-gray-50 border-b border-gray-100">
               {['Proyecto', 'Bloqueo', 'Tipo', 'Días', 'Acción Req.', 'Responsable', 'Estado'].map((h) => (
-                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
+                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-600 whitespace-nowrap">
                   {h}
                 </th>
               ))}
@@ -123,13 +125,13 @@ export function BloqueosTable({ bloqueos, isLoading }: BloqueosTableProps) {
                       {b.descripcion}
                     </p>
                     {b.requiere_escalamiento && (
-                      <span className="text-xs text-orange-600 font-medium">⚠ Escalar</span>
+                      <span className="inline-flex items-center gap-1 text-xs text-orange-600 font-medium">
+                        <AlertCircle className="w-3 h-3" strokeWidth={1.5} /> Escalar
+                      </span>
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full">
-                      {b.tipo}
-                    </span>
+                    <StatusBadge label={b.tipo} color="gray" />
                   </td>
                   <td className="px-4 py-3">
                     <span className={cn(
@@ -147,9 +149,7 @@ export function BloqueosTable({ bloqueos, isLoading }: BloqueosTableProps) {
                     <span className="text-xs text-gray-600">{b.creado_por_nombre}</span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-medium">
-                      {b.estado}
-                    </span>
+                    <StatusBadge label={b.estado} color="red" />
                   </td>
                 </tr>
               ))
@@ -162,15 +162,11 @@ export function BloqueosTable({ bloqueos, isLoading }: BloqueosTableProps) {
 }
 
 function AccionBadge({ accion }: { accion: string }) {
-  const colores: Record<string, string> = {
-    Informar: 'bg-blue-50 text-blue-700',
-    Seguimiento: 'bg-yellow-50 text-yellow-700',
-    Decisión: 'bg-orange-50 text-orange-700',
-    Intervención: 'bg-red-50 text-red-700',
+  const colorMap: Record<string, 'gray' | 'blue' | 'yellow' | 'orange' | 'red'> = {
+    Informar: 'blue',
+    Seguimiento: 'yellow',
+    Decisión: 'orange',
+    Intervención: 'red',
   }
-  return (
-    <span className={cn('text-xs px-2 py-0.5 rounded-full font-medium', colores[accion] ?? 'bg-gray-50 text-gray-700')}>
-      {accion}
-    </span>
-  )
+  return <StatusBadge label={accion} color={colorMap[accion] || 'gray'} />
 }

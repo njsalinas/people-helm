@@ -45,19 +45,19 @@ export function Filtros({ filtros, onChange, onClear, expanded = true, onToggle 
   // Panel colapsado
   if (!expanded) {
     return (
-      <aside className="w-10 flex-shrink-0 bg-white border border-gray-200 rounded-xl py-3 px-2 h-fit flex flex-col items-center gap-3">
+      <aside className="w-10 flex-shrink-0 bg-white border border-gray-100 shadow-sm rounded-2xl py-3 px-2 h-fit flex flex-col items-center gap-3">
         <button
           onClick={onToggle}
-          className="text-gray-600 hover:text-gray-900 transition-colors p-1"
+          className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors p-1 rounded-lg"
           title="Expandir filtros"
           aria-label="Expandir filtros"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
         {conteoActivos > 0 && (
-          <span className="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-blue-100 text-blue-700 text-[10px] font-semibold">
+          <span className="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-blue-100 text-blue-700 text-[0.6rem] font-semibold">
             {conteoActivos}
           </span>
         )}
@@ -67,12 +67,12 @@ export function Filtros({ filtros, onChange, onClear, expanded = true, onToggle 
 
   // Panel expandido
   return (
-    <aside className="w-60 flex-shrink-0 bg-white border border-gray-200 rounded-xl p-4 space-y-5 h-fit">
+    <aside className="w-60 flex-shrink-0 bg-white border border-gray-100 shadow-sm rounded-2xl p-4 space-y-5 h-fit">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-gray-800 text-sm">Filtros</h3>
+          <h3 className="font-semibold text-gray-900 text-sm">Filtros</h3>
           {conteoActivos > 0 && (
-            <span className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-blue-100 text-blue-700 text-[11px] font-semibold">
+            <span className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-blue-100 text-blue-700 text-[0.65rem] font-semibold">
               {conteoActivos}
             </span>
           )}

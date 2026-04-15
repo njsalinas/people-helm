@@ -67,7 +67,7 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
             <select
               value={selectedAnio}
               onChange={(e) => setSelectedAnio(parseInt(e.target.value))}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               {[2024, 2025, 2026, 2027].map(y => (
                 <option key={y} value={y}>{y}</option>
@@ -81,7 +81,7 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
             <select
               value={selectedAreaId || ''}
               onChange={(e) => setSelectedAreaId(e.target.value || null)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Todas las áreas</option>
               {areasSorted.map(a => (
@@ -96,7 +96,7 @@ export function ObjetivosMainView({ anio = new Date().getFullYear() }: Objetivos
               setEditingObjetivo(null)
               setShowForm(true)
             }}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-full transition-colors"
           >
             + Nuevo Objetivo
           </button>

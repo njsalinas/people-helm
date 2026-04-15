@@ -84,7 +84,7 @@ export function ObjetivoForm({ objetivo, onSubmit, onClose, isLoading = false }:
               {...register('titulo')}
               type="text"
               placeholder="Ej: Reducir rotación en 15%"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
             {(errors as any).titulo && (
               <p className="text-xs text-red-500 mt-1">{(errors as any).titulo.message}</p>
@@ -100,7 +100,7 @@ export function ObjetivoForm({ objetivo, onSubmit, onClose, isLoading = false }:
               {...register('descripcion')}
               placeholder="Detalles del objetivo..."
               rows={3}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
             />
             {(errors as any).descripcion && (
               <p className="text-xs text-red-500 mt-1">{(errors as any).descripcion.message}</p>
@@ -118,7 +118,7 @@ export function ObjetivoForm({ objetivo, onSubmit, onClose, isLoading = false }:
                 type="number"
                 min="2020"
                 max="2100"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
               {(errors as any).anio && (
                 <p className="text-xs text-red-500 mt-1">{(errors as any).anio.message}</p>
@@ -130,7 +130,7 @@ export function ObjetivoForm({ objetivo, onSubmit, onClose, isLoading = false }:
               </label>
               <select
                 {...register('area_responsable_id')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 disabled={areasLoading}
               >
                 <option value="">Seleccionar área...</option>
@@ -152,7 +152,7 @@ export function ObjetivoForm({ objetivo, onSubmit, onClose, isLoading = false }:
               </label>
               <select
                 {...register('status')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               >
                 {OBJETIVOS_STATUS.map((s) => (
                   <option key={s} value={s}>
@@ -169,7 +169,7 @@ export function ObjetivoForm({ objetivo, onSubmit, onClose, isLoading = false }:
                 {...register('orden', { valueAsNumber: true })}
                 type="number"
                 min="0"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
             </div>
           </div>

@@ -68,9 +68,9 @@ export function ChangePasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="space-y-2">
+        <label htmlFor="newPassword" className="block text-sm font-medium text-gray-900">
           Nueva contraseña
         </label>
         <input
@@ -82,17 +82,19 @@ export function ChangePasswordForm() {
           placeholder="Mínimo 8 caracteres"
           disabled={isLoading}
           className={cn(
-            'w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500',
-            errors.newPassword ? 'border-red-300 bg-red-50' : 'border-gray-300'
+            'w-full px-3 py-2.5 border rounded-xl text-sm transition-colors',
+            errors.newPassword
+              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+              : 'border-gray-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
           )}
         />
         {errors.newPassword && (
-          <p className="text-xs text-red-600 mt-1">{errors.newPassword}</p>
+          <p className="text-xs text-red-600 font-medium">{errors.newPassword}</p>
         )}
       </div>
 
-      <div>
-        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="space-y-2">
+        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-900">
           Confirmar contraseña
         </label>
         <input
@@ -104,19 +106,21 @@ export function ChangePasswordForm() {
           placeholder="Escribe la contraseña de nuevo"
           disabled={isLoading}
           className={cn(
-            'w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500',
-            errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-gray-300'
+            'w-full px-3 py-2.5 border rounded-xl text-sm transition-colors',
+            errors.confirmPassword
+              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+              : 'border-gray-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
           )}
         />
         {errors.confirmPassword && (
-          <p className="text-xs text-red-600 mt-1">{errors.confirmPassword}</p>
+          <p className="text-xs text-red-600 font-medium">{errors.confirmPassword}</p>
         )}
       </div>
 
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full px-4 py-2.5 bg-blue-600 text-white rounded-full text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {isLoading ? 'Cambiando contraseña...' : 'Cambiar contraseña'}
       </button>

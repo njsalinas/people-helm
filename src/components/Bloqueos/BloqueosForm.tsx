@@ -58,7 +58,7 @@ export function BloqueosForm({ proyectoId, onClose }: BloqueosFormProps) {
               {...form.register('descripcion')}
               rows={3}
               placeholder="Describe el bloqueo con suficiente detalle..."
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
             />
             {form.formState.errors.descripcion && (
               <p className="mt-1 text-xs text-red-600">{form.formState.errors.descripcion.message}</p>
@@ -73,7 +73,7 @@ export function BloqueosForm({ proyectoId, onClose }: BloqueosFormProps) {
               </label>
               <select
                 {...form.register('tipo')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               >
                 {TIPOS_BLOQUEO.map((t) => (
                   <option key={t} value={t}>{t}</option>
@@ -88,7 +88,7 @@ export function BloqueosForm({ proyectoId, onClose }: BloqueosFormProps) {
               </label>
               <select
                 {...form.register('accion_requerida')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               >
                 {ACCIONES_BLOQUEO.map((a) => (
                   <option key={a} value={a}>{a}</option>

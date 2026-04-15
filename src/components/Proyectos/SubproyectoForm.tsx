@@ -101,7 +101,7 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
             <input
               type="text"
               {...register('nombre')}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               placeholder="Ej: Implementación de nuevos procesos"
             />
             {errors.nombre && <p className="text-red-500 text-xs mt-1">{errors.nombre.message}</p>}
@@ -113,7 +113,7 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
             <textarea
               {...register('descripcion_ejecutiva')}
               rows={2}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
               placeholder="Resumen ejecutivo del subproyecto"
             />
             {errors.descripcion_ejecutiva && (
@@ -127,7 +127,7 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
             <textarea
               {...register('objetivo')}
               rows={2}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
               placeholder="¿Qué se pretende lograr?"
             />
             {errors.objetivo && <p className="text-red-500 text-xs mt-1">{errors.objetivo.message}</p>}
@@ -139,7 +139,7 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
             <textarea
               {...register('resultado_esperado')}
               rows={2}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
               placeholder="¿Cuál es el resultado final esperado?"
             />
             {errors.resultado_esperado && (
@@ -165,7 +165,7 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
             <label className="block text-sm font-medium text-gray-700 mb-1">Categoría *</label>
             <select
               {...register('categoria')}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Selecciona una categoría</option>
               {categorias.map((cat) => (
@@ -182,7 +182,7 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
             <label className="block text-sm font-medium text-gray-700 mb-1">Responsable Principal *</label>
             <select
               {...register('responsable_primario')}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Selecciona un responsable</option>
               {usuarios.map((u) => (
@@ -203,7 +203,7 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
               <input
                 type="date"
                 {...register('fecha_inicio')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
               {errors.fecha_inicio && (
                 <p className="text-red-500 text-xs mt-1">{errors.fecha_inicio.message}</p>
@@ -214,7 +214,7 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
               <input
                 type="date"
                 {...register('fecha_fin_planificada')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
               {errors.fecha_fin_planificada && (
                 <p className="text-red-500 text-xs mt-1">{errors.fecha_fin_planificada.message}</p>
@@ -230,7 +230,7 @@ export function SubproyectoForm({ proyectoPadre, onClose }: SubproyectoFormProps
               min={1}
               max={5}
               {...register('prioridad', { valueAsNumber: true })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
             {errors.prioridad && <p className="text-red-500 text-xs mt-1">{errors.prioridad.message}</p>}
           </div>

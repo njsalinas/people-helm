@@ -57,7 +57,7 @@ export function TareaForm({ proyectoId, subproyectoId, usuarios, onClose }: Tare
             <label className="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
             <input
               {...form.register('nombre')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               placeholder="Nombre de la tarea"
             />
             {form.formState.errors.nombre && (
@@ -70,7 +70,7 @@ export function TareaForm({ proyectoId, subproyectoId, usuarios, onClose }: Tare
             <textarea
               {...form.register('descripcion')}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
               placeholder="Descripción opcional"
             />
           </div>
@@ -81,7 +81,7 @@ export function TareaForm({ proyectoId, subproyectoId, usuarios, onClose }: Tare
             </label>
             <select
               {...form.register('responsable_id')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               <option value="">No asignar (se asignará automáticamente)</option>
               {usuarios.map((u) => (
@@ -99,7 +99,7 @@ export function TareaForm({ proyectoId, subproyectoId, usuarios, onClose }: Tare
               <input
                 type="date"
                 {...form.register('fecha_inicio')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
               {form.formState.errors.fecha_inicio && (
                 <p className="text-xs text-red-600 mt-1">{form.formState.errors.fecha_inicio.message}</p>
@@ -110,7 +110,7 @@ export function TareaForm({ proyectoId, subproyectoId, usuarios, onClose }: Tare
               <input
                 type="date"
                 {...form.register('fecha_fin_planificada')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
               {form.formState.errors.fecha_fin_planificada && (
                 <p className="text-xs text-red-600 mt-1">{form.formState.errors.fecha_fin_planificada.message}</p>
@@ -124,7 +124,7 @@ export function TareaForm({ proyectoId, subproyectoId, usuarios, onClose }: Tare
             </label>
             <select
               {...form.register('prioridad', { valueAsNumber: true })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               <option value={1}>1 — Crítica</option>
               <option value={2}>2 — Alta</option>

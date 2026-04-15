@@ -95,7 +95,7 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
               {...register('nombre')}
               type="text"
               placeholder="Ej: Implementación ATS Q2"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
             {errors.nombre && (
               <p className="text-xs text-red-500 mt-1">{errors.nombre.message}</p>
@@ -110,7 +110,7 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
               </label>
               <select
                 {...register('area_responsable_id')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 disabled={areasLoading}
               >
                 <option value="">Cargando áreas...</option>
@@ -128,7 +128,7 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
               </label>
               <select
                 {...register('categoria')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               >
                 <option value="">Selecciona...</option>
                 {categorias.map((c) => (
@@ -149,7 +149,7 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
               </label>
               <select
                 {...register('foco_estrategico')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               >
                 {FOCOS_ESTRATEGICOS.map((f) => (
                   <option key={f} value={f}>{f}</option>
@@ -162,7 +162,7 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
               </label>
               <select
                 {...register('tipo')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               >
                 <option value="Proyecto">Proyecto</option>
                 <option value="Línea">Línea</option>
@@ -177,7 +177,7 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
             </label>
             <select
               {...register('responsable_primario')}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Selecciona responsable...</option>
               {usuarios.map((u) => (
@@ -198,7 +198,7 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
               <input
                 {...register('fecha_inicio')}
                 type="date"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
               {errors.fecha_inicio && (
                 <p className="text-xs text-red-500 mt-1">{errors.fecha_inicio.message}</p>
@@ -211,7 +211,7 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
               <input
                 {...register('fecha_fin_planificada')}
                 type="date"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
               {errors.fecha_fin_planificada && (
                 <p className="text-xs text-red-500 mt-1">{errors.fecha_fin_planificada.message}</p>
@@ -228,7 +228,7 @@ export function ProyectoForm({ onClose }: ProyectoFormProps) {
               {...register('descripcion_ejecutiva')}
               rows={3}
               placeholder="Describe el objetivo del proyecto..."
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
             />
           </div>
 

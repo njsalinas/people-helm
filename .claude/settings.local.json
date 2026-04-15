@@ -14,7 +14,13 @@
       "Bash(grep -n \"CREATE TABLE.*historial_cambios\\\\|entidad\" /Users/nelsonsalinasalvarado/Documents/Proyectos/people-helm/supabase/migrations/*.sql)",
       "mcp__ide__getDiagnostics",
       "Bash(git pull:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Read(//private/tmp/**)"
     ]
+  },
+  "mcpServers": {
+    "stitch": {
+      "command": "stitch-mcp"
+    }
   }
 }
